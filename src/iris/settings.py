@@ -12,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'service',                      # Or path to database file if using sqlite3.
+        'NAME': 'iris',                      # Or path to database file if using sqlite3.
         'USER': 'demo',                      # Not used with sqlite3.
         'PASSWORD': 'demohello',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -31,7 +31,7 @@ TIME_ZONE = 'Asia/Shanghai'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'zh-cn'
+LANGUAGE_CODE = 'zh_CN'
 
 SITE_ID = 1
 
@@ -101,9 +101,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'service.urls'
+ROOT_URLCONF = 'iris.urls'
 
-TEMPLATE_DIRS = ('D:/service/templates',)
+TEMPLATE_DIRS = ()
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -117,7 +117,7 @@ INSTALLED_APPS = (
     'djangorestframework',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'service.customer',
+    'iris.customer',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -142,3 +142,7 @@ LOGGING = {
         },
     }
 }
+try:
+    from local_settings import *
+except ImportError, exp:
+    pass

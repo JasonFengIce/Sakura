@@ -1,0 +1,3 @@
+[submodule "src/vendor/django-rest-framework"]
+	path = src/vendor/django-rest-framework
+	url = https://github.com/tomchristie/django-rest-framework.git

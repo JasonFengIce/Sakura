@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import sys; sys.path.append((__file__.rpartition('/')[0] or '.') + '/lib')
 from django.core.management import execute_manager
 import imp
 try:
