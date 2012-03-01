@@ -1,0 +1,115 @@
+package cn.ismartv.speedtester;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLEncoder;
+
+import android.os.SystemClock;
+import android.util.Log;
+import cn.ismartv.speedtester.domain.NetworkSpeedInfo;
+
+/**
+ * NetworkUtils is a utility Class for download file throughout http protocol.and update information about downloading progress.
+ * @author bob
+ *
+ */
+public class NetworkUtils {
+	
+	public static int getFileFromUrl(NetworkSpeedInfo networkSpeedInfo){
+//		byte[] fileBytes = null;
+//		int bytecount = 0;
+		URL fileUrl = null;
+		HttpURLConnection conn = null;
+		InputStream stream = null;
+		try {
+			Log.d("FileDownloader_URL: ", networkSpeedInfo.url);
+			fileUrl = new URL(networkSpeedInfo.url);
+			conn = (HttpURLConnection) fileUrl.openConnection();
+			conn.setConnectTimeout(10000);
+			conn.setReadTimeout(10000);
+			Log.d("ResponseCode: ", "Http:"+conn.getResponseCode()+"status code");
+			Log.d("ResponseMessage", conn.getResponseMessage());
+			networkSpeedInfo.realUrl = conn.getURL().toString();
+			Log.d("realUrl: ", networkSpeedInfo.realUrl);
+			networkSpeedInfo.filesize = conn.getContentLength();
+			stream = conn.getInputStream();
+//			fileBytes = new byte[fileLength];
+			networkSpeedInfo.timeStarted = SystemClock.uptimeMillis();
+			int actuallyReadCount = 0;
+			byte[] buff = new byte[128];
+			while((actuallyReadCount=stream.read(buff))!=-1 && networkSpeedInfo.flagStop == 0){
+				networkSpeedInfo.filesizeFinished+=actuallyReadCount;
+			}
+		} catch (SocketTimeoutException e) {
+			e.printStackTrace();
+			return MainActivity.NETWORK_CONNECTION_TIMEOUT;
+		} catch (Exception e){
+			e.printStackTrace();
+			return MainActivity.NETWORK_CONNECTION_UNKNOWN;
+		}finally {
+			conn.disconnect();
+		}
+		
+		return MainActivity.NETWORK_CONNECTION_NORMAL;
+	}
+	
+	public static String uploadString(String str, String uploadURL){
+		URL url = null;
+		HttpURLConnection conn = null;
+		InputStream inputStream = null;
+		BufferedReader reader = null;
+		StringBuffer sb = new StringBuffer();
+		try {
+			url = new URL(uploadURL+"?q="+URLEncoder.encode(str, "UTF-8"));
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setUseCaches(false);
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Charset", "UTF-8");
+			conn.setConnectTimeout(10000);
+			conn.setReadTimeout(10000);
+			conn.setRequestProperty("UserAgent", android.os.Build.MODEL+"/"+android.os.Build.VERSION.RELEASE+" "+android.os.Build.SERIAL);
+			Log.d("requestHeader q", str);
+//			conn.addRequestProperty("q", str);
+//			conn.connect();
+			int statusCode = conn.getResponseCode();
+			Log.d("statusCode", ""+statusCode);
+			if(statusCode==200){
+				inputStream = conn.getInputStream();
+				reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+				String line = null;
+				while((line=reader.readLine())!=null){
+					sb.append(line);
+				}
+
+				
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			return "";
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "";
+		} finally {
+			if(conn!=null){
+				conn.disconnect();
+			}
+			if(reader!=null){
+				try {
+					reader.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		return sb.toString();
+		
+	}
+}
