@@ -23,7 +23,7 @@ class Speedlog(models.Model):
     class Meta:
         verbose_name = _("Speedlog")
         verbose_name_plural = _("Speedlog")
-
+        ordering = ('-create_date',)
 
 class Point(models.Model):
     name = models.CharField(_("Name"), max_length=20, db_index=True)
@@ -31,7 +31,6 @@ class Point(models.Model):
         verbose_name = _("Point")
         verbose_name_plural = _("Point")
         ordering = ('id',)
-
 
 
 class Pointlog(models.Model):
@@ -47,7 +46,7 @@ class Pointlog(models.Model):
     class Meta:
         verbose_name = _("Pointlog")
         verbose_name_plural = _("Pointlog")
-
+        ordering = ('-create_date',)
     
 class Videotype(models.Model):
     type_name = models.CharField(_("type name"),max_length=20 )
