@@ -18,8 +18,6 @@ class VideotypeAdmin(admin.ModelAdmin):
     
     list_display = ('type_name', 'bit_rate' , 'resolution',)
 
-    
-
 admin.site.register(models.Videotype,VideotypeAdmin)
 admin.site.register(models.Url,UrlAdmin)
 admin.site.register(models.Point,PointAdmin)
