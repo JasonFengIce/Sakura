@@ -15,6 +15,7 @@ class PointlogAdmin(admin.ModelAdmin):
     list_display = ('point', 'speeds' , 'description', 'phone', 'mail', 'ip', 'isp','create_date',)
     
 class VideotypeAdmin(admin.ModelAdmin):
+    
     list_display = ('type_name', 'bit_rate' , 'resolution',)
 
     
