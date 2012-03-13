@@ -13,18 +13,24 @@
 	    <TextView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_marginTop="20dip"
+	        android:layout_marginTop="30dip"
         	android:layout_marginBottom="20dip"
         	android:layout_marginLeft="50dip"
         	android:layout_marginRight="50dip"
 	        android:id="@+id/status_tips"
 	        android:text="@string/ready_to_test"
-	        android:textSize="44sp"/>
+	        android:textSize="50sp"/>
 	    <Button
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
+	        android:layout_marginTop="30dip"
+	        android:paddingTop="15dip"
+	        android:paddingBottom="15dip"
+	        android:paddingLeft="30dip"
+	        android:paddingRight="30dip"
 	        android:id="@+id/speed_actionbutton"
-	        android:text="@string/StartTesting"/>
+	        android:text="@string/StartTesting"
+	        android:textSize="35sp"/>
 	    <RelativeLayout
 	        android:layout_width="match_parent"
 	        android:layout_height="600dip"
@@ -141,25 +147,25 @@
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:id="@+id/problem_unclear"
-		        android:textSize="26sp"
+		        android:textSize="35sp"
 		        android:text="@string/radiobutton_unclear"/>
 		    <RadioButton
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:id="@+id/problem_block"
-		        android:textSize="26sp"
+		        android:textSize="35sp"
 		        android:text="@string/radiobutton_block"/>
 		    <RadioButton
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:id="@+id/problem_hardware"
-		        android:textSize="26sp"
+		        android:textSize="35sp"
 		        android:text="@string/radiobutton_hardware_fault"/>
 		    <RadioButton
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:id="@id/problem_other"
-		        android:textSize="26sp"
+		        android:textSize="35sp"
 		        android:text="@string/radiobutton_others"/>
         </RadioGroup>
         <TextView
@@ -171,7 +177,7 @@
             android:layout_marginRight="10dip"
             android:layout_marginTop="10dip"
             android:text="@string/label_details"
-            android:textSize="26sp"
+            android:textSize="35sp"
             android:id="@+id/details_description"
             />
         <EditText
@@ -184,7 +190,7 @@
             android:layout_marginRight="30dip"
             android:layout_marginLeft="10dip"
             android:layout_marginBottom="10dip"
-            android:textSize="26sp"
+            android:textSize="35sp"
             android:inputType="textMultiLine"
             android:gravity="top|left">
         </EditText>
@@ -201,20 +207,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dip"
-            android:textSize="26sp"
+            android:textSize="35sp"
             android:text="@string/label_phonenum"/>
             <EditText
             android:id="@+id/edit_phonenum"
             android:layout_width="200dip"
             android:layout_height="wrap_content"
             android:layout_margin="5dip"
-            android:textSize="26sp"
+            android:textSize="35sp"
             android:inputType="textPhonetic|phone"
             android:gravity="left"/>
             <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="26sp"
+            android:textSize="35sp"
             android:layout_margin="5dip"
             android:text="@string/label_email"/>
             <EditText
@@ -222,7 +228,7 @@
             android:layout_width="200dip"
             android:layout_height="wrap_content"
             android:layout_margin="5dip"
-            android:textSize="26sp"
+            android:textSize="35sp"
             android:inputType="textEmailAddress"
             android:gravity="left"/>
         </LinearLayout>
@@ -243,40 +249,40 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dip"
                 android:text="@string/label_ip"
-                android:textSize="26sp"/>
+                android:textSize="35sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dip"
                 android:id="@+id/feedback_ip"
                 android:text="@string/default_ip"
-                android:textSize="26sp"/>
+                android:textSize="35sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dip"
                 android:text="@string/label_city"
-                android:textSize="26sp"/>
+                android:textSize="35sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dip"
                 android:id="@+id/feedback_city"
                 android:text="@string/unknown_area"
-                android:textSize="26sp"/>
+                android:textSize="35sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dip"
                 android:text="@string/label_ISP"
-                android:textSize="26sp"/>
+                android:textSize="35sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dip"
                 android:id="@+id/feedback_isp"
                 android:text="@string/unknown_isp"
-                android:textSize="26sp"/>
+                android:textSize="35sp"/>
         </LinearLayout>
         <TextView
             android:id="@+id/feedback_verify_title"
@@ -285,7 +291,7 @@
             android:layout_below="@id/feedback_autogain_area"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="60dip"
-            android:textSize="26sp"
+            android:textSize="35sp"
             android:text="@string/location_verify_title"/>
         <RadioGroup
             android:layout_width="match_parent"
@@ -300,13 +306,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@id/feedback_verify_yes"
-                android:textSize="26sp"
+                android:textSize="35sp"
                 android:text="@string/label_yes"/>
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/feedback_verify_no"
-                android:textSize="26sp"
+                android:textSize="35sp"
                 android:text="@string/label_no"/>
         </RadioGroup>
         <Button
@@ -316,8 +322,12 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="400dip"
             android:layout_marginTop="40dip"
+            android:paddingTop="15dip"
+            android:paddingBottom="15dip"
+            android:paddingLeft="35dip"
+            android:paddingRight="35dip"
             android:id="@+id/button_submit"
-            android:textSize="30sp"
+            android:textSize="35sp"
             android:text="@string/button_submit"/>
 	</RelativeLayout>
 </LinearLayout>

@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -24,6 +23,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteController;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Gravity;
@@ -45,6 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cn.ismartv.speedtester.domain.FeedBackEntity;
 import cn.ismartv.speedtester.domain.FeedBackProblemEntity;
+import cn.ismartv.speedtester.domain.LocationInfo;
 import cn.ismartv.speedtester.domain.NetworkSpeedInfo;
 import cn.ismartv.speedtester.domain.SpeedInfoUploadEntity;
 
@@ -72,6 +73,8 @@ public class MainActivity extends Activity {
 	private Handler mDownloadHandler = new Handler();
 	
 	private Thread mDownloaderThread = null;
+	
+	private RemoteController mRemoteController;
 	
 	private GetFileUrlTask mGetFileUrlTask = null;
 	
@@ -118,7 +121,7 @@ public class MainActivity extends Activity {
 	
 	private boolean isNetworkAvailable = false;
 	
-	public static String domain = "http://iris.tvxio.com"; 
+	public static String domain = "http://172.16.1.238:8000"; 
 	
 	
 	private OnClickListener mActionButtonListener = new OnClickListener() {
@@ -324,9 +327,10 @@ public class MainActivity extends Activity {
     	Type listType = new TypeToken<List<SpeedInfoUploadEntity>>(){}.getType();
     	try {
 			String json = gson.toJson(mCurrentSpeedTestResults, listType);
-			String uploadStr = "{\"speed\":"+json+", \"ip\":\""+mFeedBackEntity.ip+"\",\"location\":\""+mFeedBackEntity.location+"\",\"isp\":\""+mFeedBackEntity.isp+"\"}";
+			String uploadStr = "{\"speed\":"+json+", \"ip\":\""+mFeedBackEntity.ip
+					+"\",\"location\":\""+mFeedBackEntity.location+"\",\"isp\":\""+mFeedBackEntity.isp+"\"}";
 			new UploadTask().execute(uploadStr, domain+"/customer/speedlogs/");
-			Log.d("uploadStr",uploadStr);
+			Log.d("locationJson",NetworkUtils.charEncoder(mFeedBackEntity.location));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -504,6 +508,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onPause() {
+		hideCursor(false);
 		mTestState = TEST_STATE_IDLE;
 		mDownloadHandler.removeCallbacks(downloadFileTask);
 		mTimingHandler.removeCallbacks(updateStatusTask);
@@ -512,14 +517,41 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onResume() {
+		hideCursor(true);
 		Log.d("ui","resume");
-		if(mFeedBackProblemEntities == null){
-			new GetFeedBackInfo().execute(1);
-		}
-		if(mFeedBackEntity.ip==null){
-			new GetFeedBackInfo().execute(2);
+		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] networkInfos = connectivityManager.getAllNetworkInfo();
+        for(NetworkInfo networkInfo : networkInfos){
+        	if(networkInfo.isConnected()){
+        		isNetworkAvailable = true;
+        		break;
+        	}
+        }
+        if(isNetworkAvailable){
+			if(mFeedBackProblemEntities == null){
+				new GetFeedBackInfo().execute(1);
+			}
+			if(mFeedBackEntity.ip==null){
+				new GetFeedBackInfo().execute(2);
+			}
+		} else {
+			//else remind user to setup network settings. pop up a dialog, contains two button [Network Setting], [Cancel]
+        	//WIFI setting Activity: ACTION_WIFI_SETTINGS
+        	showDialog(DIALOG_NETWORK_UNESTABLISHED);
 		}
 		super.onResume();
+	}
+	
+	public void hideCursor(boolean hide){
+		if(mRemoteController==null){
+			mRemoteController = (RemoteController)getSystemService(Context.REMOTECONTROLLER_SERVICE);
+		}
+		if(hide){
+			mRemoteController.setRcGestureOnly();
+			mRemoteController.displayCursor(false);
+		} else {
+			mRemoteController.setDefaultMode();
+		}
 	}
 	
 	class GetFeedBackInfo extends AsyncTask<Integer, Void, Integer> {
@@ -563,11 +595,11 @@ public class MainActivity extends Activity {
 				BufferedReader bfReader2 = null;
 				StringBuffer sb2 = new StringBuffer();
 				try {
-					URL url2 = new URL("http://counter.sina.com.cn/ip");
+					URL url2 = new URL("http://lily.tvxio.com/iplookup");
 					conn2 = (HttpURLConnection) url2.openConnection();
 					conn2.setConnectTimeout(20000);
 					InputStream is2 = conn2.getInputStream();
-					bfReader2 = new BufferedReader(new InputStreamReader(is2,"GBK"));
+					bfReader2 = new BufferedReader(new InputStreamReader(is2,"UTF-8"));
 					String line = null;
 					while((line=bfReader2.readLine())!=null){
 						sb2.append(line);
@@ -588,25 +620,33 @@ public class MainActivity extends Activity {
 						}
 					}
 				}
-				String returnValue = sb2.toString();
-				Pattern p = Pattern.compile("(Array\\((.+?)\\))");
-				Matcher matcher = p.matcher(returnValue);
-				matcher.find();
-				String result = matcher.group(2);
-				Log.d("location: ", result);
-				String[] ipInfos = result.split(",");
-				if(ipInfos.length>0) {
-					String ip = ipInfos[0].trim();
-					mFeedBackEntity.ip = ip != "\"\"" ? ip.substring(1, ip.length()-1) : "";
+				String feedBackstr = sb2.toString();
+				Log.d("feedbackstr", feedBackstr);
+				Gson gson = new Gson();
+				LocationInfo locationInfo = new LocationInfo();
+				locationInfo = gson.fromJson(feedBackstr, LocationInfo.class);
+				if(locationInfo!=null){
+					String ip = locationInfo.getIp();
+					if(ip!=null && !"".equals(ip)){
+						mFeedBackEntity.ip = ip;
+					} else {
+						mFeedBackEntity.ip = mResources.getString(R.string.default_ip);
+					}
+					String city = locationInfo.getCity();
+					if(city!=null && !"".equals(city)){
+						mFeedBackEntity.location = city;
+					} else {
+						mFeedBackEntity.location = mResources.getString(R.string.unknown_area);
+					}
+					String isp = locationInfo.getIsp();
+					if(isp!=null && !"".equals(isp)){
+						mFeedBackEntity.isp = isp;
+					} else {
+						mFeedBackEntity.isp = mResources.getString(R.string.unknown_isp);
+					}
+					Log.d("location unicode",NetworkUtils.charEncoder(mFeedBackEntity.location));
 				}
-				if(ipInfos.length>2) {
-					String location = ipInfos[2].trim();
-					mFeedBackEntity.location = location != "\"\"" ? location.substring(1, location.length()-1): "";
-				}
-				if(ipInfos.length>4){
-					String isp = ipInfos[4].trim();
-					mFeedBackEntity.isp = isp != "\"\"" ? isp.substring(1, isp.length()-1): "";
-				}
+				Log.d("locationInfo", locationInfo.getCountry()+" "+locationInfo.getProvince()+""+locationInfo.getCity());
 			}
 			return params[0];
 		}
@@ -622,7 +662,7 @@ public class MainActivity extends Activity {
 						RadioButton radioButton = new RadioButton(MainActivity.this);
 						ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 						layoutParams.setMargins(5, 0, 10, 0);
-						radioButton.setTextSize(26);
+						radioButton.setTextSize(35);
 						radioButton.setText(entity.point_name);
 						radioButton.setId(entity.point_id);
 						mProblemOptionsRadioGroup.addView(radioButton, layoutParams);
@@ -653,20 +693,15 @@ public class MainActivity extends Activity {
 	public OnCheckedChangeListener mOnCheckedChangeListener = new OnCheckedChangeListener() {
 		
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
-			switch(checkedId){
-			case R.id.problem_unclear:
+			if (checkedId == R.id.problem_unclear) {
 				mFeedBackEntity.option = 1;
-				break;
-			case R.id.problem_block:
+			} else if (checkedId == R.id.problem_block) {
 				mFeedBackEntity.option = 2;
-				break;
-			case R.id.problem_hardware:
+			} else if (checkedId == R.id.problem_hardware) {
 				mFeedBackEntity.option = 3;
-				break;
-			case R.id.problem_other:
+			} else if (checkedId == R.id.problem_other) {
 				mFeedBackEntity.option = 4;
-				break;
-			default:
+			} else {
 				mFeedBackEntity.option = checkedId;
 			}
 		}
@@ -688,6 +723,8 @@ public class MainActivity extends Activity {
 	    	Type listType = new TypeToken<List<SpeedInfoUploadEntity>>(){}.getType();
 	    	try {
 				String speedJson = gson.toJson(mCurrentSpeedTestResults, listType);
+//				mFeedBackEntity.location = NetworkUtils.charEncoder(mFeedBackEntity.location);
+//				mFeedBackEntity.isp = NetworkUtils.charEncoder(mFeedBackEntity.isp);
 				String entityJson = gson.toJson(mFeedBackEntity);
 				String json = entityJson.substring(0, entityJson.length()-1)+",\"speed\":"+speedJson+"}";
 				new UploadTask().execute(json, domain + "/customer/pointlogs/");

@@ -1,14 +1,22 @@
 package cn.ismartv.speedtester;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 
 import android.os.SystemClock;
 import android.util.Log;
@@ -65,17 +73,26 @@ public class NetworkUtils {
 		InputStream inputStream = null;
 		BufferedReader reader = null;
 		StringBuffer sb = new StringBuffer();
+		OutputStream outputStream = null;
+		BufferedWriter writer =null;
 		try {
-			url = new URL(uploadURL+"?q="+URLEncoder.encode(str, "UTF-8"));
+//			url = new URL(uploadURL+"?q="+URLEncoder.encode(str, "UTF-8"));
+			url = new URL(uploadURL);
 			conn = (HttpURLConnection) url.openConnection();
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
 			conn.setUseCaches(false);
-			conn.setRequestMethod("GET");
+			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Charset", "UTF-8");
+			conn.setRequestProperty("content-type", "text/json");
 			conn.setConnectTimeout(10000);
 			conn.setReadTimeout(10000);
-			conn.setRequestProperty("UserAgent", android.os.Build.MODEL+"/"+android.os.Build.VERSION.RELEASE+" "+android.os.Build.SERIAL);
+			conn.setRequestProperty("User-Agent", android.os.Build.MODEL+"/"+android.os.Build.VERSION.RELEASE+" "+android.os.Build.SERIAL);
 			Log.d("requestHeader q", str);
-//			conn.addRequestProperty("q", str);
+			outputStream = conn.getOutputStream();
+			writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+			writer.write("q="+str);
+			writer.flush();
 //			conn.connect();
 			int statusCode = conn.getResponseCode();
 			Log.d("statusCode", ""+statusCode);
@@ -107,9 +124,26 @@ public class NetworkUtils {
 					e.printStackTrace();
 				}
 			}
+			if(writer!=null){
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			
 		}
 		return sb.toString();
 		
+	}
+	
+	public static String charEncoder(String str){
+		StringBuffer sb = new StringBuffer(str.length());
+		for(int i=0;i<str.length();i++){
+			sb.append("\\u").append(Integer.toHexString((int)str.charAt(i) & 0xffff));
+		}
+		
+		return sb.toString();
 	}
 }

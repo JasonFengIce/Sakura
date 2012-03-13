@@ -17,7 +17,8 @@ public final class R {
         public static final int dashboard=0x7f020003;
         public static final int dashboard_pointer=0x7f020004;
         public static final int ic_launcher=0x7f020005;
-        public static final int progress=0x7f020006;
+        public static final int ic_stat=0x7f020006;
+        public static final int progress=0x7f020007;
     }
     public static final class id {
         public static final int button_submit=0x7f050023;

@@ -1,6 +1,5 @@
 package cn.ismartv.speedtester.domain;
 
-import android.view.View;
 
 /**
  * NetworkSpeedInfo encapsulates network information for downloading files

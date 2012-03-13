@@ -40,10 +40,10 @@ public class FeedBackEntity {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
-	public String getLocation() {
+	public String getlocation() {
 		return location;
 	}
-	public void setLocation(String location) {
+	public void setlocation(String location) {
 		this.location = location;
 	}
 	public String getIsp() {
