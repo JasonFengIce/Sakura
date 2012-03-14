@@ -19,6 +19,7 @@ class Speedlog(models.Model):
     location = models.CharField(_("Location"), max_length=50)
     isp = models.CharField(_("isp"), max_length=30)
     speed = models.FloatField(_("Speed"),max_length=20)
+    user_agent =  models.CharField(_("User Agent"), max_length=100,null=True)
     create_date = models.DateTimeField(_("Created at"), auto_now_add=True)
     class Meta:
         verbose_name = _("Speedlog")
@@ -42,6 +43,7 @@ class Pointlog(models.Model):
     ip = models.CharField(_("Ip"), max_length=20,null=True)
     location = models.CharField(_("Location"), max_length=50,null=True)
     isp = models.CharField(_("Isp"), max_length=50,null=True)
+    user_agent =  models.CharField(_("User Agent"), max_length=100,null=True)
     create_date = models.DateTimeField(_("Created at"), auto_now_add=True)
     class Meta:
         verbose_name = _("Pointlog")
