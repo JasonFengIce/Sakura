@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SpeedTester</string>
+    <string name="StartTesting">Start To Test!</string>
+    <string name="button_label_stop">Stop!</string>
+    <string name="button_label_retest">Test Again!</string>
+    <string name="speed_unit_byte">Byte/s</string>
+    <string name="speed_unit_kb">KB/s</string>
+    <string name="speed_unit_mb">MB/s</string>
+    <string name="msg_network_exception">Network exception!</string>
+    <string name="msg_network_unestablished">No network connection established! Please check network setting!</string>
+    <string name="button_label_setup_network">Setup Network</string>
+    <string name="button_label_cancel">Cancel</string>
+    <!-- <string name="button_label_radio_block">Playback block</string> -->
+    <!-- <string name="button_label_radio_masic">Has masic in video</string> -->
+    <string name="ready_to_test">READY TO TEST!</string>
+    <string name="label_problem_description">Problem description:</string>
+    <string name="starting">Starting&#8230;</string>
+    <string name="testing">Testing&#8230;</string>
+    <string name="test_completion">Test Completion</string>
+    <string name="button_label_OK">OK</string>
+    <string name="exception_time_out">Connection time out</string>
+    <string name="exception_unknown">Unknown Exception</string>
+    <string name="test_stopped">Test Stopped!</string>
+    <string name="label_details">Details Description:</string>
+    <string name="label_email">Email:</string>
+    <string name="label_phonenum">Mobile:</string>
+    <string name="label_ip">IP:</string>
+    <string name="label_city">City:</string>
+    <string name="label_ISP">ISP:</string>
+    <string name="default_ip">0.0.0.0</string>
+    <string name="unknown_area">Unknown area</string>
+    <string name="unknown_isp">Unknown ISP</string>
+    <string name="location_verify_title">Is the location info above right?</string>
+    <string name="label_yes">Yes</string>
+    <string name="label_no">No</string>
+    <string name="button_submit">Submit</string>
+    <string name="model">Model:</string>
+    <string name="radiobutton_others">Others</string>
+    <string name="radiobutton_block">Playback influent</string>
+    <string name="radiobutton_unclear">Video unclear</string>
+    <string name="radiobutton_hardware_fault">Hardware fault</string>
+    <string name="submit_sucess">Submit Success!</string>
+    
+    <item name="feedback_verify_yes" type="id">false</item>
+    <item name="problem_other" type="id">false</item>
+</resources>

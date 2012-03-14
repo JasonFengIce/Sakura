@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">测速工具</string>
+    <string name="StartTesting">开始测速!</string>
+    <string name="button_label_stop">中止测试!</string>
+    <string name="button_label_retest">重新测试</string>
+    <string name="speed_unit_byte">B/秒</string>
+    <string name="speed_unit_kb">KB/秒</string>
+    <string name="speed_unit_mb">MB/秒</string>
+    <string name="msg_network_exception">网络连接异常</string>
+    <string name="msg_network_unestablished">无网络链接，请检查设置</string>
+    <string name="button_label_setup_network">网络设置</string>
+    <string name="button_label_cancel">取消</string>
+    <!-- <string name="button_label_radio_block">播放卡顿</string> -->
+    <!-- <string name="button_label_radio_masic">存在马赛克</string> -->
+    <string name="ready_to_test">准备测试!</string>
+    <string name="label_problem_description">问题反馈:</string>
+    <string name="starting">正在开始&#8230;</string>
+    <string name="testing">正在测试&#8230;</string>
+    <string name="test_completion">测试完成</string>
+    <string name="button_label_OK">好滴</string>
+    <string name="exception_time_out">连接超时</string>
+    <string name="exception_unknown">未知错误</string>
+    <string name="test_stopped">测试中止</string>
+    <string name="label_details">详情描述:</string>
+    <string name="label_email">邮箱:</string>
+    <string name="label_phonenum">手机号:</string>
+    <string name="label_ip">IP:</string>
+    <string name="label_city">城市:</string>
+    <string name="label_ISP">运营商:</string>
+    <string name="default_ip">ICANN保留地址</string>
+    <string name="unknown_area">未知地区</string>
+    <string name="unknown_isp">未知运营商</string>
+    <string name="location_verify_title">以上地理信息是否正确</string>
+    <string name="label_yes">是</string>
+    <string name="label_no">否</string>
+    <string name="button_submit">提交</string>
+    <string name="model">型号:</string>
+    <string name="radiobutton_others">其他</string>
+    <string name="radiobutton_block">播放卡顿</string>
+    <string name="radiobutton_unclear">画面不清晰</string>
+    <string name="radiobutton_hardware_fault">硬件故障</string>
+    <string name="submit_sucess">提交成功!</string>
+</resources>
