@@ -33,7 +33,27 @@ class Speedlogs(View):
           videotype = models.Videotype.objects.filter(bit_rate__lte = (speed*8)).order_by('-bit_rate')[:1]
           if videotype:
             return HttpResponse(videotype[0].resolution)
-
+    def post(self,request):
+          q =  request.META['HTTP_Q']
+          user_agent =  request.META['HTTP_USER_AGENT']
+          print(q)
+          j = json.loads(q)
+          speed = 0
+          for url in j['speed']:
+              speedlog  =  models.Speedlog()
+              speedlog.ip = j["ip"]
+              speedlog.isp = j['isp']
+              speedlog.location  = j['location']
+              speedlog.user_agent = user_agent
+              speedlog.url =  models.Url.objects.get(id = url['pk'])
+              speedlog.speed  = url['speed']
+              if speedlog.url.is_show and speedlog.speed>speed:
+                  speed =  speedlog.speed
+              speedlog.save()
+          videotype = models.Videotype.objects.filter(bit_rate__lte = (speed*8)).order_by('-bit_rate')[:1]
+          if videotype:
+            return HttpResponse(videotype[0].resolution)
+        
 class Pointlogs(View):
     def get (self, request):
           q =  request.GET.get("q")
@@ -41,6 +61,22 @@ class Pointlogs(View):
           pointlog  =  models.Pointlog()
           pointlog.ip = j["ip"]
           pointlog.isp = j['isp']
+          pointlog.location  = j['location']
+          pointlog.speeds  = j['speed']
+          pointlog.point = j['option']
+          pointlog.description = j['description']
+          pointlog.phone = j['phone']
+          pointlog.mail= j['mail']
+          pointlog.save()
+          return HttpResponse("OK")
+    def post(self,request):
+          q =  request.META['HTTP_Q']
+          user_agent =  request.META['HTTP_USER_AGENT']
+          j = json.loads(q)
+          pointlog  =  models.Pointlog()
+          pointlog.ip = j["ip"]
+          pointlog.isp = j['isp']
+          pointlog.user_agent = user_agent
           pointlog.location  = j['location']
           pointlog.speeds  = j['speed']
           pointlog.point = j['option']

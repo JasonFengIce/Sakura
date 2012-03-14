@@ -19,11 +19,12 @@ class Speedlog(models.Model):
     location = models.CharField(_("Location"), max_length=50)
     isp = models.CharField(_("isp"), max_length=30)
     speed = models.FloatField(_("Speed"),max_length=20)
+    user_agent =  models.CharField(_("User Agent"), max_length=100,null=True)
     create_date = models.DateTimeField(_("Created at"), auto_now_add=True)
     class Meta:
         verbose_name = _("Speedlog")
         verbose_name_plural = _("Speedlog")
-
+        ordering = ('-create_date',)
 
 class Point(models.Model):
     name = models.CharField(_("Name"), max_length=20, db_index=True)
@@ -31,7 +32,6 @@ class Point(models.Model):
         verbose_name = _("Point")
         verbose_name_plural = _("Point")
         ordering = ('id',)
-
 
 
 class Pointlog(models.Model):
@@ -43,11 +43,12 @@ class Pointlog(models.Model):
     ip = models.CharField(_("Ip"), max_length=20,null=True)
     location = models.CharField(_("Location"), max_length=50,null=True)
     isp = models.CharField(_("Isp"), max_length=50,null=True)
+    user_agent =  models.CharField(_("User Agent"), max_length=100,null=True)
     create_date = models.DateTimeField(_("Created at"), auto_now_add=True)
     class Meta:
         verbose_name = _("Pointlog")
         verbose_name_plural = _("Pointlog")
-
+        ordering = ('-create_date',)
     
 class Videotype(models.Model):
     type_name = models.CharField(_("type name"),max_length=20 )
