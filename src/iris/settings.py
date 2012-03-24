@@ -132,6 +132,11 @@ LOGGING = {
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler'
+        },
+ 'filelog' : {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename' : 'django.log'
         }
     },
     'loggers': {
@@ -140,6 +145,11 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+	 '': {
+            'handlers': ['filelog'],
+            'level': 'ERROR',
+            'propagate': True,
+        }
     }
 }
 try:
