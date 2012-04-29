@@ -34,9 +34,8 @@ class Speedlogs(View):
           if videotype:
             return HttpResponse(videotype[0].resolution)
     def post(self,request):
-          q =  request.META['HTTP_Q']
+          q =  request.POST["q"]
           user_agent =  request.META['HTTP_USER_AGENT']
-          print(q)
           j = json.loads(q)
           speed = 0
           for url in j['speed']:
@@ -70,7 +69,7 @@ class Pointlogs(View):
           pointlog.save()
           return HttpResponse("OK")
     def post(self,request):
-          q =  request.META['HTTP_Q']
+          q =  request.POST['q']
           user_agent =  request.META['HTTP_USER_AGENT']
           j = json.loads(q)
           pointlog  =  models.Pointlog()
@@ -86,3 +85,4 @@ class Pointlogs(View):
           if pointlog.ip!=0  and len(pointlog.ip)>0:
                 pointlog.save()
           return HttpResponse("OK")
+
