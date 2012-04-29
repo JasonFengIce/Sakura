@@ -83,5 +83,6 @@ class Pointlogs(View):
           pointlog.description = j['description']
           pointlog.phone = j['phone']
           pointlog.mail= j['mail']
-          pointlog.save()
+          if pointlog.ip!=0  and len(pointlog.ip)>0:
+                pointlog.save()
           return HttpResponse("OK")
