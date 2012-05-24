@@ -17,43 +17,49 @@ class UrlsView(View):
         
 class Speedlogs(View):
     def get(self, request):
-          q =  request.GET.get("q")
-          j = json.loads(q)
-          i = 0
-          speed = 0
-          for url in j['speed']:
-              speedlog  =  models.Speedlog()
-              speedlog.ip = j["ip"]
-              speedlog.isp = j['isp']
-              speedlog.location  = j['location']
-              speedlog.url =  models.Url.objects.get(id = url['pk'])
-              speedlog.speed  = url['speed']
-              if speedlog.url.is_show and speedlog.speed>speed:
-                  speed +=  speedlog.speed
-                  i+=1;
-              speedlog.save()
-          videotype = models.Videotype.objects.filter(bit_rate__lte = (speed*8/i)).order_by('-bit_rate')[:1]
-          if videotype:
+        q =  request.GET.get("q")
+        j = json.loads(q)
+        i = 0
+        speed = 0
+        for url in j['speed']:
+            speedlog  =  models.Speedlog()
+            speedlog.ip = j["ip"]
+            speedlog.isp = j['isp']
+            speedlog.location  = j['location']
+            speedlog.url =  models.Url.objects.get(id = url['pk'])
+            speedlog.speed  = url['speed']
+            speedlog.save()
+            if speedlog.url.is_show and speedlog.speed>0:
+              speed +=  speedlog.speed
+              i+=1;
+        if i>0:
+            videotype = models.Videotype.objects.filter(bit_rate__lte = (speed*8/i)).order_by('-bit_rate')[:1]
+        else:
+            videotype = models.Videotype.objects.filter(bit_rate__lte = 0).order_by('-bit_rate')[:1]
+        if videotype:
             return HttpResponse(videotype[0].resolution)
+        
     def post(self,request):
-          q =  request.POST["q"]
-          user_agent =  request.META['HTTP_USER_AGENT']
-          j = json.loads(q)
-          i = 0
-          speed = 0
-          for url in j['speed']:
-              speedlog  =  models.Speedlog()
-              speedlog.ip = j["ip"]
-              speedlog.isp = j['isp']
-              speedlog.location  = j['location']
-              speedlog.user_agent = user_agent
-              speedlog.url =  models.Url.objects.get(id = url['pk'])
-              speedlog.speed  = url['speed']
-              if speedlog.url.is_show and speedlog.speed>speed:
-                  speed +=  speedlog.speed
-              speedlog.save()
-          videotype = models.Videotype.objects.filter(bit_rate__lte = (speed*8/i)).order_by('-bit_rate')[:1]
-          if videotype:
+        q =  request.GET.get("q")
+        j = json.loads(q)
+        i = 0
+        speed = 0
+        for url in j['speed']:
+            speedlog  =  models.Speedlog()
+            speedlog.ip = j["ip"]
+            speedlog.isp = j['isp']
+            speedlog.location  = j['location']
+            speedlog.url =  models.Url.objects.get(id = url['pk'])
+            speedlog.speed  = url['speed']
+            speedlog.save()
+            if speedlog.url.is_show and speedlog.speed>0:
+                speed +=  speedlog.speed
+                i+=1;
+        if i>0:
+            videotype = models.Videotype.objects.filter(bit_rate__lte = (speed*8/i)).order_by('-bit_rate')[:1]
+        else:
+            videotype = models.Videotype.objects.filter(bit_rate__lte = 0).order_by('-bit_rate')[:1]
+        if videotype:
             return HttpResponse(videotype[0].resolution)
         
 class Pointlogs(View):
