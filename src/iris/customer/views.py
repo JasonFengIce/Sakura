@@ -53,6 +53,7 @@ class Speedlogs(View):
             speedlog.user_agent = user_agent
             speedlog.url =  models.Url.objects.get(id = url['pk'])
             speedlog.speed  = url['speed']
+            speedlog.save()
             if speedlog.url.is_show and speedlog.speed>0:
               speed +=  speedlog.speed
               i+=1;
