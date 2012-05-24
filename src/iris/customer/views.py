@@ -40,7 +40,8 @@ class Speedlogs(View):
             return HttpResponse(videotype[0].resolution)
         
     def post(self,request):
-        q =  request.GET.get("q")
+        q =  request.POST["q"]
+        user_agent =  request.META['HTTP_USER_AGENT']
         j = json.loads(q)
         i = 0
         speed = 0
@@ -49,12 +50,12 @@ class Speedlogs(View):
             speedlog.ip = j["ip"]
             speedlog.isp = j['isp']
             speedlog.location  = j['location']
+            speedlog.user_agent = user_agent
             speedlog.url =  models.Url.objects.get(id = url['pk'])
             speedlog.speed  = url['speed']
-            speedlog.save()
             if speedlog.url.is_show and speedlog.speed>0:
-                speed +=  speedlog.speed
-                i+=1;
+              speed +=  speedlog.speed
+              i+=1;
         if i>0:
             videotype = models.Videotype.objects.filter(bit_rate__lte = (speed*8/i)).order_by('-bit_rate')[:1]
         else:
