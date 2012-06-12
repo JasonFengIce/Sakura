@@ -12,10 +12,10 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'iris',                      # Or path to database file if using sqlite3.
-        'USER': 'shiyuniris',                      # Not used with sqlite3.
-        'PASSWORD': '8GomD7txXunmNlZ9',                  # Not used with sqlite3.
-        'HOST': '10.0.3.4',                      # Set to empty string for localhost. Not used with sqlite3.
+        'NAME': 'service',                      # Or path to database file if using sqlite3.
+        'USER': 'demo',                      # Not used with sqlite3.
+        'PASSWORD': 'demohello',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
@@ -96,6 +96,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -119,6 +120,17 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'iris.customer',
 )
+
+# Name and email addresses of recipients
+ADMINS = (
+    ("CMS R&D", "cms_group@ismartv.cn"),
+)
+# Email address used as sender (From field).
+SERVER_EMAIL = "iris@ismartv.cn"
+# Mailserver configuration
+EMAIL_HOST = "smtp.qiye.163.com"
+EMAIL_HOST_USER = "iris@ismartv.cn"
+EMAIL_HOST_PASSWORD = "iris123456"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

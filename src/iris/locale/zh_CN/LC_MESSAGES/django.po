@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-06-12 12:59+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#: .\customer\models.py:7
+msgid "Title"
+msgstr "测速名称"
+
+#: .\customer\models.py:8 .\customer\models.py:12 .\customer\models.py:13
+#: .\customer\models.py:18
+msgid "Url"
+msgstr "测速地址"
+
+#: .\customer\models.py:9
+msgid "Start Time"
+msgstr "测试时长"
+
+#: .\customer\models.py:10
+msgid "Is Show"
+msgstr "是否可见"
+
+#: .\customer\models.py:17 .\customer\models.py:43
+msgid "Ip"
+msgstr "网络地址"
+
+#: .\customer\models.py:19 .\customer\models.py:44
+msgid "Location"
+msgstr "地理位置"
+
+#: .\customer\models.py:20
+msgid "isp"
+msgstr "网络类型"
+
+#: .\customer\models.py:21 .\customer\models.py:39
+msgid "Speed"
+msgstr "测速结果"
+
+#: .\customer\models.py:22 .\customer\models.py:46
+msgid "User Agent"
+msgstr "客户机编号"
+
+#: .\customer\models.py:23 .\customer\models.py:47
+msgid "Created at"
+msgstr "上报日期"
+
+#: .\customer\models.py:25 .\customer\models.py:26
+msgid "Speedlog"
+msgstr "测速日志"
+
+#: .\customer\models.py:30
+msgid "Name"
+msgstr "反馈问题"
+
+#: .\customer\models.py:32 .\customer\models.py:33 .\customer\models.py:38
+msgid "Point"
+msgstr "反馈类型"
+
+#: .\customer\models.py:40
+msgid "Description"
+msgstr "反馈内容"
+
+#: .\customer\models.py:41
+msgid "Phone"
+msgstr "联系电话"
+
+#: .\customer\models.py:42
+msgid "Mail"
+msgstr "联系邮箱"
+
+#: .\customer\models.py:45
+msgid "Isp"
+msgstr "网络类型"
+
+#: .\customer\models.py:49 .\customer\models.py:50
+msgid "Pointlog"
+msgstr "客户上报"
+
+#: .\customer\models.py:54
+msgid "type name"
+msgstr "类型"
+
+#: .\customer\models.py:55
+msgid "Bit Rate"
+msgstr "网速"
+
+#: .\customer\models.py:56
+msgid "Resolution"
+msgstr "提示内容"
+
+#: .\customer\models.py:58 .\customer\models.py:59
+msgid "Videotype"
+msgstr "提示类型"
