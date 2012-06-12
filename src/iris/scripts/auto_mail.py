@@ -41,10 +41,10 @@ class AutoMail(object):
         msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
         msg.attach_alternative(html_content, "text/html")
         msg.send()
-    def send_EmailMessage(self,logs):
+    def send_EmailMessage(self,logs,start_date):
         if logs.count()>0:
             from django.core.mail import EmailMessage
-            subject, from_email, tos = 'Iris Log Mail  ', 'iris@ismartv.cn', ['cs@ismartv.cn',]
+            subject, from_email, tos = 'Iris Log '+str(start_date), 'iris@ismartv.cn', ['cs@ismartv.cn',]
             html_content = '<table><tr><td bgcolor = red>cause</td><td bgcolor=Fuchsia>ip</td><td bgcolor =Blue>isp</td><td bgcolor = Green>speed</td><td bgcolor = Purple>description</td><td bgcolor = Teal>phone</td><td bgcolor = Maroon>mail</td><td bgcolor = Teal>create_date</td></tr>'
             from iris.customer.models import Point
             html_content +=  '<h1><a href=\"http://iris.tvxio.com/admin/\" target=\"_blank\">  Login  Iris</a><h1>'
@@ -88,7 +88,7 @@ def myAction(args=[]):
         logs = Pointlog.objects.filter(create_date__lte = start_date,create_date__gte = args[0] ).order_by('-create_date')
         if logs.count()>0:
               mail = AutoMail();
-              mail.send_EmailMessage(logs);
+              mail.send_EmailMessage(logs,start_date);
         t = CountDownExec(TIME, myAction, [start_date])
         t.start()
         
