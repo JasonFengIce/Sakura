@@ -16,17 +16,16 @@ def init():
     from iris import settings
     setup_environ(settings)
 
-def sayhello():
-    print "hello world"
+
 
 class AutoMail(object):
     html_content = ''
     text_content = ''
     
-    def html_content(self):
-        print self.html_content
-    def text_content(self):
-        print self.text_content
+#    def html_content(self):
+##        print self.html_content
+#    def text_content(self):
+##        print self.text_content
     def send_mail(self):
         from django.core.mail import send_mail
         send_mail('Subject here', 'Here is the message.', 'git_cord@ismartv.cn',    ['liuze@ismartv.cn',], fail_silently=False)
@@ -41,10 +40,10 @@ class AutoMail(object):
         msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
         msg.attach_alternative(html_content, "text/html")
         msg.send()
-    def send_EmailMessage(self,logs,start_date):
+    def send_EmailMessage(self,logs,start_date,end_date):
         if logs.count()>0:
             from django.core.mail import EmailMessage
-            subject, from_email, tos = 'Iris Log '+str(start_date), 'iris@ismartv.cn', ['cs@ismartv.cn',]
+            subject, from_email, tos = 'Iris Log '+str(start_date)+' - '+str(end_date), 'iris@ismartv.cn', ['cs@ismartv.cn',]
             html_content = '<table><tr><td bgcolor = red>cause</td><td bgcolor=Fuchsia>ip</td><td bgcolor =Blue>isp</td><td bgcolor = Green>speed</td><td bgcolor = Purple>description</td><td bgcolor = Teal>phone</td><td bgcolor = Maroon>mail</td><td bgcolor = Teal>create_date</td></tr>'
             from iris.customer.models import Point
             html_content +=  '<h1><a href=\"http://iris.tvxio.com/admin/\" target=\"_blank\">  Login  Iris</a><h1>'
@@ -52,7 +51,6 @@ class AutoMail(object):
                 point = Point.objects.get(id = log.point)
                 html_content +="<tr><td>"+point.name+"</td><td>"+log.ip+"</td><td>"+log.isp+"</td><td>"+log.speeds+"</td><td>"+log.description+"</td><td>"+log.phone+"</td><td>"+log.mail+"</td><td>"+ str(log.create_date) +"</td></tr>"
             html_content +=  '</table>'
-
             msg = EmailMessage(subject, html_content, from_email, tos)
             msg.content_subtype = "html" # Main content is now text/html
             msg.send()
@@ -82,20 +80,17 @@ class CountDownExec(CountDownTimer):
                 self.action(self.args)
 
 def myAction(args=[]):
-        start_date =  time.strftime("%Y-%m-%d %H:%M:%S",localtime(time.time()))
         from iris.customer.models import Pointlog
 #        logs = Pointlog.objects.filter().order_by('-create_date')[:5]
-        logs = Pointlog.objects.filter(create_date__lte = start_date,create_date__gte = args[0] ).order_by('-create_date')
+        logs = Pointlog.objects.filter(create_date__lte = args[1],create_date__gte = args[0] ).order_by('-create_date')
         if logs.count()>0:
               mail = AutoMail();
-              mail.send_EmailMessage(logs,start_date);
-        t = CountDownExec(TIME, myAction, [start_date])
-        t.start()
+              mail.send_EmailMessage(logs,args[0],args[1]);
         
 if __name__ == '__main__':
         init()
         os.environ['DJANGO_SETTINGS_MODULE'] = 'iris.settings'
-        start_date =  time.strftime("%Y-%m-%d %H:%M:%S",localtime(time.time()))
-        t = CountDownExec(TIME, myAction, [start_date])
-        t.start()
+        start_date =  time.strftime("%Y-%m-%d %H:%M:%S",localtime(time.time()-3600))
+        end_date =   time.strftime("%Y-%m-%d %H:%M:%S",localtime(time.time()))
+        myAction([start_date,end_date])
         pass
