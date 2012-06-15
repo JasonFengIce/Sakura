@@ -1,8 +1,9 @@
 __author__ = 'liuze'
-#print os.path.realpath(sys.argv[0]).rpartition('/')
-from django.core.management import setup_environ
 import sys
 import os
+sys.path.append((os.path.realpath(sys.argv[0]).rpartition('/')[0] or '.') + '/../lib')
+from django.core.management import setup_environ
+
 
 import time
 import datetime
