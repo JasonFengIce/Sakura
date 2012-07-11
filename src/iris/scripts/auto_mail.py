@@ -129,8 +129,8 @@ class CountDownExec(CountDownTimer):
 
 def myAction(args=[]):
         from iris.customer.models import Pointlog
-#        logs = Pointlog.objects.filter(create_date__lte = args[1],create_date__gte = args[0] ).order_by('-create_date')
-        logs = Pointlog.objects.filter(create_date__lte = args[1])
+        logs = Pointlog.objects.filter(create_date__lte = args[1],create_date__gte = args[0] ).order_by('-create_date')
+#        logs = Pointlog.objects.filter(create_date__lte = args[1])
         if logs.count()>0:
               mail = AutoMail();
               mail.send_EmailMessage(logs,args[0],args[1]);
