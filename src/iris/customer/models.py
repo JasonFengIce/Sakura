@@ -11,7 +11,10 @@ class Url(models.Model):
     class Meta:
         verbose_name = _("Url")
         verbose_name_plural = _("Url")
+        ordering = ('id',)
 
+    def __unicode__(self):
+        return self.title;
 
 class Speedlog(models.Model):
     ip = models.CharField(_("Ip"), max_length=20)
@@ -26,13 +29,17 @@ class Speedlog(models.Model):
         verbose_name_plural = _("Speedlog")
         ordering = ('-create_date',)
 
+    def __unicode__(self):
+        return self.url.title;
+
 class Point(models.Model):
     name = models.CharField(_("Name"), max_length=20, db_index=True)
     class Meta:
         verbose_name = _("Point")
         verbose_name_plural = _("Point")
         ordering = ('id',)
-
+    def __unicode__(self):
+        return self.name
 
 class Pointlog(models.Model):
     point =  models.CharField(_("Point"), max_length=200)

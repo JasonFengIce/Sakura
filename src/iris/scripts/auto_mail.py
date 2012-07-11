@@ -43,16 +43,63 @@ class AutoMail(object):
         msg.send()
     def send_EmailMessage(self,logs,start_date,end_date):
         if logs.count()>0:
+            import json
             from django.core.mail import EmailMessage
             subject, from_email, tos = 'Iris Log '+str(start_date)+' - '+str(end_date), 'iris@ismartv.cn', ['cs@ismartv.cn',]
-            html_content = '<table><tr><td bgcolor = red>cause</td><td bgcolor=Fuchsia>ip</td><td bgcolor =Blue>isp</td><td bgcolor = Green>speed</td><td bgcolor = Purple>description</td><td bgcolor = Teal>phone</td><td bgcolor = Maroon>mail</td><td bgcolor = Teal>create_date</td></tr>'
+            html_content = '<table width="100%"><tr><td bgcolor = red>cause</td><td bgcolor=Fuchsia>ip</td><td bgcolor =Blue>isp</td><td bgcolor = Green>speed</td><td bgcolor = Purple>description</td><td bgcolor = Teal>phone</td><td bgcolor = Maroon>mail</td><td bgcolor = Teal>create_date</td></tr>'
+            html_content += '<h1><a href=\"http://iris.tvxio.com/admin/\" target=\"_blank\">  Login  Iris</a><h1>'
             from iris.customer.models import Point
-            html_content +=  '<h1><a href=\"http://iris.tvxio.com/admin/\" target=\"_blank\">  Login  Iris</a><h1>'
+            n = 0
+            phone = 0
+            mail = 0
+            phone_and_mail = 0
+            count = len(logs)
+            no_contact = 0
             for log in logs:
+                n+=1
                 point = Point.objects.get(id = log.point)
-                html_content +="<tr><td>"+point.name+"</td><td>"+log.ip+"</td><td>"+log.isp+"</td><td>"+log.speeds+"</td><td>"+log.description+"</td><td>"+log.phone+"</td><td>"+log.mail+"</td><td>"+ str(log.create_date) +"</td></tr>"
+                speeds = eval( log.speeds.replace('u',''))
+                print speeds
+                i=0
+                str_speeds = ''
+                for speed in  speeds:
+                    i+=1
+                    str_speeds += " NO."+str(i)+" : "+str(int(speed['speed']))+"KB/s <br>"
+                if n%2 == 0:
+                    html_content +="<tr bgcolor=Silver ><td > "+point.name\
+                                   +"</td ><td >"+log.ip\
+                                   +"</td><td >"+log.isp\
+                                   +"</td><td >"+str_speeds\
+                                   +"</td><td >"+log.description\
+                                   +"</td><td >"+log.phone\
+                                   +"</td><td >"+log.mail\
+                                   +"</td><td >"+ str(log.create_date) \
+                                   +"</td></tr>"
+                else:
+                     html_content +="<tr bgcolor=White ><td >"+point.name\
+                                   +"</td ><td >"+log.ip\
+                                   +"</td><td >"+log.isp\
+                                   +"</td><td >"+str_speeds\
+                                   +"</td><td >"+log.description\
+                                   +"</td><td >"+log.phone\
+                                   +"</td><td >"+log.mail\
+                                   +"</td><td >"+ str(log.create_date) \
+                                   +"</td></tr>"
+                if log.phone and log.mail:
+                    phone_and_mail +=1
+                elif log.phone:
+                    phone+=1
+                elif log.mail:
+                    mail+=1
             html_content +=  '</table>'
-            msg = EmailMessage(subject, html_content, from_email, tos)
+            no_contact = count - phone_and_mail - phone - mail
+            html='<table width="10%"><tr bgcolor = Red><td>PHONE_AND_MAIL</td><td >'+str(phone_and_mail)+'</td></tr>'
+            html+='<tr bgcolor = Yellow><td>PHONE</td><td  >'+str(phone)+'</td></tr>'
+            html+='<tr bgcolor = Green ><td>MAIL</td><td >'+str(mail)+'</td></tr>'
+            html+='<tr bgcolor= Fuchsia ><td>NO_CONTACT</td><td >'+str(no_contact)+'</td></tr>'
+            html+='<tr bgcolor = Teal  ><td>TOTAL</td><td >'+str(count)+'</td></tr></table><br>'
+            html+=html_content
+            msg = EmailMessage(subject, html, from_email, tos)
             msg.content_subtype = "html" # Main content is now text/html
             msg.send()
         
@@ -82,8 +129,8 @@ class CountDownExec(CountDownTimer):
 
 def myAction(args=[]):
         from iris.customer.models import Pointlog
-#        logs = Pointlog.objects.filter().order_by('-create_date')[:5]
-        logs = Pointlog.objects.filter(create_date__lte = args[1],create_date__gte = args[0] ).order_by('-create_date')
+#        logs = Pointlog.objects.filter(create_date__lte = args[1],create_date__gte = args[0] ).order_by('-create_date')
+        logs = Pointlog.objects.filter(create_date__lte = args[1])
         if logs.count()>0:
               mail = AutoMail();
               mail.send_EmailMessage(logs,args[0],args[1]);

@@ -2,13 +2,21 @@ from django.contrib import admin
 
 from . import models
 
+
 class UrlAdmin(admin.ModelAdmin):
-    list_display = ('title', 'url', 'length', 'is_show',)
+    list_display = ('id','title', 'url', 'length', 'is_show',)
+    fields  = ['title', 'url', 'length', 'is_show',]
 
 class SpeedlogAdmin(admin.ModelAdmin):
-    list_display = ('ip','user_agent','isp', 'speed','create_date',)
+    list_display = ('ip','__unicode__','user_agent','isp', 'speed','create_date',)
     search_fields = ('user_agent','ip',)
-    
+    raw_id_fields = ('url',)
+    related_lookup_fields = {
+        '__unicode__': ('url',),
+    }
+
+
+
 class PointAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
