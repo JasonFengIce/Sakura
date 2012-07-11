@@ -49,6 +49,7 @@ class AutoMail(object):
             html_content = '<table width="100%"><tr><td bgcolor = red>cause</td><td bgcolor=Fuchsia>ip</td><td bgcolor =Blue>isp</td><td bgcolor = Green>speed</td><td bgcolor = Purple>description</td><td bgcolor = Teal>phone</td><td bgcolor = Maroon>mail</td><td bgcolor = Teal>create_date</td></tr>'
             html_content += '<h1><a href=\"http://iris.tvxio.com/admin/\" target=\"_blank\">  Login  Iris</a><h1>'
             from iris.customer.models import Point
+            from iris.customer.models import Url
             n = 0
             phone = 0
             mail = 0
@@ -59,12 +60,21 @@ class AutoMail(object):
                 n+=1
                 point = Point.objects.get(id = log.point)
                 speeds = eval( log.speeds.replace('u',''))
-                print speeds
                 i=0
                 str_speeds = ''
+                speed_t = 0
                 for speed in  speeds:
                     i+=1
-                    str_speeds += " NO."+str(i)+" : "+str(int(speed['speed']))+"KB/s <br>"
+                    pk = int(speed['pk'])
+                    title = ''
+                    try:
+                        title = Url.objects.get(id=pk).title
+                    except :
+                        title = 'none'
+#                    print pk
+                    speed_t += int(speed['speed'])
+                    str_speeds += " NO."+ title +" : "+str(int(speed['speed']))+" KB/s <br>"
+                str_speeds += " Average : "+str(speed_t/i)+" KB/s <br>"
                 if n%2 == 0:
                     html_content +="<tr bgcolor=Silver ><td > "+point.name\
                                    +"</td ><td >"+log.ip\
@@ -115,7 +125,7 @@ class CountDownTimer(Timer):
         def run(self):
                 counter = self.runTime
                 for sec in range(self.runTime):
-                        print counter
+#                        print counter
                         time.sleep(1.0)
                         counter -= 1
 class CountDownExec(CountDownTimer):
