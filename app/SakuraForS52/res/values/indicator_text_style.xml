@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="IndicatorStyle" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_margin">1dip</item>
+		<item name="android:paddingTop">5dip</item>
+		<item name="android:paddingLeft">8dip</item>
+		<item name="android:paddingBottom">5dip</item>
+		<item name="android:paddingRight">8dip</item>
+		<item name="android:background">@drawable/indicator_text_bg</item>
+		<item name="android:textSize">50sp</item>
+    </style>
+</resources>
