@@ -8,7 +8,10 @@ from . import models
 class PointsView(View):
    def get(self, request):
         points =  get_list_or_404(models.Point)
-        type_temp = request.META['HTTP_ACCEPT_LANGUAGE']
+        try:
+            type_temp = request.META['HTTP_ACCEPT_LANGUAGE']
+        except :
+             return [{'point_id':point.id,'point_name':point.name} for point in points]
         if type_temp  :
             if  'zh_CN'==type_temp:
                 return [{'point_id':point.id,'point_name':point.name} for point in points]
@@ -31,7 +34,6 @@ class Speedlogs(View):
     def post(self,request):
         q =  request.POST["q"]
         user_agent =  request.META['HTTP_USER_AGENT']
-        type_temp = request.META['HTTP_ACCEPT_LANGUAGE']
         j = json.loads(q)
         i = 0
         speed = 0
@@ -51,16 +53,20 @@ class Speedlogs(View):
             videotype = models.Videotype.objects.filter(bit_rate__lte = (speed*8/i)).order_by('-bit_rate')[:1]
         else:
             videotype = models.Videotype.objects.filter(bit_rate__lte = 0).order_by('-bit_rate')[:1]
-        if videotype:
-            if  'zh_CN'==type_temp:
-                return HttpResponse(videotype[0].resolution)
-            if  'en_US'==type_temp:
-                return HttpResponse(videotype[0].en_resolution)
-            if  'zh_TW'==type_temp:
-                 return HttpResponse(videotype[0].hant_resolution)
-        return HttpResponse(videotype[0].resolution)
+        try:
+            type_temp = request.META['HTTP_ACCEPT_LANGUAGE']
+            if videotype:
+                if  'zh_CN'== type_temp:
+                    return HttpResponse(videotype[0].resolution)
+                if  'en_US'== type_temp:
+                    return HttpResponse(videotype[0].en_resolution)
+                if  'zh_TW'== type_temp:
+                     return HttpResponse(videotype[0].hant_resolution)
+            return HttpResponse(videotype[0].resolution)
+        except :
+            return HttpResponse(videotype[0].resolution)
 
-    
+
 class Pointlogs(View):
 
     def post(self,request):
