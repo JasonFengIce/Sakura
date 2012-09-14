@@ -1,15 +1,25 @@
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_list_or_404
 from djangorestframework.views import *
 from django.utils import simplejson as json
 from django.http import HttpResponse
-from django.utils.translation import ugettext as _
 from . import models
 
 
 class PointsView(View):
-    def get(self, request):
-        points = get_list_or_404(models.Point)
-        return [{'point_id':point.id,'point_name':point.name} for point in points]
+   def get(self, request):
+        points =  get_list_or_404(models.Point)
+        type_temp = request.META['HTTP_ACCEPT_LANGUAGE']
+        if type_temp  :
+            if  'zh-CN'==type_temp:
+                return [{'point_id':point.id,'point_name':point.name} for point in points]
+            if  'en_US'==type_temp:
+                return [{'point_id':point.id,'point_name':point.en_name} for point in points]
+            if  'zh-Hant'==type_temp:
+                return [{'point_id':point.id,'point_name':point.hant_name} for point in points]
+        else:
+            return [{'point_id':point.id,'point_name':point.name} for point in points]
+
+
 
 class UrlsView(View):
      def get(self, request):
@@ -17,32 +27,10 @@ class UrlsView(View):
         return [{'pk': url.id,'title': url.title, 'url':url.url, 'length':url.length , 'display':url.is_show} for url in urls]
         
 class Speedlogs(View):
-#    def get(self, request):
-#        q =  request.GET.get("q")
-#        j = json.loads(q)
-#        i = 0
-#        speed = 0
-#        for url in j['speed']:
-#            speedlog  =  models.Speedlog()
-#            speedlog.ip = j["ip"]
-#            speedlog.isp = j['isp']
-#            speedlog.location  = j['location']
-#            speedlog.url =  models.Url.objects.get(id = url['pk'])
-#            speedlog.speed  = url['speed']
-#            speedlog.save()
-#            if speedlog.url.is_show and speedlog.speed>0:
-#              speed +=  speedlog.speed
-#              i+=1;
-#        if i>0:
-#            videotype = models.Videotype.objects.filter(bit_rate__lte = (speed*8/i)).order_by('-bit_rate')[:1]
-#        else:
-#            videotype = models.Videotype.objects.filter(bit_rate__lte = 0).order_by('-bit_rate')[:1]
-#        if videotype:
-#            return HttpResponse(videotype[0].resolution)
-#        
     def post(self,request):
         q =  request.POST["q"]
         user_agent =  request.META['HTTP_USER_AGENT']
+        type_temp = request.META['HTTP_ACCEPT_LANGUAGE']
         j = json.loads(q)
         i = 0
         speed = 0
@@ -63,23 +51,15 @@ class Speedlogs(View):
         else:
             videotype = models.Videotype.objects.filter(bit_rate__lte = 0).order_by('-bit_rate')[:1]
         if videotype:
-            return HttpResponse(videotype[0].resolution)
+            if  'zh-CN'==type_temp:
+                return HttpResponse(videotype[0].resolution)
+            if  'en_US'==type_temp:
+                return HttpResponse(videotype[0].en_resolution)
+            if  'zh-Hant'==type_temp:
+                 return HttpResponse(videotype[0].hant_resolution)
         
 class Pointlogs(View):
-#    def get (self, request):
-#          q =  request.GET.get("q")
-#          j = json.loads(q)
-#          pointlog  =  models.Pointlog()
-#          pointlog.ip = j["ip"]
-#          pointlog.isp = j['isp']
-#          pointlog.location  = j['location']
-#          pointlog.speeds  = j['speed']
-#          pointlog.point = j['option']
-#          pointlog.description = j['description']
-#          pointlog.phone = j['phone']
-#          pointlog.mail= j['mail']
-#          pointlog.save()
-#          return HttpResponse("OK")
+
     def post(self,request):
           q =  request.POST['q']
           user_agent =  request.META['HTTP_USER_AGENT']

@@ -33,7 +33,9 @@ class Speedlog(models.Model):
         return self.url.title;
 
 class Point(models.Model):
-    name = models.CharField(_("Name"), max_length=20, db_index=True)
+    name = models.CharField(_("Name"), max_length=20)
+    hant_name =  models.CharField(_("Name")+"(hant)", max_length=20)
+    en_name =  models.CharField(_("Name")+"(en)", max_length=20)
     class Meta:
         verbose_name = _("Point")
         verbose_name_plural = _("Point")
@@ -61,6 +63,8 @@ class Videotype(models.Model):
     type_name = models.CharField(_("type name"),max_length=20 )
     bit_rate =  models.FloatField(_("Bit Rate"),max_length=16 )
     resolution = models.CharField(_("Resolution"),max_length=30 )
+    hant_resolution =  models.CharField(_("Resolution") +"(HANT)", max_length=30)
+    en_resolution =  models.CharField(_("Resolution")+"(EN)", max_length=100)
     class Meta:
         verbose_name = _("Videotype")
         verbose_name_plural = _("Videotype")

@@ -18,14 +18,14 @@ class SpeedlogAdmin(admin.ModelAdmin):
 
 
 class PointAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name','hant_name','en_name',)
 
 class PointlogAdmin(admin.ModelAdmin):
     list_display = ('point','user_agent','speeds' , 'description', 'phone', 'mail', 'ip', 'isp','create_date',)
     search_fields = ('user_agent','phone','mail','ip','description',)
 
 class VideotypeAdmin(admin.ModelAdmin):
-    list_display = ('type_name', 'bit_rate' , 'resolution',)
+    list_display = ('type_name','bit_rate' , 'resolution', 'hant_resolution', 'en_resolution' ,)
 
 admin.site.register(models.Videotype,VideotypeAdmin)
 admin.site.register(models.Url,UrlAdmin)
