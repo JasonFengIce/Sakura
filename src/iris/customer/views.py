@@ -57,8 +57,8 @@ class Speedlogs(View):
                 return HttpResponse(videotype[0].en_resolution)
             if  'zh-TW'==type_temp:
                  return HttpResponse(videotype[0].hant_resolution)
-
         return HttpResponse(videotype[0].resolution)
+
     
 class Pointlogs(View):
 
