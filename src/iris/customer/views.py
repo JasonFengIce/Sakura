@@ -12,9 +12,9 @@ class PointsView(View):
         if type_temp  :
             if  'zh-CN'==type_temp:
                 return [{'point_id':point.id,'point_name':point.name} for point in points]
-            if  'en_US'==type_temp:
+            if  'en-US'==type_temp:
                 return [{'point_id':point.id,'point_name':point.en_name} for point in points]
-            if  'zh-Hant'==type_temp:
+            if  'zh-TW'==type_temp:
                 return [{'point_id':point.id,'point_name':point.hant_name} for point in points]
         else:
             return [{'point_id':point.id,'point_name':point.name} for point in points]
@@ -53,9 +53,9 @@ class Speedlogs(View):
         if videotype:
             if  'zh-CN'==type_temp:
                 return HttpResponse(videotype[0].resolution)
-            if  'en_US'==type_temp:
+            if  'en-US'==type_temp:
                 return HttpResponse(videotype[0].en_resolution)
-            if  'zh-Hant'==type_temp:
+            if  'zh-TW'==type_temp:
                  return HttpResponse(videotype[0].hant_resolution)
         
 class Pointlogs(View):
