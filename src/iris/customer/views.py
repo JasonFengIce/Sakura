@@ -10,12 +10,13 @@ class PointsView(View):
         points =  get_list_or_404(models.Point)
         type_temp = request.META['HTTP_ACCEPT_LANGUAGE']
         if type_temp  :
-            if  'zh-CN'==type_temp:
+            if  'zh_CN'==type_temp:
                 return [{'point_id':point.id,'point_name':point.name} for point in points]
-            if  'en-US'==type_temp:
+            if  'en_US'==type_temp:
                 return [{'point_id':point.id,'point_name':point.en_name} for point in points]
-            if  'zh-TW'==type_temp:
+            if  'zh_TW'==type_temp:
                 return [{'point_id':point.id,'point_name':point.hant_name} for point in points]
+            return [{'point_id':point.id,'point_name':point.name} for point in points]
         else:
             return [{'point_id':point.id,'point_name':point.name} for point in points]
 
@@ -51,11 +52,11 @@ class Speedlogs(View):
         else:
             videotype = models.Videotype.objects.filter(bit_rate__lte = 0).order_by('-bit_rate')[:1]
         if videotype:
-            if  'zh-CN'==type_temp:
+            if  'zh_CN'==type_temp:
                 return HttpResponse(videotype[0].resolution)
-            if  'en-US'==type_temp:
+            if  'en_US'==type_temp:
                 return HttpResponse(videotype[0].en_resolution)
-            if  'zh-TW'==type_temp:
+            if  'zh_TW'==type_temp:
                  return HttpResponse(videotype[0].hant_resolution)
         return HttpResponse(videotype[0].resolution)
 
