@@ -19,7 +19,7 @@ class Url(models.Model):
 class Speedlog(models.Model):
     ip = models.CharField(_("Ip"), max_length=20)
     url  = models.ForeignKey(Url, verbose_name=_('Url'))
-    location = models.CharField(_("Location"), max_length=50)
+    location = models.CharField(_("Location"), max_length=200,null=True)
     isp = models.CharField(_("isp"), max_length=30)
     speed = models.FloatField(_("Speed"),max_length=20)
     user_agent =  models.CharField(_("User Agent"), max_length=100,null=True)
@@ -50,7 +50,7 @@ class Pointlog(models.Model):
     phone =  models.CharField(_("Phone"), max_length=20,null=True)
     mail =  models.CharField(_("Mail"), max_length=20,null=True)
     ip = models.CharField(_("Ip"), max_length=20,null=True)
-    location = models.CharField(_("Location"), max_length=50,null=True)
+    location = models.CharField(_("Location"), max_length=200,null=True)
     isp = models.CharField(_("Isp"), max_length=50,null=True)
     user_agent =  models.CharField(_("User Agent"), max_length=100,null=True)
     create_date = models.DateTimeField(_("Created at"), auto_now_add=True)

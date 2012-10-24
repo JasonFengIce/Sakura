@@ -83,6 +83,7 @@ class Pointlogs(View):
           pointlog.description = j['description']
           pointlog.phone = j['phone']
           pointlog.mail= j['mail']
+
           if pointlog.ip!=0  and len(pointlog.ip)>0:
                 logs =   models.Pointlog.objects.filter(ip = pointlog.ip,description = pointlog.description,user_agent = pointlog.user_agent,point = pointlog.point)
                 if  logs.count() == 0:
