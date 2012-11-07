@@ -1139,17 +1139,17 @@ public class MainActivity extends Activity {
 	public OnCheckedChangeListener mOnCheckedChangeListener = new OnCheckedChangeListener() {
 		
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
-			if (checkedId == R.id.problem_unclear) {
-				mFeedBackEntity.option = 1;
-			} else if (checkedId == R.id.problem_block) {
-				mFeedBackEntity.option = 2;
-			} else if (checkedId == R.id.unable_play) {
-				mFeedBackEntity.option = 3;
-			} else if (checkedId == R.id.problem_other) {
-				mFeedBackEntity.option = 4;
-			} else {
+//			if (checkedId == R.id.problem_unclear) {
+//				mFeedBackEntity.option = 1;
+//			} else if (checkedId == R.id.problem_block) {
+//				mFeedBackEntity.option = 2;
+//			} else if (checkedId == R.id.unable_play) {
+//				mFeedBackEntity.option = 3;
+//			} else if (checkedId == R.id.problem_other) {
+//				mFeedBackEntity.option = 4;
+//			} else {
 				mFeedBackEntity.option = checkedId;
-			}
+//			}
 		}
 	};
 
@@ -1218,7 +1218,7 @@ public class MainActivity extends Activity {
 				
 				public void onClick(DialogInterface dialog, int which) {
 					Intent intent = new Intent();
-					intent.setAction("android.net.wifi.PICK_WIFI_NETWORK");
+					intent.setAction("lenovo.intent.action.NETWORK");
 					sendBroadcast(intent);
 					MainActivity.this.finish();
 					dismissDialog(DIALOG_NETWORK_EXCEPTION);
@@ -1243,7 +1243,7 @@ public class MainActivity extends Activity {
 				
 				public void onClick(DialogInterface dialog, int which) {
 					Intent intent = new Intent();
-					intent.setAction("android.net.wifi.PICK_WIFI_NETWORK");
+					intent.setAction("lenovo.intent.action.NETWORK");
 					sendBroadcast(intent);
 					MainActivity.this.finish();
 					dismissDialog(DIALOG_NETWORK_UNESTABLISHED);

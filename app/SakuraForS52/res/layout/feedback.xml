@@ -38,7 +38,7 @@
 	        android:textColor="#FFFFFFFF"/>
         <RadioGroup
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="35dip"
             android:id="@+id/problem_options"
             android:orientation="horizontal"
             android:layout_alignParentLeft="true"
@@ -47,6 +47,7 @@
             android:layout_margin="20dip"
             android:checkedButton="@id/problem_other"
             >
+	        <!-- 
 		    <RadioButton
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
@@ -75,6 +76,7 @@
 		        android:textSize="35sp"
 		        android:text="@string/radiobutton_others"
 		        android:layout_marginRight="15dip"/>
+		         -->
         </RadioGroup>
         <TextView
             android:layout_width="wrap_content"

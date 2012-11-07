@@ -55,7 +55,7 @@
     <string name="seems_failed">你的网络似乎有点问题</string>
     <string name="between">介于#speed1#与#speed2#之间</string>
     <string name="is">属于</string>
-    <string name="back">返&#160;&#160;回</string>
+    <string name="back">返回</string>
     <string name="oobe_subtitle">网络测速功能可以为您评估下载速度和带宽</string>
     <string name="adsl_1m">1M宽带</string>
     <string name="adsl_2m">2M宽带</string>

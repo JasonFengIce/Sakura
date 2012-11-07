@@ -55,7 +55,7 @@
     <string name="seems_failed">你的網路似乎有點問題</string>
     <string name="between">介於#speed1#與#speed2#之間</string>
     <string name="is">屬於</string>
-    <string name="back">返&#160;&#160;回</string>
+    <string name="back">返回</string>
     <string name="oobe_subtitle">網路測速功能可以為您評估下載速度和频宽</string>
     <string name="adsl_1m">1M寬頻</string>
     <string name="adsl_2m">2M寬頻</string>

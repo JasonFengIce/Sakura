@@ -25,7 +25,7 @@
     <string name="exception_time_out">Connection time out</string>
     <string name="exception_unknown">Unknown Exception</string>
     <string name="test_stopped">Test Stopped!</string>
-    <string name="label_details">Details Description:</string>
+    <string name="label_details">Details\nDescription:</string>
     <string name="label_email">Email:</string>
     <string name="label_phonenum">Mobile:</string>
     <string name="label_ip">IP:</string>
