@@ -742,7 +742,6 @@ public class OobeActivity extends Activity implements OnKeyListener {
 
 	@Override
 	protected void onPause() {
-		hideCursor(false);
 		mTestState = TEST_STATE_IDLE;
 		mDownloadHandler.removeCallbacks(downloadFileTask);
 		mTimingHandler.removeCallbacks(updateStatusTask);
@@ -753,7 +752,6 @@ public class OobeActivity extends Activity implements OnKeyListener {
 
 	@Override
 	protected void onResume() {
-		hideCursor(true);
 		Log.d("UI","Resumed");
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo[] networkInfos = connectivityManager.getAllNetworkInfo();
@@ -781,18 +779,6 @@ public class OobeActivity extends Activity implements OnKeyListener {
         intent.setAction("com.lenovo.intent.action.OOBE_INTENT");
         sendBroadcast(intent);
 		super.onResume();
-	}
-	
-	public void hideCursor(boolean hide){
-		if(mRemoteController==null){
-			mRemoteController = (RemoteController)getSystemService(Context.REMOTECONTROLLER_SERVICE);
-		}
-		if(hide){
-			mRemoteController.setRcGestureOnly();
-			mRemoteController.displayCursor(false);
-		} else {
-			mRemoteController.setDefaultMode();
-		}
 	}
 	
 	class GetFeedBackInfo extends AsyncTask<Void, Void, Void> {

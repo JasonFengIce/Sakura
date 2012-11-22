@@ -60,6 +60,7 @@ import cn.ismartv.speedtester.domain.LocationInfo;
 import cn.ismartv.speedtester.domain.NetworkSpeedInfo;
 import cn.ismartv.speedtester.domain.SpeedInfoUploadEntity;
 
+import com.alpha.getsn.GetSN;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -95,8 +96,6 @@ public class MainActivity extends Activity {
 	private Thread mDownloaderThread = null;
     private GetTestUrlRunnable mGetTestUrlRunnable = null;
 
-	private RemoteController mRemoteController;
-	
 	private LayoutInflater mInflater;
 	
 //	private TextView mCurrentStepNumber;
@@ -449,7 +448,7 @@ public class MainActivity extends Activity {
 			}
 		});
         mSnShowTextView = (TextView)findViewById(R.id.sn_show);
-        mSnShowTextView.setText("SN: "+android.os.Build.SERIAL);
+        mSnShowTextView.setText("SN: "+GetSN.alphaGetSN());
         
         mContactInfoArea = (LinearLayout)findViewById(R.id.contact_info_area);
         mCSPhoneValue = (TextView)findViewById(R.id.cs_phone_value);
@@ -927,7 +926,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause() {
 		saveInfo();
-		hideCursor(false);
 		mTestState = TEST_STATE_IDLE;
 		mDownloadHandler.removeCallbacks(downloadFileTask);
 		mTimingHandler.removeCallbacks(updateStatusTask);
@@ -938,7 +936,6 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		hideCursor(true);
 		Log.d("UI","Resumed");
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo[] networkInfos = connectivityManager.getAllNetworkInfo();
@@ -971,18 +968,6 @@ public class MainActivity extends Activity {
         }
         
 		super.onResume();
-	}
-	
-	public void hideCursor(boolean hide){
-		if(mRemoteController==null){
-			mRemoteController = (RemoteController)getSystemService(Context.REMOTECONTROLLER_SERVICE);
-		}
-		if(hide){
-			mRemoteController.setRcGestureOnly();
-			mRemoteController.displayCursor(false);
-		} else {
-			mRemoteController.setDefaultMode();
-		}
 	}
 	
 	class GetFeedBackInfo extends AsyncTask<Integer, Void, Integer> {
@@ -1226,9 +1211,17 @@ public class MainActivity extends Activity {
 			customBuilder.setPositiveButton(network_conf, new DialogInterface.OnClickListener() {
 				
 				public void onClick(DialogInterface dialog, int which) {
-					Intent intent = new Intent();
-					intent.setAction("lenovo.intent.action.NETWORK");
-					sendBroadcast(intent);
+					Intent intent = new Intent(Intent.ACTION_MAIN);
+					intent.addCategory(Intent.CATEGORY_LAUNCHER); 
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+					intent.setPackage("com.alpha.setting"); 
+					intent.setClassName("com.alpha.setting", "com.alpha.setting.AlphaSettingsActivity"); 
+					Bundle bundle = new Bundle(); 
+					bundle.putInt("PreID", 0); 
+					bundle.putInt("CurrentID", 1);                 
+					intent.putExtras(bundle); 
+//					sendBroadcast(intent);
+					startActivity(intent);
 					MainActivity.this.finish();
 					dismissDialog(DIALOG_NETWORK_EXCEPTION);
 				}
@@ -1251,9 +1244,17 @@ public class MainActivity extends Activity {
 			}).setPositiveButton(network_conf, new DialogInterface.OnClickListener() {
 				
 				public void onClick(DialogInterface dialog, int which) {
-					Intent intent = new Intent();
-					intent.setAction("lenovo.intent.action.NETWORK");
-					sendBroadcast(intent);
+					Intent intent = new Intent(Intent.ACTION_MAIN);
+					intent.addCategory(Intent.CATEGORY_LAUNCHER); 
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+					intent.setPackage("com.alpha.setting"); 
+					intent.setClassName("com.alpha.setting", "com.alpha.setting.AlphaSettingsActivity"); 
+					Bundle bundle = new Bundle(); 
+					bundle.putInt("PreID", 0); 
+					bundle.putInt("CurrentID", 1);                 
+					intent.putExtras(bundle); 
+//					sendBroadcast(intent);
+					startActivity(intent);
 					MainActivity.this.finish();
 					dismissDialog(DIALOG_NETWORK_UNESTABLISHED);
 				}
@@ -1272,7 +1273,7 @@ public class MainActivity extends Activity {
 		}
 		return dialog;
 	}
-    
+	
 	private void showToast(int textResID) {
 		View layout = mInflater.inflate(R.layout.submit_toast, (ViewGroup)findViewById(R.id.toast_layout_root));
 		TextView tips = (TextView) layout.findViewById(R.id.submit_success_toast_text);

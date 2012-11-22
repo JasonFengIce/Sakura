@@ -48,8 +48,8 @@
 		        <LinearLayout 
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:layout_marginLeft="261dip"
-		            android:layout_marginTop="575dip"
+		            android:layout_marginLeft="259dip"
+		            android:layout_marginTop="570dip"
 		            android:layout_alignTop="@id/status_icon"
 		            android:layout_alignLeft="@id/status_icon"
 		            android:id="@+id/speed_indicator">
@@ -113,7 +113,7 @@
 			        android:layout_centerHorizontal="true"
 			        android:layout_alignTop="@id/current_progress"
 			        android:id="@+id/current_state_text"
-			        android:layout_marginTop="14dip"
+			        android:layout_marginTop="8dip"
 			        android:textColor="#FFFFFFFF"
 			        android:textSize="38sp"/>
 
@@ -223,7 +223,8 @@
 	    android:layout_centerHorizontal="true"
 	    android:layout_alignParentBottom="true"
 	    android:orientation="horizontal"
-	    android:gravity="center">
+	    android:gravity="center"
+	    android:visibility="gone">
 	    <TextView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"

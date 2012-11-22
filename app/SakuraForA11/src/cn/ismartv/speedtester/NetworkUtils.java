@@ -18,6 +18,9 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
+import com.alpha.getsn.GetSN;
+
+import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
 import cn.ismartv.speedtester.domain.NetworkSpeedInfo;
@@ -91,6 +94,7 @@ public class NetworkUtils {
 		OutputStream outputStream = null;
 		BufferedWriter writer =null;
 		try {
+			String userAgent = "A11/17 " + GetSN.alphaGetSN();
 //			url = new URL(uploadURL+"?q="+URLEncoder.encode(str, "UTF-8"));
 			url = new URL(uploadURL);
 			conn = (HttpURLConnection) url.openConnection();
@@ -102,7 +106,7 @@ public class NetworkUtils {
 			conn.setRequestProperty("content-type", "text/json");
 			conn.setConnectTimeout(15000);
 			conn.setReadTimeout(15000);
-			conn.setRequestProperty("User-Agent", android.os.Build.MODEL.replaceAll(" ", "_")+"/"+android.os.Build.ID+" "+android.os.Build.SERIAL);
+			conn.setRequestProperty("User-Agent", userAgent);
 			Log.d("requestHeader q", str);
 			outputStream = conn.getOutputStream();
 			writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
