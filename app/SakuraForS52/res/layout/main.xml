@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:background="@drawable/background">
 	<LinearLayout
 	    android:layout_width="955dip"
 	    android:layout_height="match_parent"
 	    android:layout_marginTop="120dip"
 	    android:orientation="vertical"
+	    android:layout_alignParentLeft="true"
+	    android:layout_alignParentTop="true"
 	    android:gravity="center|top"
 	    android:id="@+id/left_side">
 	    <RelativeLayout
@@ -215,4 +216,61 @@
 	    
 	</LinearLayout>
 	<include layout="@layout/feedback"/>
-</LinearLayout>
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="75dip"
+	    android:id="@+id/contact_info_area"
+	    android:layout_centerHorizontal="true"
+	    android:layout_alignParentBottom="true"
+	    android:orientation="horizontal"
+	    android:gravity="center">
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="35sp"
+	        android:text="@string/cs_phone"
+	        android:layout_marginLeft="30dip"
+	        android:layout_marginRight="10dip"/>
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="35sp"
+	        android:textColor="#FFFFFFFF"
+	        android:text="@string/cs_phone_string"
+	        android:id="@+id/cs_phone_value"
+	        android:layout_marginLeft="5dip"
+	        android:layout_marginRight="10dip"/>
+	   	<TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="35sp"
+	        android:text="@string/cs_email"
+	        android:layout_marginLeft="30dip"
+	        android:layout_marginRight="10dip"/>
+	   	<TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="35sp"
+	        android:textColor="#FFFFFFFF"
+	        android:text="@string/cs_email_string"
+	        android:id="@+id/cs_email_value"
+	        android:layout_marginLeft="5dip"
+	        android:layout_marginRight="10dip"/>
+	   	<TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="35sp"
+	        android:text="@string/cs_weibo"
+	        android:layout_marginLeft="30dip"
+	        android:layout_marginRight="10dip"/>
+	   	<TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="35sp"
+	        android:textColor="#FFFFFFFF"
+	        android:text="@string/cs_weibo_string"
+	        android:id="@+id/cs_weibo_value"
+	        android:layout_marginLeft="5dip"
+	        android:layout_marginRight="10dip"/>
+	</LinearLayout>
+</RelativeLayout>

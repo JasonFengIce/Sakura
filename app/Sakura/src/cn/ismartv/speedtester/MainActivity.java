@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -27,6 +28,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteController;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -63,6 +65,8 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends Activity {
+	
+	private static final String APP_SHARED_NAME = "SpeedTest";
 	
 	private static final int TEST_STATE_IDLE = 0;
 	private static final int TEST_STATE_PENDING = 1;
@@ -116,6 +120,7 @@ public class MainActivity extends Activity {
 	private EditText mDetailsEditText;
 	private EditText mEmailEditText;
 	private EditText mPhoneNumEditText;
+	private EditText mAddressEditText;
 	private TextView mFeedBackIpText;
 	private TextView mFeedBackCityText;
 	private TextView mFeedBackISPText;
@@ -147,8 +152,6 @@ public class MainActivity extends Activity {
 	private boolean isNetworkAvailable = false;
 	
 	public static String domain = "http://iris.tvxio.com"; 
-	
-	
 	
 	private BroadcastReceiver mCloseReceiver = new BroadcastReceiver() {
 		
@@ -268,7 +271,7 @@ public class MainActivity extends Activity {
 						mCurrentProgressBar.setProgress(0);
 						startToTest();
 					} else {
-						//TODO:show the result to user
+						// show the result to user
 						mTestState = TEST_STATE_IDLE;
 						mTimingHandler.removeCallbacks(updateStatusTask);
 //						mStatusIndicatorText.setText(mResources.getString(R.string.test_completion));
@@ -320,7 +323,6 @@ public class MainActivity extends Activity {
 //				try {
 //					Thread.sleep(400);
 //				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
 
@@ -332,7 +334,6 @@ public class MainActivity extends Activity {
 //				try {
 //					Thread.sleep(400);
 //				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
 
@@ -347,6 +348,15 @@ public class MainActivity extends Activity {
 	private Button mResetButton;
 	private RelativeLayout mFeedBackArea;
 	private LinearLayout mLeftSide;
+
+	private TextView mCSPhoneValue;
+
+	private TextView mCSEmailValue;
+
+	private TextView mCSWeiboValue;
+
+	private LinearLayout mContactInfoArea;
+
 	
     /** Called when the activity is first created. */
     @Override
@@ -415,6 +425,7 @@ public class MainActivity extends Activity {
         mDetailsEditText = (EditText)findViewById(R.id.edit_details);
         mEmailEditText = (EditText)findViewById(R.id.edit_email);
         mPhoneNumEditText = (EditText)findViewById(R.id.edit_phonenum);
+        mAddressEditText = (EditText)findViewById(R.id.edit_address);
         
         mDetailsEditText.setOnEditorActionListener(mEditActionListener);
         mEmailEditText.setOnEditorActionListener(mEditActionListener);
@@ -440,6 +451,12 @@ public class MainActivity extends Activity {
         mSnShowTextView = (TextView)findViewById(R.id.sn_show);
         mSnShowTextView.setText("SN: "+android.os.Build.SERIAL);
         
+        mContactInfoArea = (LinearLayout)findViewById(R.id.contact_info_area);
+        mCSPhoneValue = (TextView)findViewById(R.id.cs_phone_value);
+        mCSEmailValue = (TextView)findViewById(R.id.cs_email_value);
+        mCSWeiboValue = (TextView)findViewById(R.id.cs_weibo_value);
+        mCSWeiboValue.setText("@"+mCSWeiboValue.getText());
+        
         mInflater = LayoutInflater.from(MainActivity.this);
         
         mFeedBackEntity = new FeedBackEntity();
@@ -464,6 +481,7 @@ public class MainActivity extends Activity {
         registerReceiver(mCloseReceiver, new IntentFilter(ACTION_LAUNCHER));
         registerReceiver(mCloseReceiver, new IntentFilter(ACTION_SETTING));
         mImeManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        getInfo();
     }
     
     private OnFocusChangeListener mFeedBackFocusListener = new OnFocusChangeListener() {
@@ -552,7 +570,7 @@ public class MainActivity extends Activity {
     	try {
 			String json = gson.toJson(mCurrentSpeedTestResults, listType);
 			String uploadStr = "{\"speed\":"+json+", \"ip\":\""+mFeedBackEntity.ip
-					+"\",\"location\":\""+mFeedBackEntity.location+"\",\"isp\":\""+mFeedBackEntity.isp+"\"}";
+					+"\",\"location\":\""+mFeedBackEntity.city+"\",\"isp\":\""+mFeedBackEntity.isp+"\"}";
 			new UploadTask().execute(uploadStr, domain+"/customer/speedlogs/");
 			
 		} catch (Exception e) {
@@ -734,7 +752,7 @@ public class MainActivity extends Activity {
 			if(msg!=null){
 				int result = msg.what;
 				if(result==1){
-					//TODO:continue to run test.
+					// continue to run test.
 					if(mTestState==TEST_STATE_PENDING){
 						if(parseJson()){
 							mCurrentPosition = 0;
@@ -757,7 +775,6 @@ public class MainActivity extends Activity {
 					try {
 						showDialog(DIALOG_NETWORK_EXCEPTION);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 	//				mStatusIndicatorText.setText(R.string.test_stopped);
@@ -773,12 +790,11 @@ public class MainActivity extends Activity {
     	public boolean isCancelled = false;
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
 			StringBuffer sb = new StringBuffer();
 			BufferedReader bfReader = null;
-			long s = System.currentTimeMillis();
+//			long s = System.currentTimeMillis();
 			try {
-				//TODO:This url needs to be supplied
+				// This url needs to be supplied
 				URL url = new URL(domain+"/customer/urls/");
 				conn = (HttpURLConnection) url.openConnection();
 				conn.setConnectTimeout(15000);
@@ -812,7 +828,6 @@ public class MainActivity extends Activity {
 					try {
 						conn.disconnect();
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -820,7 +835,6 @@ public class MainActivity extends Activity {
 					try {
 						bfReader.close();
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -878,6 +892,29 @@ public class MainActivity extends Activity {
     	buildDetailPanel();
     	return true;
     }
+    
+    private void saveInfo() {
+    	SharedPreferences.Editor editor = getSharedPreferences(APP_SHARED_NAME,MODE_PRIVATE).edit();
+    	editor.putString("user_email", mEmailEditText.getText().toString())
+    	.putString("user_phone", mPhoneNumEditText.getText().toString())
+    	.putString("user_address", mAddressEditText.getText().toString()).commit();
+    }
+    
+    private void getInfo() {
+    	SharedPreferences sp = getSharedPreferences(APP_SHARED_NAME, MODE_PRIVATE);
+    	String userEmail = sp.getString("user_email", null);
+    	String userPhone = sp.getString("user_phone", null);
+    	String userAddress = sp.getString("user_address", null);
+    	if(TextUtils.isEmpty(mEmailEditText.getText()) && !TextUtils.isEmpty(userEmail)) {
+    		mEmailEditText.setText(userEmail);
+    	}
+    	if(TextUtils.isEmpty(mPhoneNumEditText.getText()) && !TextUtils.isEmpty(userPhone)) {
+    		mPhoneNumEditText.setText(userPhone);
+    	}
+    	if(TextUtils.isEmpty(mAddressEditText.getText()) && !TextUtils.isEmpty(userAddress)) {
+    		mAddressEditText.setText(userAddress);
+    	}
+    }
 
 	@Override
 	protected void onDestroy() {
@@ -889,6 +926,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onPause() {
+		saveInfo();
 		hideCursor(false);
 		mTestState = TEST_STATE_IDLE;
 		mDownloadHandler.removeCallbacks(downloadFileTask);
@@ -925,8 +963,11 @@ public class MainActivity extends Activity {
         
         if(isSetting && mFeedBackArea.getVisibility()!=View.GONE){
         	mFeedBackArea.setVisibility(View.GONE);
-        	LinearLayout parentLayout = (LinearLayout)mLeftSide.getParent();
-        	parentLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+        	mContactInfoArea.setVisibility(View.GONE);
+        	RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(mLeftSide.getLayoutParams());
+        	layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+        	layoutParams.topMargin = 120;
+        	mLeftSide.setLayoutParams(layoutParams);
         }
         
 		super.onResume();
@@ -973,7 +1014,6 @@ public class MainActivity extends Activity {
 						try {
 							conn.disconnect();
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -981,7 +1021,6 @@ public class MainActivity extends Activity {
 						try {
 							bfReader.close();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -1012,7 +1051,6 @@ public class MainActivity extends Activity {
 						try {
 							bfReader2.close();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -1035,9 +1073,9 @@ public class MainActivity extends Activity {
 					}
 					String city = locationInfo.getCity();
 					if(city!=null && !"".equals(city)){
-						mFeedBackEntity.location = city;
+						mFeedBackEntity.city = city;
 					} else {
-						mFeedBackEntity.location = mResources.getString(R.string.unknown_area);
+						mFeedBackEntity.city = mResources.getString(R.string.unknown_area);
 					}
 					String isp = locationInfo.getIsp();
 					if(isp!=null && !"".equals(isp)){
@@ -1082,8 +1120,11 @@ public class MainActivity extends Activity {
 				if(mFeedBackEntity.ip!=null && mFeedBackEntity.ip!=""){
 					mFeedBackIpText.setText(mFeedBackEntity.ip);
 				}
-				if(mFeedBackEntity.location!=null && mFeedBackEntity.location!=""){
-					mFeedBackCityText.setText(mFeedBackEntity.location);
+				if(mFeedBackEntity.city!=null && mFeedBackEntity.city!=""){
+					mFeedBackCityText.setText(mFeedBackEntity.city);
+					if(TextUtils.isEmpty(mAddressEditText.getText())) {
+						mAddressEditText.setText(mFeedBackEntity.city);
+					}
 				}
 				if(mFeedBackEntity.isp!=null && mFeedBackEntity.isp!=""){
 					mFeedBackISPText.setText(mFeedBackEntity.isp);
@@ -1107,17 +1148,17 @@ public class MainActivity extends Activity {
 	public OnCheckedChangeListener mOnCheckedChangeListener = new OnCheckedChangeListener() {
 		
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
-			if (checkedId == R.id.problem_unclear) {
-				mFeedBackEntity.option = 1;
-			} else if (checkedId == R.id.problem_block) {
-				mFeedBackEntity.option = 2;
-			} else if (checkedId == R.id.unable_play) {
-				mFeedBackEntity.option = 3;
-			} else if (checkedId == R.id.problem_other) {
-				mFeedBackEntity.option = 4;
-			} else {
+//			if (checkedId == R.id.problem_unclear) {
+//				mFeedBackEntity.option = 1;
+//			} else if (checkedId == R.id.problem_block) {
+//				mFeedBackEntity.option = 2;
+//			} else if (checkedId == R.id.unable_play) {
+//				mFeedBackEntity.option = 3;
+//			} else if (checkedId == R.id.problem_other) {
+//				mFeedBackEntity.option = 4;
+//			} else {
 				mFeedBackEntity.option = checkedId;
-			}
+//			}
 		}
 	};
 
@@ -1125,20 +1166,21 @@ public class MainActivity extends Activity {
 		
 		public void onClick(View v) {
 			if(mCurrentNetworkSpeedInfo==null){
-    			View layout = mInflater.inflate(R.layout.submit_toast, (ViewGroup)findViewById(R.id.toast_layout_root));
-    			TextView tips = (TextView) layout.findViewById(R.id.submit_success_toast_text);
-    			tips.setText(R.string.you_should_test_speed_first);
-//				TextView textView = (TextView)layout.findViewById(R.id.submit_success_toast_text);
-				Toast toast = new Toast(MainActivity.this);
-				toast.setGravity(Gravity.CENTER|Gravity.BOTTOM, 0, -100);
-				toast.setDuration(Toast.LENGTH_LONG);
-				toast.setView(layout);
-				toast.show();
+    			showToast(R.string.you_should_test_speed_first);
 				return;
     		}
 			mFeedBackEntity.description = mDetailsEditText.getText().toString();
 			mFeedBackEntity.phone = mPhoneNumEditText.getText().toString();
 			mFeedBackEntity.mail = mEmailEditText.getText().toString();
+			mFeedBackEntity.location = mAddressEditText.getText().toString();
+			if(TextUtils.equals(mFeedBackEntity.location, mFeedBackEntity.city) || TextUtils.isEmpty(mFeedBackEntity.location)) {
+				showToast(R.string.please_give_a_valid_address);
+				return;
+			}
+			if(TextUtils.isEmpty(mFeedBackEntity.phone.trim()) || mFeedBackEntity.phone.trim().length()!=11) {
+				showToast(R.string.you_should_give_an_phone_number);
+				return;
+			}
 			String defaultIp = mResources.getString(R.string.default_ip);
 			if(defaultIp.equals(mFeedBackEntity.ip)){
 				mFeedBackEntity.ip = "0.0.0.0";
@@ -1185,7 +1227,7 @@ public class MainActivity extends Activity {
 				
 				public void onClick(DialogInterface dialog, int which) {
 					Intent intent = new Intent();
-					intent.setAction("android.net.wifi.PICK_WIFI_NETWORK");
+					intent.setAction("lenovo.intent.action.NETWORK");
 					sendBroadcast(intent);
 					MainActivity.this.finish();
 					dismissDialog(DIALOG_NETWORK_EXCEPTION);
@@ -1193,7 +1235,6 @@ public class MainActivity extends Activity {
 			}).setNegativeButton(back, new DialogInterface.OnClickListener() {
 				
 				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
 					dismissDialog(DIALOG_NETWORK_EXCEPTION);
 				}
 			}).setMessage(except_message);
@@ -1205,15 +1246,13 @@ public class MainActivity extends Activity {
 			customBuilder2.setMessage(unestablished_message).setNegativeButton(back, new DialogInterface.OnClickListener() {
 				
 				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
 					dismissDialog(DIALOG_NETWORK_UNESTABLISHED);
 				}
 			}).setPositiveButton(network_conf, new DialogInterface.OnClickListener() {
 				
 				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
 					Intent intent = new Intent();
-					intent.setAction("android.net.wifi.PICK_WIFI_NETWORK");
+					intent.setAction("lenovo.intent.action.NETWORK");
 					sendBroadcast(intent);
 					MainActivity.this.finish();
 					dismissDialog(DIALOG_NETWORK_UNESTABLISHED);
@@ -1234,4 +1273,14 @@ public class MainActivity extends Activity {
 		return dialog;
 	}
     
+	private void showToast(int textResID) {
+		View layout = mInflater.inflate(R.layout.submit_toast, (ViewGroup)findViewById(R.id.toast_layout_root));
+		TextView tips = (TextView) layout.findViewById(R.id.submit_success_toast_text);
+		tips.setText(textResID);
+		Toast toast = new Toast(MainActivity.this);
+		toast.setGravity(Gravity.CENTER|Gravity.BOTTOM, 0, -100);
+		toast.setDuration(Toast.LENGTH_LONG);
+		toast.setView(layout);
+		toast.show();
+	}
 }

@@ -15,6 +15,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +29,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteController;
 import android.os.SystemClock;
+import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -111,6 +114,8 @@ public class OobeActivity extends Activity implements OnKeyListener {
 	
 	private boolean isNetworkAvailable = false;
 	
+	public int mDisappearTime = 0;
+	
 	public static String domain = "http://iris.tvxio.com"; 
 
 	
@@ -119,8 +124,14 @@ public class OobeActivity extends Activity implements OnKeyListener {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Log.d("Receiver", intent.getAction());
-//			OobeActivity.this.finish();
-			Log.d("RecevierInfo", "Disable hot key");
+			if(isSetting) {
+				Intent newIntent = new Intent("com.lenovo.nebula.settings.services.TvSettingServiceBootReceiver.shutdown");
+				OobeActivity.this.sendBroadcast(newIntent);
+				Log.d("RecevierInfo", "quit");
+				OobeActivity.this.finish();
+			} else {
+				Log.d("RecevierInfo", "Disable hot key");
+			}
 		}
 	};
 	
@@ -333,7 +344,9 @@ public class OobeActivity extends Activity implements OnKeyListener {
         
         mSpeedActionButton = (Button)findViewById(R.id.oobe_action_btn);
         mSpeedActionButton.setOnClickListener(mActionButtonListener);
-        mSpeedActionButton.setOnKeyListener(mGlobalOnKeyListener);
+        if(!isSetting) {
+        	mSpeedActionButton.setOnKeyListener(mGlobalOnKeyListener);
+        }
         if(!isSetting){
 	        mBackButton = (Button)findViewById(R.id.oobe_back_btn);
 	        mBackButton.setOnClickListener(new OnClickListener() {
@@ -385,7 +398,17 @@ public class OobeActivity extends Activity implements OnKeyListener {
         registerReceiver(mCloseReceiver, new IntentFilter(ACTION_LAUNCHER));
         registerReceiver(mCloseReceiver, new IntentFilter(ACTION_SETTING));
         
-
+        if(isSetting) {
+        	try {
+        		mDisappearTime = Settings.System.getInt(getContentResolver(), "menu_disappear_time");
+        		if(mDisappearTime!=0) {
+        			mExpiredHandler.post(mExpiredTimer);
+        		}
+			} catch (SettingNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
 	}
 
 	private OnKeyListener mGlobalOnKeyListener = new OnKeyListener() {
@@ -795,10 +818,12 @@ public class OobeActivity extends Activity implements OnKeyListener {
         /*
          * Disable remote controller's hotkey
          */
-        Intent intent = new Intent();
-        intent.putExtra("OOBE_STATE", 1);
-        intent.setAction("com.lenovo.intent.action.OOBE_INTENT");
-        sendBroadcast(intent);
+        if(!isSetting) {
+	        Intent intent = new Intent();
+	        intent.putExtra("OOBE_STATE", 1);
+	        intent.setAction("com.lenovo.intent.action.OOBE_INTENT");
+	        sendBroadcast(intent);
+        }
 		super.onResume();
 	}
 	
@@ -953,7 +978,11 @@ public class OobeActivity extends Activity implements OnKeyListener {
 	}
 
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		return validateKeyCode(keyCode);
+		if(isSetting) {
+			return false;
+		} else {
+			return validateKeyCode(keyCode);
+		}
 	}
 	private boolean validateKeyCode(int keyCode){
 		if(keyCode==KeyEvent.KEYCODE_BACK || keyCode==KeyEvent.KEYCODE_ESCAPE || keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP || keyCode==KeyEvent.KEYCODE_DPAD_LEFT || keyCode==KeyEvent.KEYCODE_DPAD_RIGHT || keyCode==KeyEvent.KEYCODE_ENTER){
@@ -963,5 +992,30 @@ public class OobeActivity extends Activity implements OnKeyListener {
 		}
 	}
 
+	private Runnable mExpiredTimer = new Runnable() {
+		
+		private int mTimeEscaped = 0;
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			if(mTestState==TEST_STATE_IDLE) {
+				if(mTimeEscaped>=mDisappearTime*10) {
+					Intent newIntent = new Intent("com.lenovo.nebula.settings.services.TvSettingServiceBootReceiver.shutdown");
+					OobeActivity.this.sendBroadcast(newIntent);
+					Log.d("Expired", "quit");
+					OobeActivity.this.finish();
+				} else {
+					mTimeEscaped += 5;
+					mExpiredHandler.postDelayed(mExpiredTimer, 5000);
+				}
+			} else {
+				mTimeEscaped = 0;
+				mExpiredHandler.postDelayed(mExpiredTimer, 5000);
+			}
+		}
+	}; 
+	
+	private Handler mExpiredHandler = new Handler();
 	
 }

@@ -8,7 +8,8 @@
         android:layout_width="1130dip"
         android:layout_height="789dip"
         android:layout_marginTop="132dip"
-        android:layout_marginLeft="570dip">
+        android:layout_marginLeft="570dip"
+        android:background="@drawable/background_setting">
         <RelativeLayout
             android:layout_width="550dip"
             android:layout_height="450dip"
@@ -79,15 +80,28 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:orientation="vertical"
-            android:layout_marginTop="37dip"
+            android:layout_marginTop="29dip"
             android:layout_marginLeft="42dip"
             android:gravity="left">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textSize="39sp"
-                android:textColor="#32FFFFFF"/>
+	        <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="horizontal">
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/setting"
+	                android:textSize="40sp"
+	                android:textColor="#4CFFFFFF"
+	                android:alpha="0.3"/>
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/app_name"
+	                android:textSize="40sp"
+	                android:textColor="#4CE5AA50"/>
+	        </LinearLayout>
+            
             <TextView
                 android:layout_width="1054dip"
                 android:layout_height="1dip"

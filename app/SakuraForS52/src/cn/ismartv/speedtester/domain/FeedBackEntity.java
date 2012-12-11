@@ -7,6 +7,7 @@ public class FeedBackEntity {
 	public String phone;
 	public String mail;
 	public String ip;
+	public String city;
 	public String location;
 	public String isp;
 	public boolean is_correct;
@@ -57,6 +58,12 @@ public class FeedBackEntity {
 	}
 	public void setIs_correct(boolean is_correct) {
 		this.is_correct = is_correct;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
 	}
 	
 }

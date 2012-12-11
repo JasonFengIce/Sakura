@@ -17,6 +17,7 @@ import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.util.Locale;
 
 import android.os.SystemClock;
 import android.util.Log;
@@ -83,6 +84,7 @@ public class NetworkUtils {
 	}
 	
 	public static String uploadString(String str, String uploadURL){
+		String localeName = Locale.getDefault().toString();
 		URL url = null;
 		HttpURLConnection conn = null;
 		InputStream inputStream = null;
@@ -103,6 +105,7 @@ public class NetworkUtils {
 			conn.setConnectTimeout(15000);
 			conn.setReadTimeout(15000);
 			conn.setRequestProperty("User-Agent", android.os.Build.MODEL.replaceAll(" ", "_")+"/"+android.os.Build.ID+" "+android.os.Build.SERIAL);
+			conn.setRequestProperty("Accept-Language", localeName);
 			Log.d("requestHeader q", str);
 			outputStream = conn.getOutputStream();
 			writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));

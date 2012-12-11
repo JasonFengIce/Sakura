@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">網路測速</string>
+    <string name="app_name">視頻客服</string>
+    <string name="setting">網路設定&gt;</string>
     <string name="StartTesting">開始測速</string>
     <string name="button_label_stop">中止測試</string>
     <string name="button_label_retest">重新測試</string>
@@ -10,7 +11,7 @@
     <string name="speed_unit_mb">MB/秒</string>
     <string name="error">錯誤</string>
     <string name="msg_network_exception">網路連接異常</string>
-    <string name="msg_network_unestablished">無網路鏈接，請檢查設定</string>
+    <string name="msg_network_unestablished">無網路連接，請檢查設定</string>
     <string name="button_label_setup_network">網路設定</string>
     <string name="button_label_cancel">取消</string>
     <!-- <string name="button_label_radio_block">播放卡頓</string> -->
@@ -43,6 +44,7 @@
     <string name="radiobutton_unclear">畫面不清晰</string>
     <string name="radiobutton_unable_play">無法播放影片</string>
     <string name="you_should_test_speed_first">您應該先測試速度！</string>
+    <string name="you_should_give_an_email_or_phone_number">您至少應該提供一個電話或電子郵件</string>
     <string name="submit_sucess">提交成功!</string>
     <string name="numbers_of_total">第@次測試（共#次）</string>
     <string name="your_avg_speed_is">當前網路環境下，下載速度可達</string>
@@ -63,4 +65,14 @@
     <string name="adsl_8m">8M寬頻</string>
     <string name="adsl_10m">10M寬頻</string>
     <string name="adsl_20m">20M寬頻</string>
+    <string name="address">聯絡地址:</string>
+    <string name="you_should_give_an_phone_number">請填寫正確的號碼</string>
+    <string name="required">必填項</string>
+    <string name="please_give_a_valid_address">請填寫一個完整的地址</string>
+    <string name="cs_phone">客服電話:</string>
+    <string name="cs_email">客服邮箱:</string>
+    <string name="cs_weibo">客服郵箱:</string>
+    <string name="cs_phone_string">15101510139</string>
+    <string name="cs_email_string">kf@ismartv.cn</string>
+    <string name="cs_weibo_string">聯想智能電視</string>
 </resources>

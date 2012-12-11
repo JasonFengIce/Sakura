@@ -3,6 +3,8 @@
 	    android:layout_width="965dip"
 	    android:layout_height="903dip"
 	    android:layout_marginTop="80dip"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentTop="true"
 	    android:id="@+id/feedback_area"
 	    android:background="@drawable/feedback_bg1"
 	    >
@@ -36,7 +38,7 @@
 	        android:textColor="#FFFFFFFF"/>
         <RadioGroup
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="35dip"
             android:id="@+id/problem_options"
             android:orientation="horizontal"
             android:layout_alignParentLeft="true"
@@ -45,6 +47,7 @@
             android:layout_margin="20dip"
             android:checkedButton="@id/problem_other"
             >
+	        <!-- 
 		    <RadioButton
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
@@ -73,6 +76,7 @@
 		        android:textSize="35sp"
 		        android:text="@string/radiobutton_others"
 		        android:layout_marginRight="15dip"/>
+		         -->
         </RadioGroup>
         <TextView
             android:layout_width="wrap_content"
@@ -89,7 +93,7 @@
         <EditText
             android:id="@+id/edit_details"
             android:layout_width="match_parent"
-            android:layout_height="260dip"
+            android:layout_height="200dip"
             android:layout_below="@id/problem_options"
             android:layout_toRightOf="@id/details_description"
             android:layout_marginTop="10dip"
@@ -122,6 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dip"
             android:textSize="35sp"
+            android:hint="@string/required"
             android:inputType="textPhonetic|phone"
             android:gravity="left"
             android:background="@drawable/edit_drawable"/>
@@ -142,10 +147,38 @@
             android:background="@drawable/edit_drawable"/>
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/feedback_autogain_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/user_info_area"
+            android:id="@+id/user_address_area"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_margin="10dip">
+            <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textSize="35sp"
+	            android:layout_margin="5dip"
+	            android:text="@string/address"/>
+            <EditText
+	            android:id="@+id/edit_address"
+	            android:layout_width="670dip"
+	            android:layout_height="wrap_content"
+	            android:layout_margin="5dip"
+	            android:textSize="35sp"
+	            android:hint="@string/required"
+	            android:inputType="text"
+	            android:gravity="left"
+	            android:background="@drawable/edit_drawable"/>
+        </LinearLayout>
+        
+        
+        <LinearLayout
+            android:id="@+id/feedback_autogain_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_address_area"
             android:layout_alignParentLeft="true"
             android:layout_marginTop="40dip"
             android:layout_marginLeft="20dip"

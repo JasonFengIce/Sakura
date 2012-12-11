@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="500dip"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:id="@+id/progress_dialog_root"
+    android:padding="20dip"
+    android:layout_gravity="center">
+    <ProgressBar
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:id="@+id/progress_dialog_progressbar"
+        android:layout_margin="30dip"
+        android:indeterminate="true"
+        style="@android:style/Widget.ProgressBar.Large"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress_info_text"
+        android:textSize="35sp"
+        android:layout_marginTop="20dip"
+        android:layout_marginBottom="20dip"
+        android:layout_marginLeft="30dip"
+        android:layout_marginRight="30dip"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/dialog_msg_canceling"/>
+
+</LinearLayout>
