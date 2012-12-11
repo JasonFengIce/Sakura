@@ -27,8 +27,22 @@ class PointsView(View):
 
 class UrlsView(View):
      def get(self, request):
-        urls = get_list_or_404(models.Url)
-        return [{'pk': url.id,'title': url.title, 'url':url.url, 'length':url.length , 'display':url.is_show} for url in urls]
+        user_agent =  request.META['HTTP_USER_AGENT']
+        mark = user_agent[2:4]
+        print("mark",mark)
+        urls = models.Url.objects.filter(isp__mark = mark)[:3]
+        result_list = []
+        for url in urls:
+            result_list.append(url);
+        if not result_list or len(result_list)<3:
+            urls = models.Url.objects.filter(isp__mark = "00")[:3-len(urls)]
+            for url in urls:
+                result_list.append(url);
+            if not result_list or len(result_list)<3:
+                urls = models.Url.objects.order_by('id')[:3-len(urls)]
+                for url in urls:
+                    result_list.append(url);
+        return [{'pk': url.id,'title': url.title, 'url':url.url, 'length':url.length , 'display':url.is_show} for url in result_list]
         
 class Speedlogs(View):
     def post(self,request):

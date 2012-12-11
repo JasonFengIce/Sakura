@@ -2,10 +2,13 @@ from django.contrib import admin
 
 from . import models
 
-
+class IspAdmin(admin.ModelAdmin):
+    list_display = ('id','title', 'mark',)
+    fields  = ['title', 'mark',]
+    
 class UrlAdmin(admin.ModelAdmin):
     list_display = ('id','title', 'url', 'length', 'is_show',)
-    fields  = ['title', 'url', 'length', 'is_show',]
+    fields  = ['title', 'url', 'length','isp','is_show',]
 
 class SpeedlogAdmin(admin.ModelAdmin):
     list_display = ('ip','__unicode__','user_agent','location','isp', 'speed','create_date',)
@@ -32,3 +35,4 @@ admin.site.register(models.Url,UrlAdmin)
 admin.site.register(models.Point,PointAdmin)
 admin.site.register(models.Pointlog,PointlogAdmin)
 admin.site.register(models.Speedlog,SpeedlogAdmin)
+admin.site.register(models.Isp,IspAdmin)
