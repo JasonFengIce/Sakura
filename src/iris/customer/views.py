@@ -26,24 +26,33 @@ class PointsView(View):
 
 
 class UrlsView(View):
+     result_list = []
+     size = 3
      def get(self, request):
+        self.result_list = []
         user_agent =  request.META['HTTP_USER_AGENT']
-        mark = user_agent[2:4]
-        print("mark",mark)
-        urls = models.Url.objects.filter(isp__mark = mark)[:3]
-        result_list = []
-        for url in urls:
-            result_list.append(url);
-        if not result_list or len(result_list)<3:
-            urls = models.Url.objects.filter(isp__mark = "00")[:3-len(urls)]
-            for url in urls:
-                result_list.append(url);
-            if not result_list or len(result_list)<3:
-                urls = models.Url.objects.order_by('id')[:3-len(urls)]
-                for url in urls:
-                    result_list.append(url);
-        return [{'pk': url.id,'title': url.title, 'url':url.url, 'length':url.length , 'display':url.is_show} for url in result_list]
+        if " " in user_agent and "A11" in user_agent:
+            mark = user_agent.split(" ")[1][2:4]
+            print("mark",mark)
+            urls = models.Url.objects.filter(isp__mark = mark)[:self.size]
+            self.set_result_list(urls)
+            if not self.result_list or len(self.result_list)<self.size:
+                urls = models.Url.objects.filter(isp__mark = "00")[:self.size-len(self.result_list)]
+                self.set_result_list(urls)
+            if not self.result_list or len(self.result_list)<self.size:
+                urls = models.Url.objects.filter(isp__mark = "99")[:self.size-len(self.result_list)]
+                self.set_result_list(urls)
+        else:
+            urls =  models.Url.objects.filter(isp__mark = "99")[:self.size]
+            self.set_result_list(urls)
+        return [{'pk': url.id,'title': url.title, 'url':url.url, 'length':url.length , 'display':url.is_show} for url in self.result_list]
         
+     def set_result_list(self,urls):
+          if urls:
+                for url in urls:
+                    self.result_list.append(url)
+
+
 class Speedlogs(View):
     def post(self,request):
         q =  request.POST["q"]
