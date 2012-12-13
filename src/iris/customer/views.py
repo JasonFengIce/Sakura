@@ -31,7 +31,7 @@ class UrlsView(View):
      def get(self, request):
         self.result_list = []
         user_agent =  request.META['HTTP_USER_AGENT']
-        if " " in user_agent and "A11" in user_agent:
+        if " " in user_agent and ("a11" in user_agent or "A11" in user_agent):
             mark = user_agent.split(" ")[1][2:4]
             print("mark",mark)
             urls = models.Url.objects.filter(isp__mark = mark)[:self.size]
