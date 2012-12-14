@@ -3,11 +3,22 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 # Create your models here.
 
+class Isp(models.Model):
+    title = models.CharField(_("Title"), max_length=200)
+    mark =  models.CharField(_("Mark"), max_length=2)
+    class Meta:
+        verbose_name = _("Isp")
+        verbose_name_plural = _("Isp")
+        ordering = ('id',)
+    def __unicode__(self):
+        return self.title;
+
 class Url(models.Model):
     title = models.CharField(_("Title"), max_length=200)
     url = models.CharField(_("Url"), max_length=200)
     length = models.IntegerField(_("Start Time"),max_length=20)
     is_show = models.BooleanField(_("Is Show"),default=1)
+    isp  = models.ForeignKey(Isp, verbose_name=_('Isp'))
     class Meta:
         verbose_name = _("Url")
         verbose_name_plural = _("Url")
@@ -15,6 +26,8 @@ class Url(models.Model):
 
     def __unicode__(self):
         return self.title;
+
+
 
 class Speedlog(models.Model):
     ip = models.CharField(_("Ip"), max_length=20)
