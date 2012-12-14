@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">視頻客服</string>
+    <string name="net_speedtester">網路測速</string>
     <string name="setting">網路設定&gt;</string>
     <string name="StartTesting">開始測速</string>
     <string name="button_label_stop">中止測試</string>

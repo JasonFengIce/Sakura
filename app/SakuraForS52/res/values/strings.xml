@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">VideoSupport</string>
+    <string name="net_speedtester">SpeedTester</string>
     <string name="setting">Network Setting&gt;</string>
     <string name="StartTesting">Start</string>
     <string name="button_label_stop">Stop</string>
