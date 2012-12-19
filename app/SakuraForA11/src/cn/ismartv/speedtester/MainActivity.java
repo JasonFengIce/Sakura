@@ -149,6 +149,7 @@ public class MainActivity extends Activity {
 	private boolean isSetting = false;
 	
 	private boolean isNetworkAvailable = false;
+	private final String userAgent = "A11/17 " + GetSN.alphaGetSN();
 	
 	public static String domain = "http://iris.tvxio.com"; 
 	
@@ -799,6 +800,7 @@ public class MainActivity extends Activity {
 				conn = (HttpURLConnection) url.openConnection();
 				conn.setConnectTimeout(15000);
 				conn.setReadTimeout(15000);
+				conn.setRequestProperty("User-Agent", userAgent);
 				InputStream is = conn.getInputStream();
 				if(isCancelled){
 					mGetTestUrlHandler.sendEmptyMessage(2);
@@ -984,6 +986,7 @@ public class MainActivity extends Activity {
 					conn = (HttpURLConnection) url.openConnection();
 					conn.setConnectTimeout(15000);
 					conn.setReadTimeout(15000);
+					conn.setRequestProperty("User-Agent", userAgent);
 					InputStream is = conn.getInputStream();
 					bfReader = new BufferedReader(new InputStreamReader(is));
 					String line = null;
