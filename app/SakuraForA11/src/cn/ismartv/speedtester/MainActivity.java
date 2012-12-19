@@ -429,6 +429,7 @@ public class MainActivity extends Activity {
         mDetailsEditText.setOnEditorActionListener(mEditActionListener);
         mEmailEditText.setOnEditorActionListener(mEditActionListener);
         mPhoneNumEditText.setOnEditorActionListener(mEditActionListener);
+        mAddressEditText.setOnEditorActionListener(mEditActionListener);
         
         mFeedBackIpText = (TextView)findViewById(R.id.feedback_ip);
         mFeedBackCityText = (TextView)findViewById(R.id.feedback_city);

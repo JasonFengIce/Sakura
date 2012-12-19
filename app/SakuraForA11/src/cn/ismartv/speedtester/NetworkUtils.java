@@ -39,11 +39,14 @@ public class NetworkUtils {
 		HttpURLConnection conn = null;
 		InputStream stream = null;
 		try {
+			String userAgent = "A11/17 " + GetSN.alphaGetSN();
+			
 			Log.d("FileDownloader_URL: ", networkSpeedInfo.url);
 			fileUrl = new URL(networkSpeedInfo.url);
 			conn = (HttpURLConnection) fileUrl.openConnection();
 			conn.setConnectTimeout(15000);
 			conn.setReadTimeout(15000);
+			conn.setRequestProperty("User-Agent", userAgent);
 			Log.d("ResponseCode: ", "Http:"+conn.getResponseCode()+"status code");
 			Log.d("ResponseMessage", conn.getResponseMessage());
 			networkSpeedInfo.realUrl = conn.getURL().toString();
