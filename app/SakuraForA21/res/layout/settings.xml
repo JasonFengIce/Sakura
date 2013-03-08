@@ -5,10 +5,11 @@
     android:orientation="vertical"
     android:padding="0dip">
     <RelativeLayout
-        android:layout_width="1105dip"
-        android:layout_height="970dip"
+        android:layout_width="1110dip"
+        android:layout_height="971dip"
         android:layout_marginTop="53dip"
-        android:layout_marginLeft="633dip">
+        android:layout_marginLeft="633dip"
+        android:background="@drawable/background_setting">
         <RelativeLayout
             android:layout_width="550dip"
             android:layout_height="450dip"
@@ -234,12 +235,12 @@
             android:layout_marginLeft="93dip"
             android:layout_marginBottom="18dip"/> -->
         <Button
-            android:layout_width="247dip"
-            android:layout_height="68dip"
-            android:background="@drawable/setting_button_drawable"
+            android:layout_width="223dip"
+            android:layout_height="55dip"
+            android:background="@drawable/setting_button_hot"
             android:id="@+id/oobe_action_btn"
             android:text="@string/StartTesting"
-            android:textColor="@drawable/setting_button_text_color"
+            android:textColor="#ffffffff"
             android:textSize="35sp"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"

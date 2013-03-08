@@ -401,6 +401,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
         if(isSetting) {
         	try {
         		mDisappearTime = Settings.System.getInt(getContentResolver(), "menu_disappear_time");
+        		Log.d("OobeActivity", "disappear time=" + mDisappearTime);
         		if(mDisappearTime!=0) {
         			mExpiredHandler.post(mExpiredTimer);
         		}
@@ -1001,7 +1002,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
 			// TODO Auto-generated method stub
 			if(mTestState==TEST_STATE_IDLE) {
 				if(mTimeEscaped>=mDisappearTime*10) {
-					Intent newIntent = new Intent("com.lenovo.nebula.settings.services.TvSettingServiceBootReceiver.shutdown");
+					Intent newIntent = new Intent("lenovo.settings.action.finish");
 					OobeActivity.this.sendBroadcast(newIntent);
 					Log.d("Expired", "quit");
 					OobeActivity.this.finish();
@@ -1017,5 +1018,22 @@ public class OobeActivity extends Activity implements OnKeyListener {
 	}; 
 	
 	private Handler mExpiredHandler = new Handler();
+
+
+
+	@Override
+	public boolean onFnKeyUp(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_RC_SETTINGS || keyCode == KeyEvent.KEYCODE_SETTINGS || keyCode == KeyEvent.KEYCODE_RC_SOURCE) {
+			Log.d("OobeActivity", "rc_setting is pressed: "+ (keyCode == KeyEvent.KEYCODE_RC_SETTINGS));
+			Intent intent = new Intent("lenovo.settings.action.finish");
+			this.sendBroadcast(intent);
+			this.finish();
+		}
+		if(keyCode == KeyEvent.KEYCODE_RC_SETTINGS) {
+			return true;
+		} else {
+			return super.onFnKeyUp(keyCode, event);
+		}
+	}
 	
 }
