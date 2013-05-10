@@ -920,7 +920,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause() {
 		saveInfo();
-		hideCursor(false);
+//		hideCursor(false);
 		mTestState = TEST_STATE_IDLE;
 		mDownloadHandler.removeCallbacks(downloadFileTask);
 		mTimingHandler.removeCallbacks(updateStatusTask);

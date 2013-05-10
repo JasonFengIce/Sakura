@@ -785,7 +785,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
 
 	@Override
 	protected void onPause() {
-		hideCursor(false);
+//		hideCursor(false);
 		mTestState = TEST_STATE_IDLE;
 		mDownloadHandler.removeCallbacks(downloadFileTask);
 		mTimingHandler.removeCallbacks(updateStatusTask);
