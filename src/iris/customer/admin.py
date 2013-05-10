@@ -2,6 +2,14 @@ from django.contrib import admin
 
 from . import models
 
+def point(log):
+    if log and log.point:
+        p = models.Point.objects.get(id=int(log.point))
+        if p:
+            return p.name
+    return log.point
+
+
 class IspAdmin(admin.ModelAdmin):
     list_display = ('id','title', 'mark',)
     fields  = ['title', 'mark',]
@@ -24,7 +32,7 @@ class PointAdmin(admin.ModelAdmin):
     list_display = ('name','hant_name','en_name',)
 
 class PointlogAdmin(admin.ModelAdmin):
-    list_display = ('point','user_agent','speeds' , 'description', 'phone', 'mail', 'ip', 'location','isp','create_date',)
+    list_display = (point,'user_agent','speeds' , 'description', 'phone', 'mail', 'ip', 'location','isp','create_date',)
     search_fields = ('user_agent','phone','mail','ip','description','location')
 
 class VideotypeAdmin(admin.ModelAdmin):
