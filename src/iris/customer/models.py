@@ -70,7 +70,7 @@ class Point(models.Model):
 
 class Quality (models.Model):
     key = models.CharField(_("Key"),max_length=30)
-    name = models.CharField(_("Name"),max_length=30)
+    name = models.CharField(_("Quality"),max_length=30)
     class Meta:
         verbose_name = _("Quality")
         verbose_name_plural = _("Quality")
