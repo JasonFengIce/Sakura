@@ -120,9 +120,12 @@ class Pointlogs(View):
                         pointlog.clip = clip
           if pointlog.ip!=0  and len(pointlog.ip)>0:
                 logs =   models.Pointlog.objects.filter(ip = pointlog.ip,description = pointlog.description,user_agent = pointlog.user_agent,point = pointlog.point)
-                if  logs and   logs.count() == 0:
+                if  logs :
                         if logs[0].create_date>time.time()-3600:
                             pointlog.save()
+                else:
+                        pointlog.save()
+
           return HttpResponse("OK")
 
 
