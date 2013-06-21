@@ -229,11 +229,7 @@ class IndemnityAdmin(admin.ModelAdmin):
     readonly_fields = ('indemnityLog',)
     search_fields = ('customer__name','package__title','item__title')
     raw_id_fields = ('customer',)
-    fieldsets = (
-        (None, {
-            'fields': ('customer',)
-        }),
-    )
+   
     form =  IndemnityForm
 
 class IndemnityLogAdmin(admin.ModelAdmin):
