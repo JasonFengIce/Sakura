@@ -3,7 +3,7 @@ from djangorestframework.views import *
 from django.utils import simplejson as json
 from django.http import HttpResponse
 from . import models
-import time
+import datetime
 
 class PointsView(View):
    def get(self, request):
@@ -93,8 +93,6 @@ class Speedlogs(View):
 class Pointlogs(View):
 
     def post(self,request):
-          j = ''
-          q = ''
           q =  request.POST['q']
           user_agent =  request.META['HTTP_USER_AGENT']
           j = json.loads(q)
@@ -120,11 +118,12 @@ class Pointlogs(View):
                         pointlog.clip = clip
           if pointlog.ip!=0  and len(pointlog.ip)>0:
                 logs =   models.Pointlog.objects.filter(ip = pointlog.ip,description = pointlog.description,user_agent = pointlog.user_agent,point = pointlog.point)
-                if  logs and logs.count()>0 :
-                        if logs[0].create_date>time.time()-3600:
+                if   logs.count()>0 :
+                    if (datetime.datetime.now() - logs[0].create_date)> datetime.timedelta(hours=1):
                                 pointlog.save()
-                else:
+                if   logs.count() ==0 :
                         pointlog.save()
+
 
           return HttpResponse("OK")
 
