@@ -22,7 +22,7 @@ def speeds(speeds):
         decodejson = json.loads(resp)
         if decodejson:
             for log in decodejson:
-                url = models.Url.objects.get(id = int(log['pk']))
+                url = models.Url.objects.get(id = int(log['key']))
                 str += '%s:(%d%s)<br>'%(url.title,log['speed'],'KB/S')
     return str
 speeds.allow_tags = True
@@ -60,10 +60,10 @@ def items(indemnity):
 
 def clip(log):
     if log.clip:
-        pk =  log.clip.pk
+        key =  log.clip.key
         url = log.clip.url
         quality = log.clip.quality
-        return "%s(%s)<br>%s"%(pk,quality,url)
+        return "%s(%s)<br>%s"%(key,quality,url)
     return None
 clip.allow_tags = True
 
@@ -138,7 +138,7 @@ def mq(data):
                 ilog = models.IndemnityLog()
                 ilog.customer = data['customer']
                 ilog.item = item
-                lg = rpc.compensate(data['customer'].pk,None,item.pk,ilog)
+                lg = rpc.compensate(data['customer'].key,None,item.key,ilog)
 #                print lg.status
                 logs.append(lg)
 #                if lg.status !=1:
@@ -150,7 +150,7 @@ def mq(data):
                 plog = models.IndemnityLog()
                 plog.customer = data['customer']
                 plog.package  = package
-                pg = rpc.compensate(data['customer'].pk,package.pk,None,plog)
+                pg = rpc.compensate(data['customer'].key,package.key,None,plog)
 #                print pg.status
                 logs.append(pg)
 #                if pg.status !=1:
@@ -212,15 +212,15 @@ class VideotypeAdmin(admin.ModelAdmin):
 
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('pk','name',)
-    search_fields = ('pk','name',)
+    list_display = ('key','name',)
+    search_fields = ('key','name',)
 
 class PackageAdmin(admin.ModelAdmin):
-    list_display = ('pk','title','description',)
-    search_fields = ('pk','title','description',)
+    list_display = ('key','title','description',)
+    search_fields = ('key','title','description',)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('pk','title',)
-    search_fields = ('pk','title',)
+    list_display = ('key','title',)
+    search_fields = ('key','title',)
      
 
 class IndemnityAdmin(admin.ModelAdmin):
@@ -228,6 +228,12 @@ class IndemnityAdmin(admin.ModelAdmin):
     filter_horizontal = ('package','item','indemnityLog')
     readonly_fields = ('indemnityLog',)
     search_fields = ('customer__name','package__title','item__title')
+    raw_id_fields = ('customer',)
+    fieldsets = (
+        (None, {
+            'fields': ('customer',)
+        }),
+    )
     form =  IndemnityForm
 
 class IndemnityLogAdmin(admin.ModelAdmin):
@@ -236,8 +242,8 @@ class IndemnityLogAdmin(admin.ModelAdmin):
     search_fields = ('customer__name','package__title','item__title')
 
 class ClipLogAdmin(admin.ModelAdmin):
-    list_display = ('pk','url','quality','create_date')
-    readonly_fields = ('pk','url','quality','create_date')
+    list_display = ('key','url','quality','create_date')
+    readonly_fields = ('key','url','quality','create_date')
     
 class QualityAdmin(admin.ModelAdmin):
     list_display = ('key','name',)

@@ -87,7 +87,7 @@ class ClipLog (models.Model):
         verbose_name = _("ClipLog")
         verbose_name_plural = _("ClipLog")
     def __unicode__(self):
-        return self.pk
+        return self.key
 
 class Pointlog(models.Model):
     point =  models.CharField(_("Point"), max_length=200,editable=False,)
@@ -120,7 +120,7 @@ class Videotype(models.Model):
         verbose_name_plural = _("Videotype")
   
 class Customer (models.Model):
-    pk = models.IntegerField(_("pk"),max_length=20,editable=False)
+    key = models.IntegerField(_("pk"),max_length=20,editable=False)
     name =  models.CharField(_("name"),max_length=30,editable=False)
     update_date = models.DateTimeField(_("Update at"), auto_now=True,editable=False)
     class Meta:
@@ -131,7 +131,7 @@ class Customer (models.Model):
 
 
 class Package (models.Model):
-    pk  = models.IntegerField(_("pk"),max_length=20,editable=False)
+    key  = models.IntegerField(_("pk"),max_length=20,editable=False)
     title =  models.CharField(_("title"),max_length=30,editable=False)
     description = models.CharField(_("description"),max_length=300,editable=False)
     adlet_url =  models.CharField(_("adlet_url"),max_length=1024,editable=False)
@@ -145,7 +145,7 @@ class Package (models.Model):
         return self.title
 
 class Item (models.Model):
-    pk  = models.IntegerField(_("pk"),max_length=20,editable=False)
+    key  = models.IntegerField(_("pk"),max_length=20,editable=False)
     title =  models.CharField(_("title"),max_length=30,editable=False)
     adlet_url =  models.CharField(_("adlet_url"),max_length=1024,editable=False)
     poster_url = models.CharField(_("poster_url"),max_length=1024,editable=False)
