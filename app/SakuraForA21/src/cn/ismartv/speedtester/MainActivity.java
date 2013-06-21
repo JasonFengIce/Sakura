@@ -494,7 +494,7 @@ public class MainActivity extends Activity {
 		
 		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 			if(actionId==0){
-				mImeManager.showSoftInput(v, InputMethodManager.RESULT_SHOWN);
+				mImeManager.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
 				return true;
 			} else {
 				return false;
@@ -920,7 +920,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause() {
 		saveInfo();
-		hideCursor(false);
+//		hideCursor(false);
 		mTestState = TEST_STATE_IDLE;
 		mDownloadHandler.removeCallbacks(downloadFileTask);
 		mTimingHandler.removeCallbacks(updateStatusTask);
