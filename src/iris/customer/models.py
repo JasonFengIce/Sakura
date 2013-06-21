@@ -79,7 +79,7 @@ class Quality (models.Model):
         return self.key
 
 class ClipLog (models.Model):
-    pk = models.CharField(_("Clip Id"),max_length=100)
+    key = models.CharField(_("Clip Id"),max_length=100)
     url = models.CharField(_("Url"),max_length=1024)
     quality = models.ForeignKey(Quality,blank=True,null=True,)
     create_date = models.DateTimeField(_("Created at"), auto_now_add=True,)

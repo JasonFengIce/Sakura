@@ -93,6 +93,8 @@ class Speedlogs(View):
 class Pointlogs(View):
 
     def post(self,request):
+          j = ''
+          q = ''
           q =  request.POST['q']
           user_agent =  request.META['HTTP_USER_AGENT']
           j = json.loads(q)
@@ -112,13 +114,9 @@ class Pointlogs(View):
           pointlog.mail= j['mail']
           if 'clip'in j and j['clip']:
                 if j['clip']['pk'] and j['clip']['url'] and j['clip']['quality']:
-                    clip = models.ClipLog()
-                    clip.pk = j['clip']['pk']
-                    clip.url =j['clip']['url']
                     q = models.Quality.objects.filter(key=j['clip']['quality'])
                     if q:
-                        clip.quality = q[0]
-                        clip.save()
+                        clip = models.ClipLog.objects.create(key= j['clip']['pk'], url=j['clip']['url'], quality=q[0])
                         pointlog.clip = clip
           if pointlog.ip!=0  and len(pointlog.ip)>0:
                 logs =   models.Pointlog.objects.filter(ip = pointlog.ip,description = pointlog.description,user_agent = pointlog.user_agent,point = pointlog.point)
