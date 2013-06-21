@@ -110,7 +110,7 @@ class Pointlogs(View):
           pointlog.description = j['description']
           pointlog.phone = j['phone']
           pointlog.mail= j['mail']
-          if j['clip']:
+          if 'clip'in j and j['clip']:
                 if j['clip']['pk'] and j['clip']['url'] and j['clip']['quality']:
                     clip = models.ClipLog()
                     clip.pk = j['clip']['pk']
