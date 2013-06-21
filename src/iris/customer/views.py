@@ -102,15 +102,30 @@ class Pointlogs(View):
           pointlog.user_agent = user_agent
           pointlog.location  = j['location']
           pointlog.speeds  = j['speed']
+#          if  j['option']:
+#              Point = models.Point.objects.get(id== int(j['option']))
+#              if Point:
+#                  pointlog.point = Point
           pointlog.point = j['option']
           pointlog.description = j['description']
           pointlog.phone = j['phone']
           pointlog.mail= j['mail']
-
+          if j['clip']:
+                if j['clip']['pk'] and j['clip']['url'] and j['clip']['quality']:
+                    clip = models.ClipLog()
+                    clip.pk = j['clip']['pk']
+                    clip.url =j['clip']['url']
+                    q = models.Quality.objects.filter(key=j['clip']['quality'])
+                    if q:
+                        clip.quality = q[0]
+                        clip.save()
+                        pointlog.clip = clip
           if pointlog.ip!=0  and len(pointlog.ip)>0:
                 logs =   models.Pointlog.objects.filter(ip = pointlog.ip,description = pointlog.description,user_agent = pointlog.user_agent,point = pointlog.point)
                 if  logs.count() == 0:
                         pointlog.save()
           return HttpResponse("OK")
+
+
 
 
