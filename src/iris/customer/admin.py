@@ -22,7 +22,7 @@ def speeds(speeds):
         decodejson = json.loads(resp)
         if decodejson:
             for log in decodejson:
-                url = models.Url.objects.get(id = int(log['key']))
+                url = models.Url.objects.get(id = int(log['pk']))
                 str += '%s:(%d%s)<br>'%(url.title,log['speed'],'KB/S')
     return str
 speeds.allow_tags = True
