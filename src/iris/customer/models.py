@@ -102,6 +102,7 @@ class Pointlog(models.Model):
     user_agent =  models.CharField(_("User Agent"), max_length=100,blank=True,null=True,)
     create_date = models.DateTimeField(_("Created at"), auto_now_add=True,)
     status = models.IntegerField(verbose_name=_("Status"),default=0,choices=STATUS_PROCESS,max_length=1)
+    result = models.CharField(_('result'),max_length=200,blank=True,null=True,)
     update_date = models.DateTimeField(_("Update at"),auto_now=True,)
 
     class Meta:
@@ -167,7 +168,7 @@ class IndemnityLog (models.Model):
     error_desc =  models.CharField(_("Error_desc"),max_length=100,blank=True,null=True)
     error_code = models.IntegerField(_("Error_code"),max_length=1,blank=True,null=True)
     create_date = models.DateTimeField(_("Created at"), auto_now_add=True)
-    update_date = models.DateTimeField(_("Update at"), auto_now=True,)
+    update_date = models.DateTimeField(_("Update at"), auto_now=True)
     class Meta:
         verbose_name = _("IndemnityLog")
         verbose_name_plural = _("IndemnityLog")
