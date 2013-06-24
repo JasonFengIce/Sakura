@@ -101,6 +101,7 @@ def get_list_users(rpc):
         for obj in  objects:
             customer  = models.Customer()
             customer.name = str(obj['username'])
+            customer.id = int(obj['pk'])
             customer.key = int(obj['pk'])
             customer.save()
         if response['has_more'] != True:
@@ -118,6 +119,7 @@ def get_list_packages(rpc):
         for obj in  response['objects']:
             package  = models.Package()
             package.title = obj['title']
+            package.id = obj['pk']
             package.key = obj['pk']
             package.description = obj['description']
             package.adlet_url = obj['adlet_url']
@@ -140,6 +142,7 @@ def get_list_expenses(rpc):
         for obj in  response['objects']:
             item  = models.Item()
             item.title = obj['title']
+            item.id = obj['pk']
             item.key = obj['pk']
             item.adlet_url = obj['adlet_url']
             item.poster_url = obj['poster_url']
