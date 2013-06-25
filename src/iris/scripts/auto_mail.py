@@ -43,7 +43,7 @@ class AutoMail(object):
         if logs.count()>0:
             from django.core.mail import EmailMessage
             subject, from_email, tos = 'Iris Log '+str(start_date)+' - '+str(end_date), 'iris@ismartv.cn', ['cs@ismartv.cn',]
-            html_content = '<table width="100%"><tr><td bgcolor = red>cause</td><td bgcolor=Fuchsia>ip</td><td bgcolor =Blue>isp</td><td bgcolor = Green>speed</td><td bgcolor = Purple>description</td><td bgcolor = Teal>phone</td><td bgcolor = Maroon>mail</td><td bgcolor = Teal>create_date</td></tr>'
+            html_content = '<table width="100%"><tr><td bgcolor = red>cause</td><td bgcolor = Green>user_agent</td><td bgcolor=Fuchsia>ip</td><td bgcolor =Blue>isp</td><td bgcolor = Green>speed</td><td bgcolor = Purple>description</td><td bgcolor = Teal>phone</td><td bgcolor = Maroon>mail</td><td bgcolor = Teal>create_date</td></tr>'
             html_content += '<h1><a href=\"http://iris.tvxio.com/admin/\" target=\"_blank\">  Login  Iris</a><h1>'
             from iris.customer.models import Point
             from iris.customer.models import Url
@@ -72,6 +72,7 @@ class AutoMail(object):
                 str_speeds += " Average : "+str(speed_t/i)+" KB/s <br>"
                 if n%2 == 0:
                     html_content +="<tr bgcolor=Silver ><td > "+point.name\
+                                    +"</td ><td >"+log.user_agent\
                                    +"</td ><td >"+log.ip\
                                    +"</td><td >"+log.isp\
                                    +"</td><td >"+str_speeds\
@@ -82,6 +83,7 @@ class AutoMail(object):
                                    +"</td></tr>"
                 else:
                      html_content +="<tr bgcolor=White ><td >"+point.name\
+                                    +"</td ><td >"+log.user_agent\
                                    +"</td ><td >"+log.ip\
                                    +"</td><td >"+log.isp\
                                    +"</td><td >"+str_speeds\
