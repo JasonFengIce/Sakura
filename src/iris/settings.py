@@ -1,5 +1,5 @@
 # Django settings for service project.
-
+from django.utils.translation import ugettext, ugettext_lazy as _
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -65,8 +65,7 @@ STATIC_URL = STATIC_BASE_URL+'/static/'
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = STATIC_BASE_URL+'/static/admin/'
-
+ADMIN_MEDIA_PREFIX = STATIC_URL + 'grappelli/'
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
@@ -114,13 +113,27 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
+    'grappelli.dashboard',
+    'grappelli',
+    'filebrowser',
     'django.contrib.admin',
+    'gunicorn',
     'djangorestframework',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'iris.customer',
 )
-
+# List of processors used by RequestContext to populate the context.
+# Each one should be a callable that takes the request object as its
+# only parameter and returns a dictionary to add to the context.
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    'django.contrib.messages.context_processors.messages',
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.request",
+    )
 # Name and email addresses of recipients
 ADMINS = (
     ("CMS R&D", "cms_group@ismartv.cn"),
@@ -164,6 +177,10 @@ LOGGING = {
         }
     }
 }
+
+GRAPPELLI_ADMIN_TITLE = _('CustomerService Management System')
+GRAPPELLI_INDEX_DASHBOARD = 'iris.dashboard.CustomIndexDashboard'
+
 try:
     from local_settings import *
 except ImportError, exp:

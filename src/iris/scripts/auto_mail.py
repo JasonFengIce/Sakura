@@ -4,10 +4,8 @@ import os
 sys.path.append((os.path.realpath(sys.argv[0]).rpartition('/')[0] or '.') + '/../lib')
 from django.core.management import setup_environ
 
-
 import time
-import datetime
-from time import localtime,strftime
+from time import localtime
 TIME = 3600
 
 def init():
@@ -30,9 +28,9 @@ class AutoMail(object):
     def send_mail(self):
         from django.core.mail import send_mail
         send_mail('Subject here', 'Here is the message.', 'git_cord@ismartv.cn',    ['liuze@ismartv.cn',], fail_silently=False)
-    def send_email_message(self):
-        from django.core.mail import EmailMessage
-        email = EmailMessage('Hello', 'Body goes here', 'git_cord@ismartv.cn',['to1@example.com', 'to2@example.com'], ['bcc@example.com'],headers = {'Reply-To': 'another@example.com'})
+#    def send_email_message(self):
+#        from django.core.mail import EmailMessage
+#        email = EmailMessage('Hello', 'Body goes here', 'git_cord@ismartv.cn',['to1@example.com', 'to2@example.com'], ['bcc@example.com'],headers = {'Reply-To': 'another@example.com'})
     def send_emailMultiAlternatives(self):
         from django.core.mail import EmailMultiAlternatives
         subject, from_email, to = 'hello', 'from@example.com', 'to@example.com'
@@ -43,10 +41,9 @@ class AutoMail(object):
         msg.send()
     def send_EmailMessage(self,logs,start_date,end_date):
         if logs.count()>0:
-            import json
             from django.core.mail import EmailMessage
             subject, from_email, tos = 'Iris Log '+str(start_date)+' - '+str(end_date), 'iris@ismartv.cn', ['cs@ismartv.cn',]
-            html_content = '<table width="100%"><tr><td bgcolor = red>cause</td><td bgcolor=Fuchsia>ip</td><td bgcolor =Blue>isp</td><td bgcolor = Green>speed</td><td bgcolor = Purple>description</td><td bgcolor = Teal>phone</td><td bgcolor = Maroon>mail</td><td bgcolor = Teal>create_date</td></tr>'
+            html_content = '<table width="100%"><tr><td bgcolor = red>cause</td><td bgcolor = Green>user_agent</td><td bgcolor=Fuchsia>ip</td><td bgcolor =Blue>isp</td><td bgcolor = Green>speed</td><td bgcolor = Purple>description</td><td bgcolor = Teal>phone</td><td bgcolor = Maroon>mail</td><td bgcolor = Teal>create_date</td></tr>'
             html_content += '<h1><a href=\"http://iris.tvxio.com/admin/\" target=\"_blank\">  Login  Iris</a><h1>'
             from iris.customer.models import Point
             from iris.customer.models import Url
@@ -55,7 +52,6 @@ class AutoMail(object):
             mail = 0
             phone_and_mail = 0
             count = len(logs)
-            no_contact = 0
             for log in logs:
                 n+=1
                 point = Point.objects.get(id = log.point)
@@ -71,12 +67,12 @@ class AutoMail(object):
                         title = Url.objects.get(id=pk).title
                     except :
                         title = 'none'
-#                    print pk
                     speed_t += int(speed['speed'])
                     str_speeds += " NO."+ title +" : "+str(int(speed['speed']))+" KB/s <br>"
                 str_speeds += " Average : "+str(speed_t/i)+" KB/s <br>"
                 if n%2 == 0:
                     html_content +="<tr bgcolor=Silver ><td > "+point.name\
+                                    +"</td ><td >"+log.user_agent\
                                    +"</td ><td >"+log.ip\
                                    +"</td><td >"+log.isp\
                                    +"</td><td >"+str_speeds\
@@ -87,6 +83,7 @@ class AutoMail(object):
                                    +"</td></tr>"
                 else:
                      html_content +="<tr bgcolor=White ><td >"+point.name\
+                                    +"</td ><td >"+log.user_agent\
                                    +"</td ><td >"+log.ip\
                                    +"</td><td >"+log.isp\
                                    +"</td><td >"+str_speeds\
@@ -112,7 +109,7 @@ class AutoMail(object):
             msg = EmailMessage(subject, html, from_email, tos)
             msg.content_subtype = "html" # Main content is now text/html
             msg.send()
-        
+
 import threading
 class Timer(threading.Thread):
         def __init__(self, seconds):

@@ -3,7 +3,7 @@ from djangorestframework.views import *
 from django.utils import simplejson as json
 from django.http import HttpResponse
 from . import models
-
+import datetime
 
 class PointsView(View):
    def get(self, request):
@@ -102,15 +102,31 @@ class Pointlogs(View):
           pointlog.user_agent = user_agent
           pointlog.location  = j['location']
           pointlog.speeds  = j['speed']
+#          if  j['option']:
+#              Point = models.Point.objects.get(id== int(j['option']))
+#              if Point:
+#                  pointlog.point = Point
           pointlog.point = j['option']
           pointlog.description = j['description']
           pointlog.phone = j['phone']
           pointlog.mail= j['mail']
-
+          if 'clip'in j and j['clip']:
+                if j['clip']['pk'] and j['clip']['url'] and j['clip']['quality']:
+                    q = models.Quality.objects.filter(key=j['clip']['quality'])
+                    if q:
+                        clip = models.ClipLog.objects.create(key= j['clip']['pk'], url=j['clip']['url'], quality=q[0])
+                        pointlog.clip = clip
           if pointlog.ip!=0  and len(pointlog.ip)>0:
                 logs =   models.Pointlog.objects.filter(ip = pointlog.ip,description = pointlog.description,user_agent = pointlog.user_agent,point = pointlog.point)
-                if  logs.count() == 0:
+                if   logs.count()>0 :
+                    if (datetime.datetime.now() - logs[0].create_date)> datetime.timedelta(hours=1):
+                                pointlog.save()
+                if   logs.count() ==0 :
                         pointlog.save()
+
+
           return HttpResponse("OK")
+
+
 
 
