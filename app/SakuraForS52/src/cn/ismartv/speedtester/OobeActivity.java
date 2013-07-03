@@ -44,6 +44,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import cn.ismartv.speedtester.MainActivity.GetTestUrlRunnable;
+import cn.ismartv.speedtester.domain.FakeNetworkSpeedInfo;
 import cn.ismartv.speedtester.domain.FeedBackEntity;
 import cn.ismartv.speedtester.domain.LocationInfo;
 import cn.ismartv.speedtester.domain.NetworkSpeedInfo;
@@ -106,6 +107,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
 	private String mJsonStr = null;
 	private ArrayList<NetworkSpeedInfo> mNetworkSpeedInfoList = null;
 	private NetworkSpeedInfo mCurrentNetworkSpeedInfo = null;
+	private FakeNetworkSpeedInfo mCurrFakeNetworkSpeedInfo = null;
 	private ArrayList<SpeedInfoUploadEntity> mCurrentSpeedTestResults = null;
 	private FeedBackEntity mFeedBackEntity= null;
 	
@@ -254,22 +256,13 @@ public class OobeActivity extends Activity implements OnKeyListener {
 				} else {
 					mCurrentNetworkSpeedInfo.timeEscalpsed = SystemClock.uptimeMillis() - mCurrentNetworkSpeedInfo.timeStarted;
 					mCurrentNetworkSpeedInfo.speed = (float)mCurrentNetworkSpeedInfo.filesizeFinished / (float)mCurrentNetworkSpeedInfo.timeEscalpsed * 1000.0F / 1024.0F;
-//					float currentSpeed = mCurrentNetworkSpeedInfo.speed;
-//					String currentUnit = mResources.getString(R.string.speed_unit_kb); 
-//					if(currentSpeed > 1024){
-//						currentSpeed = currentSpeed / 1024.0F;
-//						currentUnit = mResources.getString(R.string.speed_unit_mb);
-//					} else if( currentSpeed < 1) {
-//						currentSpeed = currentSpeed * 1024.0F;
-//						currentUnit = mResources.getString(R.string.speed_unit_byte);
-//					}
-//					currentSpeed = (float)((int)(currentSpeed * 100F))/100F;
+					mCurrFakeNetworkSpeedInfo.setSpeed(mCurrentNetworkSpeedInfo.speed);
 					mCurrentProgressBar.setProgress((int)mCurrentNetworkSpeedInfo.timeEscalpsed);
-					updateSpeedIndicatorText(mCurrentNetworkSpeedInfo.speed);
+					updateSpeedIndicatorText(mCurrFakeNetworkSpeedInfo.speed);
 					counter++;
 					if(counter%2==0){
 //						Log.d("counter", ""+counter);
-						float speed = mCurrentNetworkSpeedInfo.speed < 2000?mCurrentNetworkSpeedInfo.speed:2000;
+						float speed = mCurrFakeNetworkSpeedInfo.speed < 2000?mCurrFakeNetworkSpeedInfo.speed:2000;
 						mDashBoardPointer.updatePointer(speed, 400);
 					}
 				}
@@ -446,10 +439,11 @@ public class OobeActivity extends Activity implements OnKeyListener {
     	/*
     	 * according to averageSpeed give advice to user. show a bandwidth indicator and tip text.
     	 */
+    	float fakeAverageSpeed = averageSpeed * 0.8f;
     	if(isSetting){
-    		showSpeedResults(averageSpeed, 41, 151, 831);
+    		showSpeedResults(fakeAverageSpeed, 41, 151, 831);
     	} else {
-    		showSpeedResults(averageSpeed, 71, 193, 1109);
+    		showSpeedResults(fakeAverageSpeed, 71, 193, 1109);
     	}
     
     	Gson gson = new Gson();
@@ -604,6 +598,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
     protected void startToTest() {
     	mTestState = TEST_STATE_TESTING;
     	mCurrentNetworkSpeedInfo = mNetworkSpeedInfoList.get(mCurrentPosition);
+    	mCurrFakeNetworkSpeedInfo = new FakeNetworkSpeedInfo();
     	mCurrentStateShowArea.setVisibility(View.VISIBLE);
 //    	mAverageSpeedShowText.setVisibility(View.INVISIBLE);
     	mTestResultArea.setVisibility(View.INVISIBLE);

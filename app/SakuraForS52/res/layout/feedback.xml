@@ -237,7 +237,7 @@
                 android:textSize="35sp"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
-                android:maxWidth="150sp"
+                android:maxWidth="190sp"
                 android:ellipsize="marquee"
                 android:layout_marginLeft="5dip"
                 android:layout_marginTop="5dip"
