@@ -1,4 +1,4 @@
-package tv.ismar.speedtester.facilities;
+package cn.ismartv.speedtester.facilities;
 
 import java.util.concurrent.ExecutorService;
 

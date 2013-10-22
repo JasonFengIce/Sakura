@@ -1,4 +1,4 @@
-package tv.ismar.speedtester.models;
+package cn.ismartv.speedtester.models;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,9 +6,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import cn.ismartv.speedtester.AppConstant;
+import cn.ismartv.speedtester.facilities.Export;
+
 import com.google.gson.annotations.Expose;
 
-import tv.ismar.speedtester.AppConstant;
 
 import android.os.Handler;
 import android.os.Message;
@@ -27,12 +29,12 @@ public class NetworkSpeedInfo {
 	
 	public int filesize;
 	public int filesizeFinished;
-	
-	@Expose
+	@Export
 	public float speed;
 	public long timeStarted;
 	public long timeEscalpsed;
 	@Expose
+	@Export
 	public String pk;
 	@Expose
 	public String title;
@@ -57,6 +59,8 @@ public class NetworkSpeedInfo {
 		try {
 			fileUrl = new URL(url);
 			conn = (HttpURLConnection) fileUrl.openConnection();
+			conn.setReadTimeout(15000);
+			conn.setConnectTimeout(15000);
 			realUrl = conn.getURL().toString();
 			filesize = conn.getContentLength();
 			stream = conn.getInputStream();

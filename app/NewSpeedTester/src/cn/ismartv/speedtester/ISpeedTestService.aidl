@@ -1,7 +1,7 @@
 // ISpeedTestService.aidl
-package tv.ismar.speedtester;
+package cn.ismartv.speedtester;
 
-import tv.ismar.speedtester.ISpeedTestCallback;
+import cn.ismartv.speedtester.ISpeedTestCallback;
 
 /*
  * Copyright by iSmartv Inc.
@@ -22,6 +22,10 @@ interface ISpeedTestService {
 	 */
 	void prepareSpeedTest();
 	
+	/**
+	 * Start a speed test task. this method must be called after test data was  ready.
+	 */
+	void startTest();
 	/**
 	 * Get the current progress represents by a integer with a range from 0 to 100.
 	 * this is the progress of current step.
