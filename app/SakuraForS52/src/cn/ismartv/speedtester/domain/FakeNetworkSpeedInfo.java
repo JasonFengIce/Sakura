@@ -1,7 +1,7 @@
 package cn.ismartv.speedtester.domain;
 
-public class FakeNetworkSpeedInfo extends NetworkSpeedInfo {
+public class FakeNetWorkSpeedInfo extends NetworkSpeedInfo {
 	public void setSpeed(float speed) {
-		this.speed = speed * 0.8f;
+		this.speed = 0.8f * speed;
 	}
 }

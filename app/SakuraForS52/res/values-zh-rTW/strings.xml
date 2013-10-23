@@ -51,7 +51,7 @@
     <string name="your_avg_speed_is">當前網路環境下，下載速度可達</string>
     <string name="dialog_msg_canceling">正在取消&#8230;</string>
     <string name="you_can_use_voice_input">您可以使用語音輸入</string>
-    <string name="quit">離開</string>
+    <string name="quit">離&#160;&#160;開</string>
     <string name="modem">64K撥號網路</string>
     <string name="t1">專線</string>
     <string name="your_bandwidth">你的網速</string>
