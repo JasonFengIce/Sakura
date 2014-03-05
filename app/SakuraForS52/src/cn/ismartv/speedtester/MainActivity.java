@@ -34,9 +34,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.View.OnHoverListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
@@ -54,7 +56,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+import cn.ismartv.speedtester.domain.ClipInfo;
 import cn.ismartv.speedtester.domain.EngKeyEntity;
+import cn.ismartv.speedtester.domain.FakeNetWorkSpeedInfo;
 import cn.ismartv.speedtester.domain.FeedBackEntity;
 import cn.ismartv.speedtester.domain.FeedBackProblemEntity;
 import cn.ismartv.speedtester.domain.LocationInfo;
@@ -95,8 +99,6 @@ public class MainActivity extends Activity {
 	private Thread mDownloaderThread = null;
     private GetTestUrlRunnable mGetTestUrlRunnable = null;
 
-	private RemoteController mRemoteController;
-	
 	private LayoutInflater mInflater;
 	
 //	private TextView mCurrentStepNumber;
@@ -140,9 +142,12 @@ public class MainActivity extends Activity {
 	private String mJsonStr = null;
 	private ArrayList<NetworkSpeedInfo> mNetworkSpeedInfoList = null;
 	private NetworkSpeedInfo mCurrentNetworkSpeedInfo = null;
+	private FakeNetWorkSpeedInfo mCurrFakeNetWorkSpeedInfo = null;
 	private ArrayList<SpeedInfoUploadEntity> mCurrentSpeedTestResults = null;
 	private ArrayList<FeedBackProblemEntity> mFeedBackProblemEntities = null;
 	private FeedBackEntity mFeedBackEntity= null;
+	
+	private ClipInfo mClipInfo = new ClipInfo();
 	
 	private int mTestState = TEST_STATE_IDLE;
 	private int mCurrentPosition = 0;
@@ -284,23 +289,14 @@ public class MainActivity extends Activity {
 				} else {
 					mCurrentNetworkSpeedInfo.timeEscalpsed = SystemClock.uptimeMillis() - mCurrentNetworkSpeedInfo.timeStarted;
 					mCurrentNetworkSpeedInfo.speed = (float)mCurrentNetworkSpeedInfo.filesizeFinished / (float)mCurrentNetworkSpeedInfo.timeEscalpsed * 1000.0F / 1024.0F;
-//					float currentSpeed = mCurrentNetworkSpeedInfo.speed;
-//					String currentUnit = mResources.getString(R.string.speed_unit_kb); 
-//					if(currentSpeed > 1024){
-//						currentSpeed = currentSpeed / 1024.0F;
-//						currentUnit = mResources.getString(R.string.speed_unit_mb);
-//					} else if( currentSpeed < 1) {
-//						currentSpeed = currentSpeed * 1024.0F;
-//						currentUnit = mResources.getString(R.string.speed_unit_byte);
-//					}
-//					currentSpeed = (float)((int)(currentSpeed * 100F))/100F;
+					mCurrFakeNetWorkSpeedInfo.setSpeed(mCurrentNetworkSpeedInfo.speed);
 					mCurrentProgressBar.setProgress((int)mCurrentNetworkSpeedInfo.timeEscalpsed);
-					updateSpeedIndicatorText(mCurrentNetworkSpeedInfo.speed);
+					updateSpeedIndicatorText(mCurrFakeNetWorkSpeedInfo.speed);
 					mDetailAdapter.notifyDataSetChanged();
 					counter++;
 					if(counter%2==0){
 //						Log.d("counter", ""+counter);
-						float speed = mCurrentNetworkSpeedInfo.speed < 2000?mCurrentNetworkSpeedInfo.speed:2000;
+						float speed = mCurrFakeNetWorkSpeedInfo.speed < 2000?mCurrFakeNetWorkSpeedInfo.speed:2000;
 						mDashBoardPointer.updatePointer(speed, 400);
 					}
 				}
@@ -362,11 +358,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
         mResources = getResources();
         
-//        Intent incomingIntent = getIntent();
-//        String incomingAction = incomingIntent.getAction();
-//        if("cn.ismartv.speedtester.settings".equals(incomingAction)){
-//        	isSetting = true;
-//        }
+        Intent incomingIntent = getIntent();
+        String incomingAction = incomingIntent.getAction();
+        if("cn.ismartv.speedtester.feedback".equals(incomingAction)){
+        	mClipInfo.pk = incomingIntent.getIntExtra("clipId", 0);
+        	mClipInfo.url = incomingIntent.getStringExtra("url");
+        	mClipInfo.quality = incomingIntent.getStringExtra("quality");
+        }
         
         mLeftSide = (LinearLayout)findViewById(R.id.left_side);
 
@@ -386,6 +384,7 @@ public class MainActivity extends Activity {
         mSpeedActionButton.setOnClickListener(mActionButtonListener);
         mSpeedActionButton.setOnKeyListener(mButtonOnKeyListener);
         mSpeedActionButton.setOnFocusChangeListener(mFeedBackFocusListener);
+        mSpeedActionButton.setOnHoverListener(mButtonHoverListener);
         
         LinearLayout speedIndicator = (LinearLayout)findViewById(R.id.speed_indicator);
         int speedIndicatorChildCount = speedIndicator.getChildCount();
@@ -400,6 +399,7 @@ public class MainActivity extends Activity {
         mResetButton = (Button)findViewById(R.id.reset_button);
         mResetButton.setOnClickListener(mActionButtonListener);
         mResetButton.setOnFocusChangeListener(mFeedBackFocusListener);
+        mResetButton.setOnHoverListener(mButtonHoverListener);
         
         mAverageSpeedShowText = (TextView)findViewById(R.id.average_speed_text);
         mAverageBandwidthIndicator = (ProgressBar)findViewById(R.id.average_bandwidth_indicator);
@@ -433,6 +433,8 @@ public class MainActivity extends Activity {
         mFeedBackVerifyRadioGroup = (RadioGroup)findViewById(R.id.feedback_verify_options);
         mFeedBackVerifyRadioGroup.getChildAt(0).setOnFocusChangeListener(mOnFocusChangeListener);
         mFeedBackVerifyRadioGroup.getChildAt(1).setOnFocusChangeListener(mOnFocusChangeListener);
+        mFeedBackVerifyRadioGroup.getChildAt(0).setOnHoverListener(mButtonHoverListener);
+        mFeedBackVerifyRadioGroup.getChildAt(1).setOnHoverListener(mButtonHoverListener);
         
         mSubmit = (Button)findViewById(R.id.button_submit);
         mQuit = (Button)findViewById(R.id.button_quit);
@@ -444,6 +446,11 @@ public class MainActivity extends Activity {
 				
 			}
 		});
+        mQuit.setOnFocusChangeListener(mOnFocusChangeListener);
+        mSubmit.setOnFocusChangeListener(mOnFocusChangeListener);
+        mQuit.setOnHoverListener(mButtonHoverListener);
+        mSubmit.setOnHoverListener(mButtonHoverListener);
+        
         mSnShowTextView = (TextView)findViewById(R.id.sn_show);
         mSnShowTextView.setText("SN: "+android.os.Build.SERIAL);
         
@@ -483,8 +490,10 @@ public class MainActivity extends Activity {
 		
 		public void onFocusChange(View v, boolean hasFocus) {
 			if(hasFocus){
+				mSpeedActionButton.setSelected(true);
 				mFeedBackArea.setBackgroundResource(R.drawable.feedback_bg1);
 			} else {
+				mSpeedActionButton.setSelected(false);
 				mFeedBackArea.setBackgroundResource(R.drawable.feedback_bg2);
 			}
 		}
@@ -557,9 +566,10 @@ public class MainActivity extends Activity {
     	/*
     	 * according to averageSpeed give advice to user. show a bandwidth indicator and tip text.
     	 */
-    	showSpeedResults(averageSpeed);
+    	float fakeAverageSpeed = averageSpeed * 0.8f;
+    	showSpeedResults(fakeAverageSpeed);
     
-    	mDetailPanelAvgSpeed.setText(mResources.getString(R.string.your_avg_speed_is)+" "+String.valueOf(averageSpeed)+"KB/s");
+    	mDetailPanelAvgSpeed.setText(mResources.getString(R.string.your_avg_speed_is)+" "+String.valueOf(fakeAverageSpeed)+"KB/s");
     	Gson gson = new Gson();
     	Type listType = new TypeToken<List<SpeedInfoUploadEntity>>(){}.getType();
     	try {
@@ -717,6 +727,7 @@ public class MainActivity extends Activity {
     protected void startToTest() {
     	mTestState = TEST_STATE_TESTING;
     	mCurrentNetworkSpeedInfo = mNetworkSpeedInfoList.get(mCurrentPosition);
+    	mCurrFakeNetWorkSpeedInfo = new FakeNetWorkSpeedInfo();
     	mCurrentStateShowArea.setVisibility(View.VISIBLE);
 //    	mAverageSpeedShowText.setVisibility(View.INVISIBLE);
     	mTestResultArea.setVisibility(View.INVISIBLE);
@@ -920,7 +931,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause() {
 		saveInfo();
-		hideCursor(false);
 		mTestState = TEST_STATE_IDLE;
 		mDownloadHandler.removeCallbacks(downloadFileTask);
 		mTimingHandler.removeCallbacks(updateStatusTask);
@@ -931,7 +941,6 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		hideCursor(true);
 		Log.d("UI","Resumed");
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo[] networkInfos = connectivityManager.getAllNetworkInfo();
@@ -963,17 +972,7 @@ public class MainActivity extends Activity {
 		super.onResume();
 	}
 	
-	public void hideCursor(boolean hide){
-		if(mRemoteController==null){
-			mRemoteController = (RemoteController)getSystemService(Context.REMOTECONTROLLER_SERVICE);
-		}
-		if(hide){
-			mRemoteController.setRcGestureOnly();
-			mRemoteController.displayCursor(false);
-		} else {
-			mRemoteController.setDefaultMode();
-		}
-	}
+
 	
 	class GetFeedBackInfo extends AsyncTask<Integer, Void, Integer> {
 
@@ -1095,6 +1094,7 @@ public class MainActivity extends Activity {
 						radioButton.setText(entity.point_name+"  ");
 						radioButton.setId(entity.point_id);
 						radioButton.setOnFocusChangeListener(mOnFocusChangeListener);
+						radioButton.setOnHoverListener(mButtonHoverListener);
 						radioButton.setLayoutParams(layoutParams);
 						mProblemOptionsRadioGroup.addView(radioButton);
 						if(i==max){
@@ -1130,9 +1130,15 @@ public class MainActivity extends Activity {
 		
 		public void onFocusChange(View v, boolean hasFocus) {
 			if(hasFocus){
-				((RadioButton)v).setTextColor(0xFF55E1FF);
+				v.setSelected(true);
+				if(v.getId() != R.id.button_quit && v.getId() != R.id.button_submit) {
+					((RadioButton)v).setTextColor(0xFF55E1FF);
+				}
 			} else {
-				((RadioButton)v).setTextColor(0xFFFFFFFF);
+				v.setSelected(false);
+				if(v.getId() != R.id.button_quit && v.getId() != R.id.button_submit) {
+					((RadioButton)v).setTextColor(0xFFFFFFFF);
+				}
 			}
 		}
 	};
@@ -1190,7 +1196,14 @@ public class MainActivity extends Activity {
 //				mFeedBackEntity.location = NetworkUtils.charEncoder(mFeedBackEntity.location);
 //				mFeedBackEntity.isp = NetworkUtils.charEncoder(mFeedBackEntity.isp);
 				String entityJson = gson.toJson(mFeedBackEntity);
-				String json = entityJson.substring(0, entityJson.length()-1)+",\"speed\":"+speedJson+"}";
+				String json = null;
+				if(mClipInfo.pk!=0 || mClipInfo.quality != null || mClipInfo.url != null) {
+					String clipJson = gson.toJson(mClipInfo);
+					json = entityJson.substring(0, entityJson.length()-1)+",\"speed\":"+speedJson+",\"clip\":"+clipJson+"}";
+				} else {
+					json = entityJson.substring(0, entityJson.length()-1)+",\"speed\":"+speedJson+"}";
+				}
+				
 				new UploadTask().execute(json, domain + "/customer/pointlogs/");
 				View layout = mInflater.inflate(R.layout.submit_toast, (ViewGroup)findViewById(R.id.toast_layout_root));
 				Toast toast = new Toast(MainActivity.this);
@@ -1275,4 +1288,37 @@ public class MainActivity extends Activity {
 		toast.setView(layout);
 		toast.show();
 	}
+
+	@Override
+	public boolean dispatchGenericMotionEvent(MotionEvent ev) {
+		View v = this.getCurrentFocus();
+		if(v!=null && !v.isHovered() && ev.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
+			v.setSelected(false);
+		}
+		return super.dispatchGenericMotionEvent(ev);
+	}
+	
+	private OnHoverListener mButtonHoverListener = new OnHoverListener() {
+		
+		@Override
+		public boolean onHover(View v, MotionEvent event) {
+			switch(event.getAction()) {
+			case MotionEvent.ACTION_HOVER_ENTER:
+				v.setSelected(true);
+				v.requestFocusFromTouch();
+				break;
+			case MotionEvent.ACTION_HOVER_EXIT:
+				v.setSelected(false);
+				break;
+			case MotionEvent.ACTION_HOVER_MOVE:
+				if(!v.isSelected()) {
+					v.setSelected(true);
+					v.requestFocusFromTouch();
+				}
+				break;
+			}
+			return false;
+		}
+	};
+	
 }

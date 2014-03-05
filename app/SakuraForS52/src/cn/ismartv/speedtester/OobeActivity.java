@@ -34,8 +34,11 @@ import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
+import android.view.View.OnHoverListener;
 import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -44,6 +47,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import cn.ismartv.speedtester.MainActivity.GetTestUrlRunnable;
+import cn.ismartv.speedtester.domain.FakeNetWorkSpeedInfo;
 import cn.ismartv.speedtester.domain.FeedBackEntity;
 import cn.ismartv.speedtester.domain.LocationInfo;
 import cn.ismartv.speedtester.domain.NetworkSpeedInfo;
@@ -82,8 +86,6 @@ public class OobeActivity extends Activity implements OnKeyListener {
 	private Thread mDownloaderThread = null;
 	private GetTestUrlRunnable mGetTestUrlRunnable = null;
 	
-	private RemoteController mRemoteController;
-	
 	private LayoutInflater mInflater;
 	
 //	private TextView mCurrentStepNumber;
@@ -106,6 +108,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
 	private String mJsonStr = null;
 	private ArrayList<NetworkSpeedInfo> mNetworkSpeedInfoList = null;
 	private NetworkSpeedInfo mCurrentNetworkSpeedInfo = null;
+	private FakeNetWorkSpeedInfo mCurrFakeNetWorkSpeedInfo = null;
 	private ArrayList<SpeedInfoUploadEntity> mCurrentSpeedTestResults = null;
 	private FeedBackEntity mFeedBackEntity= null;
 	
@@ -254,22 +257,13 @@ public class OobeActivity extends Activity implements OnKeyListener {
 				} else {
 					mCurrentNetworkSpeedInfo.timeEscalpsed = SystemClock.uptimeMillis() - mCurrentNetworkSpeedInfo.timeStarted;
 					mCurrentNetworkSpeedInfo.speed = (float)mCurrentNetworkSpeedInfo.filesizeFinished / (float)mCurrentNetworkSpeedInfo.timeEscalpsed * 1000.0F / 1024.0F;
-//					float currentSpeed = mCurrentNetworkSpeedInfo.speed;
-//					String currentUnit = mResources.getString(R.string.speed_unit_kb); 
-//					if(currentSpeed > 1024){
-//						currentSpeed = currentSpeed / 1024.0F;
-//						currentUnit = mResources.getString(R.string.speed_unit_mb);
-//					} else if( currentSpeed < 1) {
-//						currentSpeed = currentSpeed * 1024.0F;
-//						currentUnit = mResources.getString(R.string.speed_unit_byte);
-//					}
-//					currentSpeed = (float)((int)(currentSpeed * 100F))/100F;
+					mCurrFakeNetWorkSpeedInfo.setSpeed(mCurrentNetworkSpeedInfo.speed);
 					mCurrentProgressBar.setProgress((int)mCurrentNetworkSpeedInfo.timeEscalpsed);
-					updateSpeedIndicatorText(mCurrentNetworkSpeedInfo.speed);
+					updateSpeedIndicatorText(mCurrFakeNetWorkSpeedInfo.speed);
 					counter++;
 					if(counter%2==0){
 //						Log.d("counter", ""+counter);
-						float speed = mCurrentNetworkSpeedInfo.speed < 2000?mCurrentNetworkSpeedInfo.speed:2000;
+						float speed = mCurrFakeNetWorkSpeedInfo.speed < 2000?mCurrFakeNetWorkSpeedInfo.speed:2000;
 						mDashBoardPointer.updatePointer(speed, 400);
 					}
 				}
@@ -347,6 +341,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
         if(!isSetting) {
         	mSpeedActionButton.setOnKeyListener(mGlobalOnKeyListener);
         }
+        mSpeedActionButton.setOnFocusChangeListener(mOnFocusChangeListener);
         if(!isSetting){
 	        mBackButton = (Button)findViewById(R.id.oobe_back_btn);
 	        mBackButton.setOnClickListener(new OnClickListener() {
@@ -401,6 +396,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
         if(isSetting) {
         	try {
         		mDisappearTime = Settings.System.getInt(getContentResolver(), "menu_disappear_time");
+        		Log.d("OobeActivity", "disappear time=" + mDisappearTime);
         		if(mDisappearTime!=0) {
         			mExpiredHandler.post(mExpiredTimer);
         		}
@@ -410,6 +406,14 @@ public class OobeActivity extends Activity implements OnKeyListener {
 			}
         }
 	}
+	
+	private OnFocusChangeListener mOnFocusChangeListener = new OnFocusChangeListener() {
+		
+		@Override
+		public void onFocusChange(View v, boolean hasFocus) {
+			v.setSelected(hasFocus);
+		}
+	};
 
 	private OnKeyListener mGlobalOnKeyListener = new OnKeyListener() {
 		
@@ -446,10 +450,11 @@ public class OobeActivity extends Activity implements OnKeyListener {
     	/*
     	 * according to averageSpeed give advice to user. show a bandwidth indicator and tip text.
     	 */
+    	float fakeAverageSpeed = averageSpeed * 0.8f;
     	if(isSetting){
-    		showSpeedResults(averageSpeed, 41, 151, 831);
+    		showSpeedResults(fakeAverageSpeed, 41, 151, 831);
     	} else {
-    		showSpeedResults(averageSpeed, 71, 193, 1109);
+    		showSpeedResults(fakeAverageSpeed, 71, 193, 1109);
     	}
     
     	Gson gson = new Gson();
@@ -604,6 +609,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
     protected void startToTest() {
     	mTestState = TEST_STATE_TESTING;
     	mCurrentNetworkSpeedInfo = mNetworkSpeedInfoList.get(mCurrentPosition);
+    	mCurrFakeNetWorkSpeedInfo = new FakeNetWorkSpeedInfo();
     	mCurrentStateShowArea.setVisibility(View.VISIBLE);
 //    	mAverageSpeedShowText.setVisibility(View.INVISIBLE);
     	mTestResultArea.setVisibility(View.INVISIBLE);
@@ -784,7 +790,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
 
 	@Override
 	protected void onPause() {
-		hideCursor(false);
+//		hideCursor(false);
 		mTestState = TEST_STATE_IDLE;
 		mDownloadHandler.removeCallbacks(downloadFileTask);
 		mTimingHandler.removeCallbacks(updateStatusTask);
@@ -795,7 +801,6 @@ public class OobeActivity extends Activity implements OnKeyListener {
 
 	@Override
 	protected void onResume() {
-		hideCursor(true);
 		Log.d("UI","Resumed");
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo[] networkInfos = connectivityManager.getAllNetworkInfo();
@@ -826,19 +831,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
         }
 		super.onResume();
 	}
-	
-	public void hideCursor(boolean hide){
-		if(mRemoteController==null){
-			mRemoteController = (RemoteController)getSystemService(Context.REMOTECONTROLLER_SERVICE);
-		}
-		if(hide){
-			mRemoteController.setRcGestureOnly();
-			mRemoteController.displayCursor(false);
-		} else {
-			mRemoteController.setDefaultMode();
-		}
-	}
-	
+
 	class GetFeedBackInfo extends AsyncTask<Void, Void, Void> {
 
 		@Override
@@ -1001,7 +994,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
 			// TODO Auto-generated method stub
 			if(mTestState==TEST_STATE_IDLE) {
 				if(mTimeEscaped>=mDisappearTime*10) {
-					Intent newIntent = new Intent("com.lenovo.nebula.settings.services.TvSettingServiceBootReceiver.shutdown");
+					Intent newIntent = new Intent("lenovo.settings.action.finish");
 					OobeActivity.this.sendBroadcast(newIntent);
 					Log.d("Expired", "quit");
 					OobeActivity.this.finish();
@@ -1017,5 +1010,53 @@ public class OobeActivity extends Activity implements OnKeyListener {
 	}; 
 	
 	private Handler mExpiredHandler = new Handler();
+
+
+
+	@Override
+	public boolean onFnKeyUp(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_RC_SETTINGS || keyCode == KeyEvent.KEYCODE_SETTINGS || keyCode == KeyEvent.KEYCODE_RC_SOURCE) {
+			Log.d("OobeActivity", "rc_setting is pressed: "+ (keyCode == KeyEvent.KEYCODE_RC_SETTINGS));
+			Intent intent = new Intent("lenovo.settings.action.finish");
+			this.sendBroadcast(intent);
+			this.finish();
+		}
+		if(keyCode == KeyEvent.KEYCODE_RC_SETTINGS) {
+			return true;
+		} else {
+			return super.onFnKeyUp(keyCode, event);
+		}
+	}
+
+	@Override
+	public boolean dispatchGenericMotionEvent(MotionEvent ev) {
+		View v = this.getCurrentFocus();
+		if(v!=null && !v.isHovered() && ev.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
+			v.setSelected(false);
+		}
+		return super.dispatchGenericMotionEvent(ev);
+	}
 	
+	private OnHoverListener mButtonHoverListener = new OnHoverListener() {
+		
+		@Override
+		public boolean onHover(View v, MotionEvent event) {
+			switch(event.getAction()) {
+			case MotionEvent.ACTION_HOVER_ENTER:
+				v.setSelected(true);
+				v.requestFocusFromTouch();
+				break;
+			case MotionEvent.ACTION_HOVER_EXIT:
+				v.setSelected(false);
+				break;
+			case MotionEvent.ACTION_HOVER_MOVE:
+				if(!v.isSelected()) {
+					v.setSelected(true);
+					v.requestFocusFromTouch();
+				}
+				break;
+			}
+			return false;
+		}
+	};
 }

@@ -54,7 +54,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+import cn.ismartv.speedtester.domain.ClipInfo;
 import cn.ismartv.speedtester.domain.EngKeyEntity;
+import cn.ismartv.speedtester.domain.FakeNetWorkSpeedInfo;
 import cn.ismartv.speedtester.domain.FeedBackEntity;
 import cn.ismartv.speedtester.domain.FeedBackProblemEntity;
 import cn.ismartv.speedtester.domain.LocationInfo;
@@ -140,9 +142,12 @@ public class MainActivity extends Activity {
 	private String mJsonStr = null;
 	private ArrayList<NetworkSpeedInfo> mNetworkSpeedInfoList = null;
 	private NetworkSpeedInfo mCurrentNetworkSpeedInfo = null;
+	private FakeNetWorkSpeedInfo mCurrFakeNetWorkSpeedInfo = null;
 	private ArrayList<SpeedInfoUploadEntity> mCurrentSpeedTestResults = null;
 	private ArrayList<FeedBackProblemEntity> mFeedBackProblemEntities = null;
 	private FeedBackEntity mFeedBackEntity= null;
+	
+	private ClipInfo mClipInfo = new ClipInfo();
 	
 	private int mTestState = TEST_STATE_IDLE;
 	private int mCurrentPosition = 0;
@@ -284,23 +289,14 @@ public class MainActivity extends Activity {
 				} else {
 					mCurrentNetworkSpeedInfo.timeEscalpsed = SystemClock.uptimeMillis() - mCurrentNetworkSpeedInfo.timeStarted;
 					mCurrentNetworkSpeedInfo.speed = (float)mCurrentNetworkSpeedInfo.filesizeFinished / (float)mCurrentNetworkSpeedInfo.timeEscalpsed * 1000.0F / 1024.0F;
-//					float currentSpeed = mCurrentNetworkSpeedInfo.speed;
-//					String currentUnit = mResources.getString(R.string.speed_unit_kb); 
-//					if(currentSpeed > 1024){
-//						currentSpeed = currentSpeed / 1024.0F;
-//						currentUnit = mResources.getString(R.string.speed_unit_mb);
-//					} else if( currentSpeed < 1) {
-//						currentSpeed = currentSpeed * 1024.0F;
-//						currentUnit = mResources.getString(R.string.speed_unit_byte);
-//					}
-//					currentSpeed = (float)((int)(currentSpeed * 100F))/100F;
+					mCurrFakeNetWorkSpeedInfo.setSpeed(mCurrentNetworkSpeedInfo.speed);
 					mCurrentProgressBar.setProgress((int)mCurrentNetworkSpeedInfo.timeEscalpsed);
-					updateSpeedIndicatorText(mCurrentNetworkSpeedInfo.speed);
+					updateSpeedIndicatorText(mCurrFakeNetWorkSpeedInfo.speed);
 					mDetailAdapter.notifyDataSetChanged();
 					counter++;
 					if(counter%2==0){
 //						Log.d("counter", ""+counter);
-						float speed = mCurrentNetworkSpeedInfo.speed < 2000?mCurrentNetworkSpeedInfo.speed:2000;
+						float speed = mCurrFakeNetWorkSpeedInfo.speed < 2000?mCurrFakeNetWorkSpeedInfo.speed:2000;
 						mDashBoardPointer.updatePointer(speed, 400);
 					}
 				}
@@ -362,11 +358,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
         mResources = getResources();
         
-//        Intent incomingIntent = getIntent();
-//        String incomingAction = incomingIntent.getAction();
-//        if("cn.ismartv.speedtester.settings".equals(incomingAction)){
-//        	isSetting = true;
-//        }
+        Intent incomingIntent = getIntent();
+        String incomingAction = incomingIntent.getAction();
+        if("cn.ismartv.speedtester.feedback".equals(incomingAction)){
+        	mClipInfo.pk = incomingIntent.getIntExtra("clipId", 0);
+        	mClipInfo.url = incomingIntent.getStringExtra("url");
+        	mClipInfo.quality = incomingIntent.getStringExtra("quality");
+        }
         
         mLeftSide = (LinearLayout)findViewById(R.id.left_side);
 
@@ -557,9 +555,10 @@ public class MainActivity extends Activity {
     	/*
     	 * according to averageSpeed give advice to user. show a bandwidth indicator and tip text.
     	 */
-    	showSpeedResults(averageSpeed);
+    	float fakeAverageSpeed = averageSpeed * 0.8f;
+    	showSpeedResults(fakeAverageSpeed);
     
-    	mDetailPanelAvgSpeed.setText(mResources.getString(R.string.your_avg_speed_is)+" "+String.valueOf(averageSpeed)+"KB/s");
+    	mDetailPanelAvgSpeed.setText(mResources.getString(R.string.your_avg_speed_is)+" "+String.valueOf(fakeAverageSpeed)+"KB/s");
     	Gson gson = new Gson();
     	Type listType = new TypeToken<List<SpeedInfoUploadEntity>>(){}.getType();
     	try {
@@ -717,6 +716,7 @@ public class MainActivity extends Activity {
     protected void startToTest() {
     	mTestState = TEST_STATE_TESTING;
     	mCurrentNetworkSpeedInfo = mNetworkSpeedInfoList.get(mCurrentPosition);
+    	mCurrFakeNetWorkSpeedInfo = new FakeNetWorkSpeedInfo();
     	mCurrentStateShowArea.setVisibility(View.VISIBLE);
 //    	mAverageSpeedShowText.setVisibility(View.INVISIBLE);
     	mTestResultArea.setVisibility(View.INVISIBLE);
@@ -1190,7 +1190,14 @@ public class MainActivity extends Activity {
 //				mFeedBackEntity.location = NetworkUtils.charEncoder(mFeedBackEntity.location);
 //				mFeedBackEntity.isp = NetworkUtils.charEncoder(mFeedBackEntity.isp);
 				String entityJson = gson.toJson(mFeedBackEntity);
-				String json = entityJson.substring(0, entityJson.length()-1)+",\"speed\":"+speedJson+"}";
+				String json = null;
+				if(mClipInfo.pk!=0 || mClipInfo.quality != null || mClipInfo.url != null) {
+					String clipJson = gson.toJson(mClipInfo);
+					json = entityJson.substring(0, entityJson.length()-1)+",\"speed\":"+speedJson+",\"clip\":"+clipJson+"}";
+				} else {
+					json = entityJson.substring(0, entityJson.length()-1)+",\"speed\":"+speedJson+"}";
+				}
+				
 				new UploadTask().execute(json, domain + "/customer/pointlogs/");
 				View layout = mInflater.inflate(R.layout.submit_toast, (ViewGroup)findViewById(R.id.toast_layout_root));
 				Toast toast = new Toast(MainActivity.this);
