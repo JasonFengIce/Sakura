@@ -201,7 +201,7 @@ class PointAdmin(admin.ModelAdmin):
     list_display = ('name','hant_name','en_name',)
 
 class PointlogAdmin(admin.ModelAdmin):
-    list_display = (point,'user_agent',speeds , 'description',clip, 'phone', 'mail', 'ip', 'location','isp','create_date','status','result','update_date')
+    list_display = (point,'user_agent',speeds , 'description','phone', 'mail', 'ip', 'location','isp','create_date','status','result','update_date',clip)
     list_editable = ('status',)
     search_fields = ('user_agent','phone','mail','ip','description','location',)
     radio_fields = {'status':admin.HORIZONTAL}
