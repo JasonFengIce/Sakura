@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteController;
 import android.os.SystemClock;
+import android.os.SystemService;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
@@ -36,6 +37,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnHoverListener;
@@ -327,6 +329,12 @@ public class OobeActivity extends Activity implements OnKeyListener {
 		super.onCreate(savedInstanceState);
 		if(isSetting){
 			setContentView(R.layout.settings);
+			WindowManager.LayoutParams params = getWindow().getAttributes();
+			params.x = 228;
+			params.y = -1;
+			params.width = 1110;
+			params.height = 971;
+			getWindow().setAttributes(params);
 		} else {
 			setContentView(R.layout.oobe);
 		}
@@ -338,6 +346,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
         
         mSpeedActionButton = (Button)findViewById(R.id.oobe_action_btn);
         mSpeedActionButton.setOnClickListener(mActionButtonListener);
+        mSpeedActionButton.setOnHoverListener(mButtonHoverListener);
         if(!isSetting) {
         	mSpeedActionButton.setOnKeyListener(mGlobalOnKeyListener);
         }

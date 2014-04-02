@@ -6,6 +6,7 @@ public class LocationInfo {
 	private String province;
 	private String country;
 	private String isp;
+	private String tel; // for customer service telephone
 	public String getIp() {
 		return ip;
 	}
@@ -35,6 +36,12 @@ public class LocationInfo {
 	}
 	public void setIsp(String isp) {
 		this.isp = isp;
+	}
+	public String getTel() {
+		return tel;
+	}
+	public void setTel(String tel) {
+		this.tel = tel;
 	}
 	
 }

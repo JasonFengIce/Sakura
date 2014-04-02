@@ -4,7 +4,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
+import android.view.View.OnHoverListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
@@ -64,9 +67,13 @@ public class CustomDialog extends Dialog {
 					mPositiveListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
 				}
 			});
+			((Button)layout.findViewById(R.id.positive_button)).setOnHoverListener(mButtonHoverListener);
+			((Button)layout.findViewById(R.id.positive_button)).setOnFocusChangeListener(mOnFocusChangeListener);
 			if(mNegativeButtonText!=null){
 				((Button)layout.findViewById(R.id.negative_btn)).setText(mNegativeButtonText);
 			}
+			((Button)layout.findViewById(R.id.negative_btn)).setOnHoverListener(mButtonHoverListener);
+			((Button)layout.findViewById(R.id.negative_btn)).setOnFocusChangeListener(mOnFocusChangeListener);
 			if(mNegativeListener!=null){
 				((Button)layout.findViewById(R.id.negative_btn)).setOnClickListener(new View.OnClickListener() {
 					
@@ -81,5 +88,38 @@ public class CustomDialog extends Dialog {
 			dialog.setContentView(layout);
 			return dialog;
 		}
+		
+		private OnHoverListener mButtonHoverListener = new OnHoverListener() {
+			
+			@Override
+			public boolean onHover(View v, MotionEvent event) {
+				switch(event.getAction()) {
+				case MotionEvent.ACTION_HOVER_ENTER:
+					v.setSelected(true);
+					v.requestFocusFromTouch();
+					break;
+				case MotionEvent.ACTION_HOVER_EXIT:
+					v.setSelected(false);
+					break;
+				case MotionEvent.ACTION_HOVER_MOVE:
+					if(!v.isSelected()) {
+						v.setSelected(true);
+						v.requestFocusFromTouch();
+					}
+					break;
+				}
+				return false;
+			}
+		};
+		
+		private OnFocusChangeListener mOnFocusChangeListener = new OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				v.setSelected(hasFocus);
+			}
+		};
 	}
+	
+	
 }

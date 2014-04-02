@@ -10,6 +10,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -42,6 +44,7 @@ import android.view.View.OnHoverListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -131,6 +134,8 @@ public class MainActivity extends Activity {
 	private Button mQuit;
 	
 	private TextView mSnShowTextView;
+	
+	private String mTel;
 	/**
 	 * Detail panel is a engineer mode panel show details
 	 */
@@ -501,13 +506,20 @@ public class MainActivity extends Activity {
     
     private OnEditorActionListener mEditActionListener = new OnEditorActionListener() {
 		
+    	/* sogou pinyin ime has two bugs here, when click Next Button of the soft keyboard, the actionId == 0.
+    	 * But we expect EditorInfo.IME_ACTION_NEXT.
+    	 * When you specify the imeOptions=actionDone. the soft keyboard only show the carriage return button.
+    	 */
 		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-			if(actionId==0){
-				mImeManager.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
-				return true;
-			} else {
-				return false;
-			}
+			int vid = v.getId();
+//			Log.d("FeedBack", "vid: " + vid + " actionId: " + actionId);
+//			if(vid == R.id.edit_address && actionId == 0) {
+//				Log.d("FeedBack", "next");
+//				findViewById(R.id.feedback_verify_yes).requestFocus();
+//				mImeManager.hideSoftInputFromWindow(getActivityToken(), 0);
+//				return true;
+//			}
+			return false;
 		}
 	};
     private OnKeyListener mButtonOnKeyListener = new OnKeyListener() {
@@ -1057,6 +1069,7 @@ public class MainActivity extends Activity {
 				}
 				if(locationInfo!=null){
 					String ip = locationInfo.getIp();
+					mTel = locationInfo.getTel();
 					if(ip!=null && !"".equals(ip)){
 						mFeedBackEntity.ip = ip;
 					} else {
@@ -1090,8 +1103,9 @@ public class MainActivity extends Activity {
 						RadioButton radioButton = new RadioButton(MainActivity.this);
 						LinearLayout.MarginLayoutParams layoutParams = new LinearLayout.MarginLayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 						layoutParams.setMargins(5, 0, 10, 0);
-						radioButton.setTextSize(35);
+						radioButton.setTextSize(34);
 						radioButton.setText(entity.point_name+"  ");
+						radioButton.setGravity(Gravity.TOP);
 						radioButton.setId(entity.point_id);
 						radioButton.setOnFocusChangeListener(mOnFocusChangeListener);
 						radioButton.setOnHoverListener(mButtonHoverListener);
@@ -1109,6 +1123,9 @@ public class MainActivity extends Activity {
 				}
 				mProblemOptionsRadioGroup.setOnCheckedChangeListener(mOnCheckedChangeListener);
 			} else if(result==2){
+				if(mTel != null) {
+					mCSPhoneValue.setText(mTel);
+				}
 				if(mFeedBackEntity.ip!=null && mFeedBackEntity.ip!=""){
 					mFeedBackIpText.setText(mFeedBackEntity.ip);
 				}
@@ -1175,8 +1192,12 @@ public class MainActivity extends Activity {
 				showToast(R.string.please_give_a_valid_address);
 				return;
 			}
-			if(TextUtils.isEmpty(mFeedBackEntity.phone.trim()) || mFeedBackEntity.phone.trim().length()!=11) {
+			if(TextUtils.isEmpty(mFeedBackEntity.phone.trim()) || !isPhoneValid(mFeedBackEntity.phone.trim())) {
 				showToast(R.string.you_should_give_an_phone_number);
+				return;
+			}
+			if(!TextUtils.isEmpty(mFeedBackEntity.mail.trim()) && !isEmailValid(mFeedBackEntity.mail.trim())) {
+				showToast(R.string.invalid_email_address);
 				return;
 			}
 			String defaultIp = mResources.getString(R.string.default_ip);
@@ -1321,4 +1342,18 @@ public class MainActivity extends Activity {
 		}
 	};
 	
+	public boolean isPhoneValid(String phone) {
+		String pStr = "(^0[0-9]{10}$)|(^(1[3-9]{2})\\d{8}$)";
+		
+		Pattern pattern = Pattern.compile(pStr);
+		Matcher matcher = pattern.matcher(phone);
+		return matcher.matches();
+	}
+	
+	public boolean isEmailValid(String email) {
+		String pStr = "^\\S+@\\S+$";
+		Pattern pattern = Pattern.compile(pStr);
+		Matcher matcher = pattern.matcher(email);
+		return matcher.matches();
+	}
 }

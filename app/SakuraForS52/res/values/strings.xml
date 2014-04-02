@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">VideoSupport</string>
+    <string name="app_name">SpeedTester</string>
     <string name="net_speedtester">SpeedTester</string>
-    <string name="setting">Network Setting&gt;</string>
+    <string name="setting">Network &amp; Bluetooth&gt;</string>
     <string name="StartTesting">Start</string>
     <string name="button_label_stop">Stop</string>
     <string name="button_label_retest">Retry</string>
@@ -41,9 +41,9 @@
     <string name="button_submit">Submit</string>
     <string name="model">Model:</string>
     <string name="radiobutton_others">Others</string>
-    <string name="radiobutton_block">Playback influent</string>
-    <string name="radiobutton_unclear">Video unclear</string>
-    <string name="radiobutton_unable_play">Unable to play clip</string>
+    <string name="radiobutton_block">Influent</string>
+    <string name="radiobutton_unclear">Unclear</string>
+    <string name="radiobutton_unable_play">Cannot play</string>
     <string name="you_should_test_speed_first">You should test speed first!</string>
     <string name="you_should_give_an_email_or_phone_number">You should give a phone number or email at least</string>
     <string name="submit_sucess">Submit Success!</string>
@@ -70,12 +70,16 @@
     <string name="you_should_give_an_phone_number">You should give an valid phone number</string>
     <string name="required">Required!</string>
     <string name="please_give_a_valid_address">Please give a valid address!</string>
+    <string name="invalid_email_address">Invalid email address</string>
     <string name="cs_phone">Support Phone Num:</string>
     <string name="cs_email">Support Email:</string>
-    <string name="cs_weibo">Support Weibo:</string>
-    <string name="cs_phone_string">021&#8211;32580631</string>
+    <string name="cs_weibo">Support WeChat:</string>
+    <string name="cs_phone_string">400&#8211;059&#8211;0012</string>
     <string name="cs_email_string">kf@ismartv.cn</string>
-    <string name="cs_weibo_string">联想智能电视</string>
+    <string name="cs_weibo_string">视云影院</string>
     <item name="feedback_verify_yes" type="id">false</item>
     <item name="problem_other" type="id">false</item>
+    <item name="edit_phonenum" type="id">false</item>
+    <item name="edit_address" type="id">false</item>
+    <item name="edit_email" type="id">false</item>
 </resources>

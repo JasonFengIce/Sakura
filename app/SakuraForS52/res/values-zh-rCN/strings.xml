@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">视频客服</string>
+    <string name="app_name">网络测速</string>
     <string name="net_speedtester">网络测速</string>
-    <string name="setting">网络设置&gt;</string>
+    <string name="setting">网络与蓝牙&gt;</string>
     <string name="StartTesting">开始测速</string>
     <string name="button_label_stop">中止测试</string>
     <string name="button_label_retest">重新测试</string>
@@ -70,10 +70,11 @@
     <string name="you_should_give_an_phone_number">请填写正确的手机号码</string>
     <string name="required">必填项</string>
     <string name="please_give_a_valid_address">请填写一个完整的地址</string>
+    <string name="invalid_email_address">邮箱格式错误</string>
     <string name="cs_phone">客服电话:</string>
     <string name="cs_email">客服邮箱:</string>
-    <string name="cs_weibo">客服新浪微博:</string>
-    <string name="cs_phone_string">021&#8211;32580631</string>
+    <string name="cs_weibo">客服微信:</string>
+    <string name="cs_phone_string">400&#8211;059&#8211;0012</string>
     <string name="cs_email_string">kf@ismartv.cn</string>
-    <string name="cs_weibo_string">联想智能电视</string>
+    <string name="cs_weibo_string">视云影院</string>
 </resources>

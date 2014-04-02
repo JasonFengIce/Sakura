@@ -38,13 +38,13 @@
 	        android:textColor="#FFFFFFFF"/>
         <RadioGroup
             android:layout_width="match_parent"
-            android:layout_height="35dip"
+            android:layout_height="40dip"
             android:id="@+id/problem_options"
             android:orientation="horizontal"
             android:layout_alignParentLeft="true"
             android:layout_below="@id/label_feedback1"
-            android:gravity="center"
-            android:layout_margin="20dip"
+            android:gravity="center|top"
+            android:layout_margin="15dip"
             android:checkedButton="@id/problem_other"
             >
 	        <!-- 
@@ -103,6 +103,7 @@
             android:textSize="35sp"
             android:inputType="textMultiLine"
             android:gravity="top|left"
+            android:imeOptions="actionNext"
             android:background="@drawable/edit_drawable">
         </EditText>
         <LinearLayout
@@ -121,7 +122,7 @@
             android:textSize="35sp"
             android:text="@string/label_phonenum"/>
             <EditText
-            android:id="@+id/edit_phonenum"
+            android:id="@id/edit_phonenum"
             android:layout_width="300dip"
             android:layout_height="wrap_content"
             android:layout_margin="5dip"
@@ -129,6 +130,8 @@
             android:hint="@string/required"
             android:inputType="textPhonetic|phone"
             android:gravity="left"
+            android:imeOptions="actionNext"
+            android:nextFocusDown="@id/edit_email"
             android:background="@drawable/edit_drawable"/>
             <TextView
             android:layout_width="wrap_content"
@@ -137,13 +140,14 @@
             android:layout_margin="5dip"
             android:text="@string/label_email"/>
             <EditText
-            android:id="@+id/edit_email"
+            android:id="@id/edit_email"
             android:layout_width="335dip"
             android:layout_height="wrap_content"
             android:layout_margin="5dip"
             android:textSize="35sp"
             android:inputType="textEmailAddress"
             android:gravity="left"
+            android:imeOptions="actionNext"
             android:background="@drawable/edit_drawable"/>
         </LinearLayout>
         <LinearLayout
@@ -162,7 +166,7 @@
 	            android:layout_margin="5dip"
 	            android:text="@string/address"/>
             <EditText
-	            android:id="@+id/edit_address"
+	            android:id="@id/edit_address"
 	            android:layout_width="670dip"
 	            android:layout_height="wrap_content"
 	            android:layout_margin="5dip"
@@ -170,6 +174,8 @@
 	            android:hint="@string/required"
 	            android:inputType="text"
 	            android:gravity="left"
+	            android:imeOptions="actionDone|flagNoEnterAction"
+	            android:nextFocusDown="@id/feedback_verify_yes"
 	            android:background="@drawable/edit_drawable"/>
         </LinearLayout>
         
