@@ -188,6 +188,7 @@ class Indemnity  (models.Model):
     matter  = models.CharField(_("matter"),max_length=300)
     update_date = models.DateTimeField(_("Update at"), auto_now=True,editable=False)
     indemnityLog = models.ManyToManyField(IndemnityLog, verbose_name=_('IndemnityLog'),blank=True,null=True)
+    duration = models.IntegerField(_("days"))
     class Meta:
         verbose_name = _("Indemnity")
         verbose_name_plural = _("Indemnity")
