@@ -106,7 +106,7 @@ class Pointlogs(View):
                             res = json.loads(res)[0]
                             pointlog.device = res.get("device")
                             if res.get("size"):
-                                pointlog.size = res.get("size")
+                                pointlog.size = int(res.get("size"))
                         except Exception:
                             pass
           j = json.loads(q)
@@ -139,8 +139,8 @@ class Pointlogs(View):
 
 
           return HttpResponse("OK")
-    #http://newdata.tvxio.com/public/sn_meta?sn=1a2544ee
-    #http://10.0.1.6:9000/public/sn_meta?sn=1a2544ee
+    #http://newdata.tvxio.com/public/sn_meta?sn=HJD00180
+    #http://10.0.1.6:9000/public/sn_meta?sn=HJD00180
     #[{"device": "K91", "sn": "1a2544ee", "size": "55"}]
     def getDevice(self,sn):
         try:
@@ -152,7 +152,7 @@ class Pointlogs(View):
                return res
            else:
                return None
-        except Exception ,ex:
+        except Exception :
            return None
 
 
