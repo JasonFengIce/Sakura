@@ -144,14 +144,15 @@ class Pointlogs(View):
     #[{"device": "K91", "sn": "1a2544ee", "size": "55"}]
     def getDevice(self,sn):
         try:
-            HEADER = {"User-Agent": "Iris/sn_meta 000000001", "Accept": "application/json"}
-            http = httplib2.Http()
-            h, res = http.request("http://10.0.1.6:9000/public/sn_meta", "GET", json.dumps(sn), headers=HEADER)
-            if res:
-                return res
-            else:
-                return None
+           HEADER = {"User-Agent": "Iris/sn_meta 000000001", "Accept": "application/json"}
+           http = httplib2.Http()
+           urls = "http://newdata.tvxio.com/public/sn_meta?sn="+sn
+           h, res = http.request(urls, "GET", headers=HEADER)
+           if res:
+               return res
+           else:
+               return None
         except Exception ,ex:
-            return None
+           return None
 
 
