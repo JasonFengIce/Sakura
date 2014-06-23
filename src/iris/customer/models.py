@@ -104,7 +104,9 @@ class Pointlog(models.Model):
     status = models.IntegerField(verbose_name=_("Status"),default=0,choices=STATUS_PROCESS,max_length=1)
     result = models.CharField(_('result'),max_length=200,blank=True,null=True,)
     update_date = models.DateTimeField(_("Update at"),auto_now=True,)
-
+    sn = models.CharField(_("SN"), max_length=50,editable=False,)
+    device = models.CharField(_("Device"), max_length=50,editable=False,)
+    size = models.CharField(_("Size"), max_length=50,editable=False,)
     class Meta:
         verbose_name = _("Pointlog")
         verbose_name_plural = _("Pointlog")
