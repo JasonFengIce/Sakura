@@ -96,19 +96,20 @@ class Pointlogs(View):
     def post(self,request):
           q =  request.POST['q']
           user_agent =  request.META['HTTP_USER_AGENT']
-
-          if user_agent:
-                pointlog.sn, sn = user_agent.lstrip()
-                if sn:
-                    try:
-                        res = json.loads(self.getDevice(sn))
-                        pointlog.device = res.get("device")
-                        pointlog.size = res.get("size")
-                    except Exception:
-                        pass
-
-          j = json.loads(q)
           pointlog  =  models.Pointlog()
+          if user_agent  and len(user_agent.split(" ")) > 1:
+                pointlog.sn = user_agent.split(" ")[1]
+                if pointlog.sn:
+                    res = self.getDevice(pointlog.sn)
+                    if res:
+                        try:
+                            res = json.loads(res)[0]
+                            pointlog.device = res.get("device")
+                            if res.get("size"):
+                                pointlog.size = res.get("size")
+                        except Exception:
+                            pass
+          j = json.loads(q)
           pointlog.ip = j["ip"]
           pointlog.isp = j['isp']
           pointlog.user_agent = user_agent
@@ -145,7 +146,7 @@ class Pointlogs(View):
         try:
             HEADER = {"User-Agent": "Iris/sn_meta 000000001", "Accept": "application/json"}
             http = httplib2.Http()
-            h, res = http.request("http://newdata.tvxio.com/public/sn_meta", "GET", json.dumps(sn), headers=HEADER)
+            h, res = http.request("http://10.0.1.6:9000/public/sn_meta", "GET", json.dumps(sn), headers=HEADER)
             if res:
                 return res
             else:
@@ -154,37 +155,3 @@ class Pointlogs(View):
             return None
 
 
-class InitDevices(View):
-
-        def get(self, request):
-            ps = models.Pointlog.objects.all()
-            for p in ps:
-                 user_agent = p.user_agent
-                 if user_agent:
-                    p.sn = user_agent.split(" ")[1]
-                    if p.sn:
-                        try:
-                            res = json.loads(self.getDevice(p.sn))[0]
-                            print res
-                            p.device = res.get("device")
-                            print p.device
-                            if res.get("size"):
-                                p.size = int(res.get("size"))
-
-                            print p.user_agent
-                        except Exception,e:
-                            continue
-                        p.save()
-            return HttpResponse("OK")
-        def getDevice(self,sn):
-                try:
-                    HEADER = {"User-Agent": "Iris/sn_meta 000000001", "Accept": "application/json"}
-                    http = httplib2.Http()
-                    urls = "http://newdata.tvxio.com/public/sn_meta?sn="+sn
-                    h, res = http.request(urls, "GET", headers=HEADER)
-                    if res:
-                        return res
-                    else:
-                        return None
-                except Exception ,ex:
-                    return None
