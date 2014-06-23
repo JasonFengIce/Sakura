@@ -146,7 +146,7 @@ class Pointlogs(View):
         try:
            HEADER = {"User-Agent": "Iris/sn_meta 000000001", "Accept": "application/json"}
            http = httplib2.Http()
-           urls = "http://newdata.tvxio.com/public/sn_meta?sn="+sn
+           urls = "http://10.0.1.6:9000/public/sn_meta?sn="+sn
            h, res = http.request(urls, "GET", headers=HEADER)
            if res:
                return res
