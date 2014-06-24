@@ -113,10 +113,13 @@ class Pointlogs(View):
         pointlog.ip = j.get("ip")
         pointlog.isp = j.get('isp')
         pointlog.user_agent = user_agent
-        pointlog.location = j.get('location')
-        pointlog.speeds = j.get('speed')
+        if j.get('location'):
+            pointlog.location = j.get('location')
+        if j.get('speed'):
+            pointlog.speeds = j.get('speed')
+        if j.get('description'):
+            pointlog.description = j.get('description')
         pointlog.point = j.get('option')
-        pointlog.description = j.get('description')
         pointlog.phone = j.get('phone')
         pointlog.mail = j.get('mail')
         if  j.get('clip'):

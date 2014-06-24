@@ -102,14 +102,14 @@ class ClipLog(models.Model):
 
 
 class Pointlog(models.Model):
-    point = models.CharField(_("Point"), max_length=200, editable=False, )
-    speeds = models.CharField(_("Speed"), max_length=200, )
-    description = models.CharField(_("Description"), max_length=500, )
+    point = models.CharField(_("Point"), max_length=200, editable=False, default='No Data')
+    speeds = models.CharField(_("Speed"), max_length=200, default='No Data')
+    description = models.CharField(_("Description"), max_length=500, default='No Data')
     clip = models.ForeignKey(ClipLog, blank=True, null=True, editable=False, )
     phone = models.CharField(_("Phone"), max_length=20, blank=True, null=True, )
     mail = models.CharField(_("Mail"), max_length=20, blank=True, null=True, )
     ip = models.CharField(_("Ip"), max_length=20, blank=True, null=True, )
-    location = models.CharField(_("Location"), max_length=200, blank=True, null=True, )
+    location = models.CharField(_("Location"), max_length=200, blank=True, null=True, default='No Data')
     isp = models.CharField(_("Isp"), max_length=50, blank=True, null=True, )
     user_agent = models.CharField(_("User Agent"), max_length=100, blank=True, null=True, )
     create_date = models.DateTimeField(_("Created at"), auto_now_add=True, )
