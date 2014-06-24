@@ -63,14 +63,15 @@ class Speedlogs(View):
         j = json.loads(q)
         i = 0
         speed = 0
-        for url in j['speed']:
+        for url in j.get('speed'):
             speedlog = models.Speedlog()
-            speedlog.ip = j["ip"]
-            speedlog.isp = j['isp']
-            speedlog.location = j['location']
-            speedlog.user_agent = user_agent
-            speedlog.url = models.Url.objects.get(id=url['pk'])
-            speedlog.speed = url['speed']
+            speedlog.ip = j.get("ip")
+            speedlog.isp = j.get('isp')
+            speedlog.location = j.get('location')
+            if user_agent and len(user_agent)<100:
+                speedlog.user_agent = user_agent
+            speedlog.url = models.Url.objects.get(id=url.get('pk'))
+            speedlog.speed = url.get('speed')
             speedlog.save()
             if speedlog.url.is_show and speedlog.speed > 0:
                 speed += speedlog.speed
@@ -129,7 +130,7 @@ class Pointlogs(View):
                 if q:
                     clip = models.ClipLog.objects.create(key=clip.get('pk'), url=clip.get('url'), quality=q[0])
                     pointlog.clip = clip
-        if pointlog.ip != 0  and len(pointlog.ip) > 0:
+        if pointlog.ip and pointlog.ip != 0 :
             logs = models.Pointlog.objects.filter(ip=pointlog.ip, description=pointlog.description,
                 user_agent=pointlog.user_agent, point=pointlog.point)
             if logs.count() == 0 or(logs.count() > 0 and (datetime.datetime.now() - logs[0].create_date) > datetime.timedelta(hours=1) ):
