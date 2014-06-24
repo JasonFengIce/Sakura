@@ -107,7 +107,7 @@ class Pointlogs(View):
                     if res:
                         pointlog.device = res.get("device")
                         if res.get("size"):
-                                pointlog.size = int(res.get("size"))
+                            pointlog.size = int(res.get("size"))
         except Exception:
             pass
         pointlog.ip = j.get("ip")
@@ -129,9 +129,7 @@ class Pointlogs(View):
         if pointlog.ip != 0  and len(pointlog.ip) > 0:
             logs = models.Pointlog.objects.filter(ip=pointlog.ip, description=pointlog.description,
                 user_agent=pointlog.user_agent, point=pointlog.point)
-            if   logs.count() > 0 and (datetime.datetime.now() - logs[0].create_date) > datetime.timedelta(hours=1):
-                pointlog.save()
-            else:
+            if logs.count() == 0 or(logs.count() > 0 and (datetime.datetime.now() - logs[0].create_date) > datetime.timedelta(hours=1) ):
                 pointlog.save()
         return HttpResponse("OK")
 
