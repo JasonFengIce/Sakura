@@ -19,11 +19,14 @@ def speeds(speeds):
     if speeds and speeds.speeds:
         resp = re.sub(r"(,?)(\w+?)\s+?:", r"\1'\2' :", speeds.speeds);
         resp = resp.replace("u'", "'").replace("'", "\"");
-        decodejson = json.loads(resp)
-        if decodejson:
-            for log in decodejson:
-                url = models.Url.objects.get(id=int(log['pk']))
-                str += '%s:(%d%s)<br>' % (url.title, log['speed'], 'KB/S')
+        try:
+            decodejson = json.loads(resp)
+            if decodejson:
+                for log in decodejson:
+                    url = models.Url.objects.get(id=int(log['pk']))
+                    str += '%s:(%d%s)<br>' % (url.title, log['speed'], 'KB/S')
+        except Exception:
+            str = speeds.speeds
     return str
 
 speeds.allow_tags = True
