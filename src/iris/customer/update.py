@@ -6,20 +6,18 @@ def getDevices():
     ps = models.Pointlog.objects.all()
     for p in ps:
         user_agent = p.user_agent
-        if user_agent and len(user_agent.split(" ")) > 1:
-            p.sn = user_agent.split(" ")[1]
-            if p.sn:
-                try:
+        try:
+            if user_agent and len(user_agent.split(" ")) > 1:
+                p.sn = user_agent.split(" ")[1]
+                if p.sn:
                     res = json.loads(getDevice(p.sn))[0]
                     print res
                     p.device = res.get("device")
-                    print p.device
                     if res.get("size"):
                         p.size = int(res.get("size"))
-                    print p.user_agent
-                except Exception:
-                    continue
                 p.save()
+        except Exception:
+            continue
 
 
 def getDevice(sn):
