@@ -119,7 +119,8 @@ class Pointlog(models.Model):
     sn = models.CharField(_("SN"), max_length=50, editable=False, )
     device = models.CharField(_("Device"), max_length=50, editable=False, )
     size = models.CharField(_("Size"), max_length=50, editable=False, )
-
+    content = models.CharField(_("Reply Content"), max_length=500, blank=True, null=True,)
+    reply_time = models.DateTimeField(_("Reply at"),blank=True, null=True, editable=False,)
     class Meta:
         verbose_name = _("Pointlog")
         verbose_name_plural = _("Pointlog")

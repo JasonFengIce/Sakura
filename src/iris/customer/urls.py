@@ -6,4 +6,6 @@ urlpatterns = patterns('',
     url(r'^pointlogs/$', views.Pointlogs.as_view(), name='pointlogs'),
     url(r'^points/$', views.PointsView.as_view(), name='points'),
     url(r'^urls/$', views.UrlsView.as_view(), name='urls'),
+    url(r'^postfeedback/$', views.PostFeedback.as_view(), name="postfeedbacks"),
+    url(r'^getfeedback/$', views.GetFeedback.as_view(), name="getfeedbacks"),
 )

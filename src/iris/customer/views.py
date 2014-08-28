@@ -133,7 +133,7 @@ class Pointlogs(View):
         if pointlog.ip and pointlog.ip != 0 :
             logs = models.Pointlog.objects.filter(ip=pointlog.ip, description=pointlog.description,
                 user_agent=pointlog.user_agent, point=pointlog.point)
-            if logs.count() == 0 or(logs.count() > 0 and (datetime.datetime.now() - logs[0].create_date) > datetime.timedelta(hours=1) ):
+            if logs.count() == 0 or(logs.count() > 0 and (datetime.datetime.now() - logs[0].create_date) > 3600 ):
                 pointlog.save()
         return HttpResponse("OK")
 
@@ -155,3 +155,36 @@ class Pointlogs(View):
             return None
 
 
+class PostFeedback(View):
+
+    def post(self, request):
+        id = request.POST['id']
+        content = request.POST['content']
+        if id and content:
+           plog =  models.Pointlog.objects.get(id=id)
+           if plog:
+                plog.content = content
+                plog.reply_time = datetime.datetime.now()
+                plog.save()
+                return HttpResponse("Save Feedback Success")
+        return HttpResponse("Missing  values  for sn")
+
+class GetFeedback(View):
+    def get(self, request):
+        topn = 3
+        sn = request.GET.get('sn')
+        if request.GET.get('topn'):
+            topn =  request.GET.get('topn')
+        if sn :
+            plogs =  models.Pointlog.objects.filter(sn=sn).order_by('-create_date')[:topn]
+            if plogs:
+                rs = {"count":len(plogs)}
+                datas = []
+                for p in plogs:
+                    reply_time = ""
+                    if p.reply_time:
+                        reply_time = p.reply_time.strftime("%Y-%m-%d %H:%M:%S")
+                    datas.append({"commont":p.description, "reply":p.content, "submit_time":p.create_date.strftime("%Y-%m-%d %H:%M:%S"), "reply_time":reply_time})
+                rs["data"] = datas
+                return HttpResponse(json.dumps(rs))
+        return HttpResponse("Missing  values  for sn")
