@@ -184,7 +184,14 @@ class GetFeedback(View):
                     reply_time = ""
                     if p.reply_time:
                         reply_time = p.reply_time.strftime("%Y-%m-%d %H:%M:%S")
-                    datas.append({"commont":p.description, "reply":p.content, "submit_time":p.create_date.strftime("%Y-%m-%d %H:%M:%S"), "reply_time":reply_time})
+                    datas.append({"commont":self.point(p), "reply":p.content, "submit_time":p.create_date.strftime("%Y-%m-%d %H:%M:%S"), "reply_time":reply_time})
                 rs["data"] = datas
                 return HttpResponse(json.dumps(rs))
         return HttpResponse("Missing  values  for sn")
+
+    def point(self,log):
+        if log and log.point:
+            p = models.Point.objects.get(id=int(log.point))
+            if p:
+                return p.name
+        return log.point
