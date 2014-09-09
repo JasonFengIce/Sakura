@@ -216,7 +216,7 @@ class PointAdmin(admin.ModelAdmin):
 
 class PointlogAdmin(admin.ModelAdmin):
     list_display = ('id',
-    point, 'user_agent', 'device', 'width', 'size', speeds, 'description','content', 'phone', 'mail', 'ip', 'location', 'isp', 'create_date', 'reply_time', 'status',
+    point, 'user_agent', 'device', 'size', 'width', speeds, 'description','content', 'phone', 'mail', 'ip', 'location', 'isp', 'create_date', 'reply_time', 'status',
     'result', 'update_date', clip)
     list_editable = ('status',)
     search_fields = ('user_agent', 'phone', 'mail', 'ip', 'description', 'location',)
