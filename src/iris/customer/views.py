@@ -114,6 +114,8 @@ class Pointlogs(View):
         pointlog.ip = j.get("ip")
         pointlog.isp = j.get('isp')
         pointlog.user_agent = user_agent
+        if j.get("width"):
+            pointlog.width = j.get('width')
         if j.get('location'):
             pointlog.location = j.get('location')
         if j.get('speed'):
