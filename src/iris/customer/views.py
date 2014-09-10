@@ -130,7 +130,8 @@ class Pointlogs(View):
             except Exception:
                 pass
         pointlog.phone = j.get('phone')
-        pointlog.mail = j.get('mail')
+        if j.get('mail'):
+            pointlog.mail = j.get('mail')
         if  j.get('clip'):
             clip = j.get('clip')
             if clip.get('pk') and clip.get('url') and clip.get('quality'):
