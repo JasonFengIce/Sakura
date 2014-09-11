@@ -114,15 +114,24 @@ class Pointlogs(View):
         pointlog.ip = j.get("ip")
         pointlog.isp = j.get('isp')
         pointlog.user_agent = user_agent
+        if j.get("width"):
+            pointlog.width = j.get('width')
         if j.get('location'):
             pointlog.location = j.get('location')
         if j.get('speed'):
             pointlog.speeds = j.get('speed')
         if j.get('description'):
             pointlog.description = j.get('description')
-        pointlog.point = j.get('option')
+        if j.get('option') :
+            try :
+                po = models.Point.objects.get(id=int(j.get('option')))
+                if po:
+                    pointlog.point = j.get('option')
+            except Exception:
+                pass
         pointlog.phone = j.get('phone')
-        pointlog.mail = j.get('mail')
+        if j.get('mail'):
+            pointlog.mail = j.get('mail')
         if  j.get('clip'):
             clip = j.get('clip')
             if clip.get('pk') and clip.get('url') and clip.get('quality'):
@@ -190,8 +199,11 @@ class GetFeedback(View):
         return HttpResponse("Missing  values  for sn")
 
     def point(self,log):
-        if log and log.point:
-            p = models.Point.objects.get(id=int(log.point))
-            if p:
-                return p.name
-        return log.point
+        try:
+            if log and log.point:
+                p = models.Point.objects.get(id=int(log.point))
+                if p:
+                    return p.name
+            return log.point
+        except Exception:
+            return None

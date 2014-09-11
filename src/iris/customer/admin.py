@@ -7,27 +7,32 @@ from . import models
 from django import forms
 
 def point(log):
-    if log and log.point:
-        p = models.Point.objects.get(id=int(log.point))
-        if p:
-            return p.name
-    return log.point
-
+    try:
+        if log and log.point:
+            p = models.Point.objects.get(id=int(log.point))
+            if p:
+                return p.name
+        return log.point
+    except Exception:
+        return log
 
 def speeds(speeds):
-    str = ''
-    if speeds and speeds.speeds:
-        resp = re.sub(r"(,?)(\w+?)\s+?:", r"\1'\2' :", speeds.speeds);
-        resp = resp.replace("u'", "'").replace("'", "\"");
-        try:
-            decodejson = json.loads(resp)
-            if decodejson:
-                for log in decodejson:
-                    url = models.Url.objects.get(id=int(log['pk']))
-                    str += '%s:(%d%s)<br>' % (url.title, log['speed'], 'KB/S')
-        except Exception:
-            str = speeds.speeds
-    return str
+    try:
+        str = ''
+        if speeds and speeds.speeds:
+            resp = re.sub(r"(,?)(\w+?)\s+?:", r"\1'\2' :", speeds.speeds);
+            resp = resp.replace("u'", "'").replace("'", "\"");
+            try:
+                decodejson = json.loads(resp)
+                if decodejson:
+                    for log in decodejson:
+                        url = models.Url.objects.get(id=int(log['pk']))
+                        str += '%s:(%d%s)<br>' % (url.title, log['speed'], 'KB/S')
+            except Exception:
+                str = speeds.speeds
+        return str
+    except Exception:
+        return speeds
 
 speeds.allow_tags = True
 
@@ -211,7 +216,7 @@ class PointAdmin(admin.ModelAdmin):
 
 class PointlogAdmin(admin.ModelAdmin):
     list_display = ('id',
-    point, 'user_agent', 'device', 'size', speeds, 'description','content', 'phone', 'mail', 'ip', 'location', 'isp', 'create_date', 'reply_time', 'status',
+    point, 'user_agent', 'device', 'size', 'width', speeds, 'description','content', 'phone', 'mail', 'ip', 'location', 'isp', 'create_date', 'reply_time', 'status',
     'result', 'update_date', clip)
     list_editable = ('status',)
     search_fields = ('user_agent', 'phone', 'mail', 'ip', 'description', 'location',)

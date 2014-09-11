@@ -103,11 +103,11 @@ class ClipLog(models.Model):
 
 class Pointlog(models.Model):
     point = models.CharField(_("Point"), max_length=200, editable=False, default='No Data')
-    speeds = models.CharField(_("Speed"), max_length=200, default='No Data')
+    speeds = models.CharField(_("Speed"), max_length=200, blank=True, null=True, default='No Data')
     description = models.CharField(_("Description"), max_length=500, default='No Data')
     clip = models.ForeignKey(ClipLog, blank=True, null=True, editable=False, )
     phone = models.CharField(_("Phone"), max_length=20, blank=True, null=True, )
-    mail = models.CharField(_("Mail"), max_length=20, blank=True, null=True, )
+    mail = models.CharField(_("Mail"), max_length=20, blank=True, null=True,  default='No Data')
     ip = models.CharField(_("Ip"), max_length=20, blank=True, null=True, )
     location = models.CharField(_("Location"), max_length=200, blank=True, null=True, default='No Data')
     isp = models.CharField(_("Isp"), max_length=50, blank=True, null=True, )
@@ -121,6 +121,7 @@ class Pointlog(models.Model):
     size = models.CharField(_("Size"), max_length=50, editable=False, )
     content = models.CharField(_("Reply Content"), max_length=500, blank=True, null=True,)
     reply_time = models.DateTimeField(_("Reply at"),blank=True, null=True, editable=False,)
+    width = models.CharField(_("Width"), max_length=50, editable=False, )
     class Meta:
         verbose_name = _("Pointlog")
         verbose_name_plural = _("Pointlog")
