@@ -7,26 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
-import cn.ismartv.speedtester.core.httpclient.NetWorkClient;
-import cn.ismartv.speedtester.core.httpclient.Utils;
+import android.support.v4.view.ViewPager;
 import cn.ismartv.speedtester.ui.fragment.FeedbackFragment;
 import cn.ismartv.speedtester.ui.fragment.HelpFragment;
 import cn.ismartv.speedtester.ui.fragment.NodeFragment;
-import cn.ismartv.speedtester.ui.widget.viewpager.SakuraViewPager;
 import cn.ismartv.speedtester.utils.Utilities;
 import com.crashlytics.android.Crashlytics;
 import com.viewpagerindicator.TabPageIndicator;
-import retrofit.client.Response;
-import retrofit.mime.MimeUtil;
-import retrofit.mime.TypedByteArray;
-import retrofit.mime.TypedInput;
-import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 
 public class HomeActivity extends FragmentActivity {
@@ -58,9 +45,8 @@ public class HomeActivity extends FragmentActivity {
 
 
         adapter = new HomeAdapter(getSupportFragmentManager());
-        SakuraViewPager pager = (SakuraViewPager) findViewById(R.id.pager);
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
-
 
 
         TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);

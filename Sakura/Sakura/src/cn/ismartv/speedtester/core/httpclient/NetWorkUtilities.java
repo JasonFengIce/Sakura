@@ -67,7 +67,7 @@ public class NetWorkUtilities {
                     conn.setRequestProperty("content-type", "text/json");
                     conn.setConnectTimeout(15000);
                     conn.setReadTimeout(15000);
-                    conn.setRequestProperty("User-Agent", android.os.Build.MODEL.replaceAll(" ", "_") + "/" + android.os.Build.ID + " " + android.os.Build.SERIAL);
+                    conn.setRequestProperty("User-Agent", android.os.Build.MODEL.replaceAll(" ", "_") + "/" + android.os.Build.ID + " " + DevicesUtilities.getSNCode());
                     Log.d(TAG, "RequestProperty : " + conn.getRequestProperty("User-Agent"));
                     conn.setRequestProperty("Accept-Language", localeName);
                     Log.d("request url : ", url.toString());

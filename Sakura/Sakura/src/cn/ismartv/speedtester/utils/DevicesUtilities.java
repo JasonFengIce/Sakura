@@ -77,7 +77,7 @@ public class DevicesUtilities {
                 read.close();
             } else {
                 if ("unknown".equals(Build.SERIAL)) {
-                    return "0";
+                    return "unknown";
                 } else {
                     return Build.SERIAL;
                 }

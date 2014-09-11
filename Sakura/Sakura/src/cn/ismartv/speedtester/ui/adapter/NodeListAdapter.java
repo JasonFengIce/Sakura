@@ -2,15 +2,11 @@ package cn.ismartv.speedtester.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import cn.ismartv.speedtester.R;
-import cn.ismartv.speedtester.core.httpclient.NetWorkUtilities;
 import cn.ismartv.speedtester.provider.NodeCache;
 import cn.ismartv.speedtester.ui.widget.progressbar.SakuraProgressBar;
 
@@ -53,6 +49,7 @@ public class NodeListAdapter extends CursorAdapter {
         ProgressBar testProgress = (ProgressBar) view.findViewById(R.id.test_progress);
         TextView testText = (TextView) view.findViewById(R.id.test_running);
         Button select = (Button) view.findViewById(R.id.select_btn);
+        ImageView fork = (ImageView) view.findViewById(R.id.fork_image);
 
 
         //data from cursor
@@ -61,6 +58,13 @@ public class NodeListAdapter extends CursorAdapter {
         String checked = cursor.getString(cursor.getColumnIndex(NodeCache.CHECKED));
         String cdnId = cursor.getString(cursor.getColumnIndex(NodeCache.CDN_ID));
         String running = cursor.getString(cursor.getColumnIndex(NodeCache.RUNNING));
+        if (speed == -1) {
+            fork.setVisibility(View.VISIBLE);
+            select.setVisibility(View.INVISIBLE);
+        } else {
+            select.setVisibility(View.VISIBLE);
+            fork.setVisibility(View.INVISIBLE);
+        }
 
         //node name
         nodeName.setText(node);
@@ -79,7 +83,10 @@ public class NodeListAdapter extends CursorAdapter {
         map.put("node", node);
         select.setTag(map);
         if (checked.equals("true") ? true : false)
+
             textView.setText(node);
+
+
     }
 
 

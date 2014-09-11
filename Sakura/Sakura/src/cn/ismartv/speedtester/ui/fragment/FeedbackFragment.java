@@ -14,9 +14,11 @@ import android.widget.*;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.httpclient.NetWorkUtilities;
+import cn.ismartv.speedtester.core.httpclient.Utils;
 import cn.ismartv.speedtester.data.ChatMsgEntity;
 import cn.ismartv.speedtester.data.Comment;
 import cn.ismartv.speedtester.data.FeedBack;
+import cn.ismartv.speedtester.data.ProblemEntity;
 import cn.ismartv.speedtester.ui.adapter.ChatMsgViewAdapter;
 import cn.ismartv.speedtester.utils.DevicesUtilities;
 import cn.ismartv.speedtester.utils.StringUtilities;
@@ -27,6 +29,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.http.GET;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +62,7 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
     public static Handler messageHandler;
 
     //String
-    private String problemText;
+    private int problemText = 6;
     private String provinceText;
     private String netTypeText;
     private String netWidthText;
@@ -138,7 +144,7 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
         feedbackSubmitView = view.findViewById(R.id.feedback_submit_layout);
 
         itemSubmitButton = (LinearLayout) view.findViewById(R.id.feedback_submit);
-        itemReplyButton = (LinearLayout) view.findViewById(R.id.reply);
+        itemReplyButton = (LinearLayout) view.findViewById(R.id.reply_l);
         itemReplyButton.setOnClickListener(this);
         itemSubmitButton.setOnClickListener(this);
 
@@ -146,14 +152,14 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
         //sn code
         snCode = (TextView) view.findViewById(R.id.sn_show);
         String sn = DevicesUtilities.getSNCode();
-        if ("1".equals(sn)) {
+        if ("123456".equals(sn) || "0123456".equals(sn) || "12345678".equals(sn)) {
             snCode.append(sn + getString(R.string.factory_device));
         } else {
             snCode.append(sn);
         }
         //radio group
         problemType = (RadioGroup) view.findViewById(R.id.problem_options);
-        problemType.setOnCheckedChangeListener(this);
+
 
         //description
         description = (EditText) view.findViewById(R.id.description_edit);
@@ -169,8 +175,6 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
         exit = (Button) view.findViewById(R.id.exit);
         exit.setOnClickListener(this);
 
-        //default value
-        problemText = getString(R.string.radiobutton_others);
 
         messageContent = (TextView) view.findViewById(R.id.content);
 
@@ -183,12 +187,15 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
         submitQuestionSelect = (ImageView) view.findViewById(R.id.submit_question_select);
         replyQuestionSelect = (ImageView) view.findViewById(R.id.reply_question_select);
 
+        problemType.setOnCheckedChangeListener(this);
+
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getProblems();
 
 //        provinceSpinner.setSelection(getProvinceByCache());
 //        netTypeSpinner.setSelection(getNetTypeByCache());
@@ -199,7 +206,7 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void setFeedBack() {
-        if (StringUtilities.isEmpty(phone.getEditableText().toString())) {
+        if (StringUtilities.isEmpty(phone.getEditableText().toString()) ||phone.getEditableText().toString().length() < 7 ) {
             Utilities.showToast(getActivity(), R.string.you_should_give_an_phone_number);
             return;
         } else if (StringUtilities.isEmpty(provinceText)) {
@@ -208,15 +215,12 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
         } else {
             FeedBack feedBack = new FeedBack();
             feedBack.setCity(provinceText);
-            feedBack.setDescriptionl(description.getEditableText().toString());
-            feedBack.setIp("  ");
+            feedBack.setDescription(description.getEditableText().toString());
+            feedBack.setIp(DevicesUtilities.getLocalIpAddressV4());
             feedBack.setPhone(phone.getEditableText().toString());
             feedBack.setIsp(netTypeText);
-            feedBack.setLocation("    ");
-            feedBack.setMail("    ");
             feedBack.setOption(problemText);
-            feedBack.setIs_correct("true");
-            feedBack.setSpeed(null);
+            feedBack.setWidth(netWidthText);
             CacheManager.updateFeedBack(getActivity(), provinceText, netTypeText, netWidthText, phone.getEditableText().toString());
             NetWorkUtilities.uploadFeedback(getActivity(), feedBack);
         }
@@ -232,7 +236,7 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
             case R.id.exit:
                 getActivity().finish();
                 break;
-            case R.id.reply:
+            case R.id.reply_l:
                 commentListView.setVisibility(View.VISIBLE);
                 feedbackSubmitView.setVisibility(View.INVISIBLE);
                 replyQuestionSelect.setVisibility(View.VISIBLE);
@@ -252,14 +256,9 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int id) {
-        if (id == R.id.problem_block)
-            problemText = getString(R.string.radiobutton_block);
-        else if (id == R.id.unable_play)
-            problemText = getString(R.string.radiobutton_unable_play);
-        else if (id == R.id.problem_unclear)
-            problemText = getString(R.string.radiobutton_unclear);
-        else if (id == R.id.problem_other)
-            problemText = getString(R.string.radiobutton_others);
+
+
+        problemText = (Integer) radioGroup.getFocusedChild().getTag();
     }
 
     @Override
@@ -379,5 +378,49 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
     }
 
 
+    interface Problems {
+        String HOST = "http://iris.tvxio.com";
+
+        @GET("/customer/points/")
+        void excute(
+                Callback<List<ProblemEntity>> callback
+        );
+    }
+
+    private void getProblems() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setEndpoint(Problems.HOST)
+                .build();
+        Problems client = restAdapter.create(Problems.class);
+        client.excute(new Callback<List<ProblemEntity>>() {
+            @Override
+            public void success(List<ProblemEntity> problemEntities, retrofit.client.Response response) {
+                Log.d(TAG, Utils.getResult(response));
+                createProblemsRadio(problemEntities);
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+
+    private void createProblemsRadio(List<ProblemEntity> problemEntities) {
+        for (int i = 0; i < problemEntities.size(); i++) {
+            RadioButton radioButton = new RadioButton(getActivity());
+            radioButton.setTextSize(24);
+            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
+                    RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, 0, 15, 0);
+            radioButton.setLayoutParams(params);
+            radioButton.setText(problemEntities.get(i).getPoint_name());
+            radioButton.setTag(problemEntities.get(i).getPoint_id());
+            problemType.addView(radioButton);
+        }
+    }
 }
 

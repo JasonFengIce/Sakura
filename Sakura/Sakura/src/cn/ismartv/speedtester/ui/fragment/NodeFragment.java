@@ -48,6 +48,7 @@ public class NodeFragment extends Fragment implements
 
     private static final String TAG = "NodeFragment";
 
+
     //view
     private GridView nodes;
     private Spinner citySpinner;
@@ -56,6 +57,8 @@ public class NodeFragment extends Fragment implements
     private Button speedTestBtn;
     private TextView currentNode;
     private TextView snCode;
+
+    private View mView;
 
     //BroadcastReceiver
     private MessageReceiver messageReceiver;
@@ -74,11 +77,84 @@ public class NodeFragment extends Fragment implements
     boolean running = false;
 
     public static Handler messagHandler;
+    String[] cities;
 
+
+    AdapterView.OnItemSelectedListener citySpinnerListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+            cityPosition = position;
+            selectionArgs = new String[]{String.valueOf(StringUtilities.getAreaCodeByProvince(cities[cityPosition])),
+                    String.valueOf(operatorPosition + 1)};
+            getLoaderManager().restartLoader(0, null, NodeFragment.this).forceLoad();
+            mView.requestLayout();
+            mView.invalidate();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
+    AdapterView.OnItemSelectedListener operatorSpinnerListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+            operatorPosition = position;
+            selectionArgs = new String[]{String.valueOf(StringUtilities.getAreaCodeByProvince(cities[cityPosition])),
+                    String.valueOf(operatorPosition + 1)};
+            getLoaderManager().restartLoader(0, null, NodeFragment.this).forceLoad();
+            mView.requestLayout();
+            mView.invalidate();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
+    AdapterView.OnItemSelectedListener listSpinnerListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+
+            listPosition = position;
+            switch (listPosition) {
+                case 0:
+                    operatorPosition = position;
+                    selectionArgs = new String[]{String.valueOf(StringUtilities.getAreaCodeByProvince(cities[cityPosition])),
+                            String.valueOf(operatorPosition + 1)};
+                    getLoaderManager().destroyLoader(1);
+                    getLoaderManager().destroyLoader(2);
+                    getLoaderManager().restartLoader(0, null, NodeFragment.this).forceLoad();
+                    break;
+                case 1:
+                    selectionArgs = new String[]{String.valueOf(operatorPosition + 1)};
+                    getLoaderManager().destroyLoader(0);
+                    getLoaderManager().destroyLoader(2);
+                    getLoaderManager().restartLoader(1, null, NodeFragment.this).forceLoad();
+                    break;
+                case 2:
+                    getLoaderManager().destroyLoader(0);
+                    getLoaderManager().destroyLoader(1);
+                    getLoaderManager().restartLoader(2, null, NodeFragment.this).forceLoad();
+                    break;
+                default:
+                    break;
+            }
+
+            mView.requestLayout();
+            mView.invalidate();
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        cities = getResources().getStringArray(R.array.citys);
         //receiver
         messageReceiver = new MessageReceiver();
         messagHandler = new Handler();
@@ -101,9 +177,9 @@ public class NodeFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_node, null);
+        mView = inflater.inflate(R.layout.fragment_node, null);
 
-        return view;
+        return mView;
     }
 
     @Override
@@ -117,7 +193,7 @@ public class NodeFragment extends Fragment implements
                 R.array.citys, android.R.layout.simple_spinner_item);
         citySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         citySpinner.setAdapter(citySpinnerAdapter);
-        citySpinner.setOnItemSelectedListener(this);
+        citySpinner.setOnItemSelectedListener(citySpinnerListener);
 
         //operator
         operatorSpinner = (Spinner) view.findViewById(R.id.operator);
@@ -125,14 +201,14 @@ public class NodeFragment extends Fragment implements
                 R.array.operators, android.R.layout.simple_spinner_item);
         operatorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         operatorSpinner.setAdapter(operatorSpinnerAdapter);
-        operatorSpinner.setOnItemSelectedListener(this);
+        operatorSpinner.setOnItemSelectedListener(operatorSpinnerListener);
         //list
         listSpinner = (Spinner) view.findViewById(R.id.list);
         ArrayAdapter<CharSequence> listSpinnerAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.lists, android.R.layout.simple_spinner_item);
         listSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         listSpinner.setAdapter(listSpinnerAdapter);
-        listSpinner.setOnItemSelectedListener(this);
+        listSpinner.setOnItemSelectedListener(listSpinnerListener);
 
 
         //speed test button
@@ -158,7 +234,7 @@ public class NodeFragment extends Fragment implements
         //sn code
         snCode = (TextView) view.findViewById(R.id.sn_code);
         String sn = DevicesUtilities.getSNCode();
-        if ("1".equals(sn)) {
+        if ("123456".equals(sn) || "0123456".equals(sn) || "12345678".equals(sn)) {
             snCode.append(sn + getString(R.string.factory_device));
         } else {
             snCode.append(sn);
@@ -261,51 +337,6 @@ public class NodeFragment extends Fragment implements
         }
 
 
-        Log.d(TAG, "position : " + position);
-        String[] cities = getResources().getStringArray(R.array.citys);
-        switch (adapterView.getId()) {
-            case R.id.city_spinner:
-                Log.d(TAG, "position city_spinner : " + position);
-                cityPosition = position;
-                selectionArgs = new String[]{String.valueOf(StringUtilities.getAreaCodeByProvince(cities[cityPosition])),
-                        String.valueOf(operatorPosition + 1)};
-                getLoaderManager().restartLoader(0, null, this).forceLoad();
-                break;
-            case R.id.operator:
-                operatorPosition = position;
-                selectionArgs = new String[]{String.valueOf(StringUtilities.getAreaCodeByProvince(cities[cityPosition])),
-                        String.valueOf(operatorPosition + 1)};
-                getLoaderManager().restartLoader(0, null, this).forceLoad();
-                break;
-            case R.id.list:
-                listPosition = position;
-                switch (listPosition) {
-                    case 0:
-                        operatorPosition = position;
-                        selectionArgs = new String[]{String.valueOf(StringUtilities.getAreaCodeByProvince(cities[cityPosition])),
-                                String.valueOf(operatorPosition + 1)};
-                        getLoaderManager().destroyLoader(1);
-                        getLoaderManager().destroyLoader(2);
-                        getLoaderManager().restartLoader(0, null, this).forceLoad();
-                        break;
-                    case 1:
-                        selectionArgs = new String[]{String.valueOf(operatorPosition + 1)};
-                        getLoaderManager().destroyLoader(0);
-                        getLoaderManager().destroyLoader(2);
-                        getLoaderManager().restartLoader(1, null, this).forceLoad();
-                        break;
-                    case 2:
-                        getLoaderManager().destroyLoader(0);
-                        getLoaderManager().destroyLoader(1);
-                        getLoaderManager().restartLoader(2, null, this).forceLoad();
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -395,7 +426,7 @@ public class NodeFragment extends Fragment implements
         textView.setTextSize(24);
         textView.setSingleLine(true);
         textView.setBackgroundColor(Color.BLACK);
-        textView.setPadding(40,40,40,40);
+        textView.setPadding(40, 40, 40, 40);
         textView.setText(getActivity().getString(R.string.toast_1) + map.get("node") + getActivity().getString(R.string.toast_2));
 
         Toast toast = new Toast(getActivity());
@@ -414,6 +445,7 @@ public class NodeFragment extends Fragment implements
                 running = false;
             speedTestBtn.setText(R.string.test);
         }
+
     }
 
 

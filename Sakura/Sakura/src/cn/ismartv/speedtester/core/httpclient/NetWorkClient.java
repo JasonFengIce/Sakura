@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.data.HttpData;
 import cn.ismartv.speedtester.data.NodeTag;
@@ -187,6 +188,7 @@ public class NetWorkClient extends BaseClient {
                                        getNodeList(context);
                                    }
                                }
+
                            }
                 );
     }

@@ -9,14 +9,24 @@ import java.util.Map;
 public class FeedBack {
 
     private String city;
-    private String descriptionl;
+    private String description;
     private String ip;
     private String phone;
     private String isp;
     private String location;
     private String mail;
-    private String option;
+    private int option;
     private String is_correct;
+    private String width;
+
+    public String getWidth() {
+        return width;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
+    }
+
     private List<Map<String, String>> speed;
 
     public String getCity() {
@@ -27,12 +37,12 @@ public class FeedBack {
         this.city = city;
     }
 
-    public String getDescriptionl() {
-        return descriptionl;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescriptionl(String descriptionl) {
-        this.descriptionl = descriptionl;
+    public void setDescription(String descriptionl) {
+        this.description = descriptionl;
     }
 
     public String getIp() {
@@ -75,11 +85,11 @@ public class FeedBack {
         this.mail = mail;
     }
 
-    public String getOption() {
+    public int getOption() {
         return option;
     }
 
-    public void setOption(String option) {
+    public void setOption(int option) {
         this.option = option;
     }
 

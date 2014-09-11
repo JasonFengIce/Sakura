@@ -13,7 +13,7 @@ import cn.ismartv.speedtester.R;
  * Created by fenghb on 14-7-15.
  */
 public class HelpFragment extends Fragment {
-    private static final String URL = "http://192.168.1.185:8099/shipinkefu/help.html";
+    private static final String URL = "http://wx.api.tvxio.com/shipinkefu/help.html";
     private WebView helpPage;
 
     @Override

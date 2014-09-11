@@ -40,6 +40,7 @@ public class CacheManager {
         }
     }
 
+
     public static void updateCheck(Context context, String cdnId, String checked) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(NodeCache.CHECKED, checked);

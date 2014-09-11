@@ -62,6 +62,7 @@ public class CdnClient extends BaseClient {
     }
 
 
+
     public static Observable<Response> uploadResult(String actiontype, String snCode, String nodeId, String nodeSpeed) {
         Log.d(TAG, "action type  --> " + actiontype);
         RestAdapter restAdapter = new RestAdapter.Builder()

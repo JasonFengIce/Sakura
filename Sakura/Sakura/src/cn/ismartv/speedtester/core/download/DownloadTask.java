@@ -99,11 +99,13 @@ public class DownloadTask extends Thread {
                     inStream.close();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
-                } catch (MalformedURLException e) {
+
                     e.printStackTrace();
                 } catch (IOException e) {
+                    CacheManager.updateNodeCache(context, cndId, "-1");
                     CacheManager.updateRunning(context, cndId, "false");
-                    HomeActivity.messageHandler.sendEmptyMessage(HomeActivity.NET_EXCEPTION);
+                    Message.sendMessage(context, Message.COMPLETE);
+//                    HomeActivity.messageHandler.sendEmptyMessage(HomeActivity.NET_EXCEPTION);
                     Log.d(TAG, "speed test --> " + e.getMessage());
                 }
 

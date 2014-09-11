@@ -48,7 +48,7 @@
 
             </LinearLayout>
             <LinearLayout
-                    android:id="@+id/reply"
+                    android:id="@+id/reply_l"
                     android:focusable="true"
                     android:clickable="true"
                     android:background="@drawable/tab_selector"
@@ -155,34 +155,6 @@
                     android:layout_margin="30dip"
                     android:checkedButton="@id/problem_other"
                     >
-                <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/problem_block"
-                        android:textSize="24sp"
-                        android:text="@string/radiobutton_block"
-                        android:layout_marginRight="15dip"/>
-                <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/unable_play"
-                        android:textSize="24sp"
-                        android:text="@string/radiobutton_unable_play"
-                        android:layout_marginRight="15dip"/>
-                <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/problem_unclear"
-                        android:textSize="24sp"
-                        android:text="@string/radiobutton_unclear"
-                        android:layout_marginRight="15dip"/>
-                <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@id/problem_other"
-                        android:textSize="24sp"
-                        android:text="@string/radiobutton_others"
-                        android:layout_marginRight="15dip"/>
             </RadioGroup>
 
 

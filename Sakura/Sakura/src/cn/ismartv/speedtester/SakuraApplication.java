@@ -18,8 +18,6 @@ public class SakuraApplication extends Application {
         Log.d(TAG, "on create ......");
         Log.d(TAG, "sn code is : " + DevicesUtilities.getSNCode());
         NetWorkClient.getTag(this);
-        NetWorkClient.uploadWeixin(this);
-
         NetWorkClient.getLatestAppVersion(this);
         NodeFragment.getCurrentCdn(this);
 
