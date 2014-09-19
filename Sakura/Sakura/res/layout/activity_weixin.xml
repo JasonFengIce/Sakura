@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:background="@drawable/weixin_bg"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_height="match_parent">
+
+        <TextView
+                android:text="@string/qr_code_help"
+                android:textSize="28sp"
+                android:layout_width="600dp"
+                android:layout_height="wrap_content"/>
+
+        <ImageView
+                android:layout_marginTop="20dp"
+                android:id="@+id/weixin_qr_code"
+                android:layout_width="600dp"
+                android:layout_height="600dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+        <TextView
+                android:text="@string/device_code_help"
+                android:textSize="28sp"
+                android:layout_width="600dp"
+                android:layout_height="100dp"/>
+
+        <TextView
+                android:background="#7e7e7e"
+                android:id="@+id/device_code"
+                android:textSize="28sp"
+                android:gravity="center"
+                android:layout_width="600dp"
+                android:layout_height="100dp"/>
+
+        <Button
+                android:background="#f97e05"
+                android:id="@+id/weixin_exit"
+                android:textSize="38sp"
+                android:layout_width="400dp"
+                android:layout_height="100dp"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
