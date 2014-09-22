@@ -18,14 +18,14 @@
 
 
     <application
-            android:icon="@drawable/weixin_launcher"
+            android:icon="@drawable/ic_launcher"
             android:name="cn.ismartv.speedtester.SakuraApplication"
             android:label="@string/app_name"
             >
         <!--activity-->
         <activity android:name="cn.ismartv.speedtester.HomeActivity"
                   android:theme="@style/AppBaseTheme"
-                  android:icon="@drawable/weixin_launcher"
+                  android:icon="@drawable/ic_launcher"
                 >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
