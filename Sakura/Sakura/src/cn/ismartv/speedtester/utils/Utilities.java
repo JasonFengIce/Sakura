@@ -52,9 +52,13 @@ public class Utilities {
 
 
     public static void updateApp(Context context, File path, String fileName) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(path, fileName)),
-                "application/vnd.android.package-archive");
+
+        Uri uri = Uri.parse("file://" + new File(path, fileName).getAbsolutePath());
+        Intent intent = new Intent("android.intent.action.VIEW.HIDE");
+        intent.putExtra("com.lenovo.nebula.packageinstaller.INSTALL_EXTERNAL", false);
+        intent.setDataAndType(uri,
+                "applicationnd.android.package-archive");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
