@@ -321,7 +321,14 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
                     @Override
                     public void onResponse(String response) {
                         Log.d(TAG, response);
-                        Comment comment = new Gson().fromJson(response, (Comment.class));
+                        Comment comment = null;
+                        try {
+                            comment = new Gson().fromJson(response, (Comment.class));
+                        } catch (Exception e) {
+                            Log.e(TAG, "not well format json");
+                            return;
+                        }
+
 
 //                        messageContent.setText(comment.getData().get(0).getSubmit_time() + " : " + comment.getData().get(0).getCommont());
                         List<ChatMsgEntity> mDataArrays = new ArrayList<ChatMsgEntity>();
