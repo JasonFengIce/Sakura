@@ -1,10 +1,10 @@
-package ismartv.android.vod.receiver;
+package com.ismartv.android.vod.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import ismartv.android.vod.service.HttpProxyService;
+import com.ismartv.android.vod.service.HttpProxyService;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = "BootBroadcastReceiver";

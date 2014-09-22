@@ -36,7 +36,7 @@
         <activity
                 android:theme="@android:style/Theme.Holo.NoActionBar"
                 android:icon="@drawable/weixin_launcher"
-                android:name="ismartv.android.vod.WeixinActivity">
+                android:name="com.ismartv.android.vod.WeixinActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -69,20 +69,20 @@
 
 
         <!--receiver-->
-        <receiver android:name="ismartv.android.vod.receiver.BootBroadcastReceiver">
+        <receiver android:name="com.ismartv.android.vod.receiver.BootBroadcastReceiver">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name="ismartv.android.vod.receiver.NetWorkBroadcastReceiver">
+        <receiver android:name="com.ismartv.android.vod.receiver.NetWorkBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
 
         <!--service-->
-        <service android:name="ismartv.android.vod.service.HttpProxyService"></service>
+        <service android:name="com.ismartv.android.vod.service.HttpProxyService"></service>
 
         <!--provider-->
         <provider android:name=".provider.SakuraProvider" android:authorities="cn.ismartv.sakura"/>

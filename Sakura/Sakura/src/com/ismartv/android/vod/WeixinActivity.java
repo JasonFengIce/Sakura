@@ -1,4 +1,4 @@
-package ismartv.android.vod;
+package com.ismartv.android.vod;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,14 +9,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.utils.DevicesUtilities;
 import com.huaijie.tools.utils.DeviceUtils;
-import ismartv.android.vod.data.TicketEntity;
+import com.ismartv.android.vod.data.TicketEntity;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;

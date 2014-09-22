@@ -1,4 +1,4 @@
-package ismartv.android.vod.core;
+package com.ismartv.android.vod.core;
 
 import android.content.Context;
 import android.util.Log;

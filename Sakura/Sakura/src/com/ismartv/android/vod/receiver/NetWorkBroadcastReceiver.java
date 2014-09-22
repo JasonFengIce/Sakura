@@ -1,4 +1,4 @@
-package ismartv.android.vod.receiver;
+package com.ismartv.android.vod.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
-import ismartv.android.vod.core.NetWorkUtil;
+import com.ismartv.android.vod.core.NetWorkUtil;
 
 /**
  * Created by <huaijiefeng@gmail.com> on 9/3/14.

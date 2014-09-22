@@ -1,4 +1,4 @@
-package ismartv.android.vod.service;
+package com.ismartv.android.vod.service;
 
 import android.app.Service;
 import android.content.ComponentName;
@@ -7,18 +7,18 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
-import cn.ismartv.speedtester.utils.Utilities;
 import com.huaijie.tools.net.async.AsyncServer;
-import com.huaijie.tools.net.async.Util;
 import com.huaijie.tools.net.async.http.server.AsyncHttpServer;
 import com.huaijie.tools.net.async.http.server.AsyncHttpServerRequest;
 import com.huaijie.tools.net.async.http.server.AsyncHttpServerResponse;
 import com.huaijie.tools.net.async.http.server.HttpServerRequestCallback;
-import ismartv.android.vod.core.RemoteControl;
+import com.ismartv.android.vod.core.RemoteControl;
 
 /**
  * Created by huaijie on 14-7-31.
  */
+
+
 public class HttpProxyService extends Service implements HttpServerRequestCallback {
     private static final String TAG = "HttpProxyService";
     private static final int ACTION_KEY_EVNET = 1;
@@ -31,15 +31,15 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.v(TAG, "HttpProxyService onBind" );
+        Log.v(TAG, "HttpProxyService onBind");
         return null;
     }
 
     @Override
     public void onCreate() {
-        Log.v(TAG, "HttpProxyService onCreate" );
+        Log.v(TAG, "HttpProxyService onCreate");
         super.onCreate();
-        Intent intent = new Intent("com.ismartv.android.vod.service.keymonitor" );
+        Intent intent = new Intent("com.ismartv.android.vod.service.keymonitor");
         server = new AsyncHttpServer();
         bindService(intent, mConnection, BIND_AUTO_CREATE);
     }
@@ -47,7 +47,7 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.v(TAG, "HttpProxyService onStartCommand" );
+        Log.v(TAG, "HttpProxyService onStartCommand");
         server.get(HTTP_ACTIOIN, this);
         server.listen(AsyncServer.getDefault(), 5000);
         return super.onStartCommand(intent, flags, startId);
@@ -57,23 +57,23 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     @Override
     public void onRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
 
-        int actionCode = Integer.parseInt(request.getQuery().getString("action" ));
+        int actionCode = Integer.parseInt(request.getQuery().getString("action"));
 
         switch (actionCode) {
             case ACTION_KEY_EVNET:
-                sendKeyEvent(Integer.parseInt(request.getQuery().getString("keycode" )));
+                sendKeyEvent(Integer.parseInt(request.getQuery().getString("keycode")));
                 break;
             case ACTION_SEEK_EVNET:
                 RemoteControl.seekVolume(this, Integer.parseInt(request.getQuery().getString("seek")));
                 break;
             case ACTION_PLAY_VIDEO:
-                RemoteControl.play(this, request.getQuery().getString("url" ));
+                RemoteControl.play(this, request.getQuery().getString("url"));
                 break;
             default:
                 break;
         }
 
-        response.send("Hello!!!" );
+        response.send("Hello!!!");
     }
 
     @Override

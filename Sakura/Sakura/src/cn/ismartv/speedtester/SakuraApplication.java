@@ -7,7 +7,7 @@ import cn.ismartv.speedtester.core.httpclient.NetWorkClient;
 import cn.ismartv.speedtester.ui.fragment.NodeFragment;
 import cn.ismartv.speedtester.utils.DevicesUtilities;
 import cn.ismartv.speedtester.utils.Utilities;
-import ismartv.android.vod.service.HttpProxyService;
+import com.ismartv.android.vod.service.HttpProxyService;
 
 /**
  * Created by fenghb on 14-7-7.

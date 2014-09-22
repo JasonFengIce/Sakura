@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ismartv.android.vod.core;
+package com.ismartv.android.vod.core;
 
 import retrofit.client.Request;
 import retrofit.client.Response;

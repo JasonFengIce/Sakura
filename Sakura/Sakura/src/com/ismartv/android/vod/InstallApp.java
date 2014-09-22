@@ -1,4 +1,4 @@
-package ismartv.android.vod;
+package com.ismartv.android.vod;
 
 /**
  * Created by <huaijiefeng@gmail.com> on 9/18/14.

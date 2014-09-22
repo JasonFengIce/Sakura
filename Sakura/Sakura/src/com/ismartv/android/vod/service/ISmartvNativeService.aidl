@@ -1,9 +1,8 @@
 package com.ismartv.android.vod.service;
 
 /**
- * Created by <huaijiefeng@gmail.com> on 9/16/14.
+ * Created by huaijie on 14-9-22.
  */
 interface ISmartvNativeService {
-
     void sendMoniterKey(int paramInt);
 }
