@@ -152,4 +152,6 @@
     <string name="qr_code_help">二维码文字：请打开微信扫一扫，扫描下方二维码，关注视云影院微信公众号。</string>
 
     <string name="device_code_help">设备码文字：自动搜寻设备失败？请输入一下设备码，手动绑定设备。</string>
+    <string name="device_code">设备码:</string>
+    <string name="weixin_helper">微信助手</string>
 </resources>

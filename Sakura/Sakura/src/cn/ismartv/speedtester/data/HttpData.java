@@ -6,6 +6,7 @@ import java.util.ArrayList;
  * Created by fenghb on 14-7-11.
  */
 public class HttpData {
+    private static final String NO_RECORD = "104";
     private ArrayList<Node> cdn_list;
 
     private String retcode;

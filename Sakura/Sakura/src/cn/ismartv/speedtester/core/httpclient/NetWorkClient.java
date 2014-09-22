@@ -78,7 +78,7 @@ public class NetWorkClient extends BaseClient {
                 .setEndpoint(HOST)
                 .build();
         AppVersionInfo client = restAdapter.create(AppVersionInfo.class);
-        client.excute("getLatestAppVersion", new Callback<VersionInfo>() {
+        client.excute(LATEST_APP_VERSION, new Callback<VersionInfo>() {
             @Override
             public void success(VersionInfo versionInfo, Response response) {
                 CacheManager.updateSpeedLogUrl(context, versionInfo.getSpeedlogurl());

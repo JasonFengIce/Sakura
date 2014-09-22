@@ -18,8 +18,9 @@ public class SakuraApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        NetWorkClient.getTag(this);
         NetWorkClient.getLatestAppVersion(this);
+        NetWorkClient.getTag(this);
+
         NodeFragment.get(this);
         Utilities.installPackage(this);
 

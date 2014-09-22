@@ -10,6 +10,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import cn.ismartv.speedtester.R;
@@ -38,7 +39,7 @@ public class WeixinActivity extends Activity implements View.OnClickListener {
 
     private ImageView weixinQRCode;
     private TextView deviceCode;
-    private Button exitButton;
+    private ImageButton exitButton;
 
     public static Handler messageHandler;
 
@@ -54,8 +55,8 @@ public class WeixinActivity extends Activity implements View.OnClickListener {
     private void initViews() {
         weixinQRCode = (ImageView) findViewById(R.id.weixin_qr_code);
         deviceCode = (TextView) findViewById(R.id.device_code);
-        deviceCode.setText(Long.toHexString(DeviceUtils.ipToLong(DevicesUtilities.getLocalIpAddressV4())));
-        exitButton = (Button) findViewById(R.id.weixin_exit);
+        deviceCode.append(Long.toHexString(DeviceUtils.ipToLong(DevicesUtilities.getLocalIpAddressV4())));
+        exitButton = (ImageButton) findViewById(R.id.weixin_exit);
         exitButton.setOnClickListener(this);
 
     }

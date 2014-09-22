@@ -228,10 +228,14 @@ public class NodeFragment extends Fragment implements
         GetBindCdn client = restAdapter.create(GetBindCdn.class);
         client.excute("getBindcdn", DevicesUtilities.getSNCode(), new Callback<HttpData>() {
             @Override
-            public void success(HttpData HttpData, Response response) {
+            public void success(HttpData httpData, Response response) {
                 String result = Utils.getResult(response);
                 Log.d(TAG, result);
-                CacheManager.updateCheck(context, HttpData.getSncdn().getCdnid(), "true");
+                if ("104".equals(httpData.getRetcode())) {
+                    return;
+                } else {
+                    CacheManager.updateCheck(context, httpData.getSncdn().getCdnid(), "true");
+                }
             }
 
             @Override

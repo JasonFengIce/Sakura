@@ -5,4 +5,7 @@ package cn.ismartv.speedtester.core.httpclient;
  */
 public class BaseClient {
     public static final String HOST = "http://wx.api.tvxio.com/";
+
+
+    public static final String LATEST_APP_VERSION = "getLatestAppVersion";
 }
