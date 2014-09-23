@@ -62,41 +62,47 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     };
 
     private void downloadAPK(final Context context, final String downloadUrl, final String md5, final int count) {
-        new Thread() {
-            @Override
-            public void run() {
-                if (count > MAX_CHECK_TIME)
-                    return;
-                File fileName = null;
-                try {
-                    int byteread;
-                    URL url = new URL(downloadUrl);
-                    fileName = new File(DevicesUtilities.getAppFileDirectory(context), Utilities.APP_NAME);
-                    URLConnection conn = url.openConnection();
-                    InputStream inStream = conn.getInputStream();
-                    FileOutputStream fs = new FileOutputStream(fileName);
-                    byte[] buffer = new byte[1024];
-                    while ((byteread = inStream.read(buffer)) != -1) {
-                        fs.write(buffer, 0, byteread);
-                    }
-                    fs.flush();
-                    fs.close();
-                    inStream.close();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    	new Thread() {
+			@Override
+			public void run() {
+				if (count > MAX_CHECK_TIME)
+					return;
+				File fileName = null;
+				try {
+					int byteread;
+					URL url = new URL(downloadUrl);
+					fileName = new File(
+							context.getFilesDir().getAbsolutePath(),
+							Utilities.APP_NAME);
+					if (!fileName.exists())
+						fileName.createNewFile();
+					URLConnection conn = url.openConnection();
+					InputStream inStream = conn.getInputStream();
+					FileOutputStream fs = context.openFileOutput(
+							Utilities.APP_NAME, Context.MODE_WORLD_READABLE);
+					byte[] buffer = new byte[1024];
+					while ((byteread = inStream.read(buffer)) != -1) {
+						fs.write(buffer, 0, byteread);
+					}
+					fs.flush();
+					fs.close();
+					inStream.close();
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
-                String MD5Value = Utilities.getMd5ByFile(fileName);
-                Log.d(TAG, "local apk md5 code is : " + MD5Value + " --> " + md5);
-                if (md5.equals(MD5Value)) {
-                    CacheManager.updateVersion(context, 1, Utilities.APP_NAME);
-                } else {
-                    downloadAPK(context, downloadUrl, md5, count + 1);
-                }
-            }
-        }.start();
+				String MD5Value = Utilities.getMd5ByFile(fileName);
+				Log.d(TAG, "local apk md5 code is : " + MD5Value + " --> "
+						+ md5);
+				if (md5.equals(MD5Value)) {
+					CacheManager.updateVersion(context, 1, Utilities.APP_NAME);
+				} else {
+					downloadAPK(context, downloadUrl, md5, count + 1);
+				}
+			}
+		}.start();
     }
 
     public void getLatestAppVersion(final Context context) {
