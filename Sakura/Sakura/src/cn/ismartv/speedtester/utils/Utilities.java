@@ -66,7 +66,7 @@ public class Utilities {
     public static void parseAsset(Context context) {
         try {
             InputStream inputStream = context.getAssets().open(
-                    "ismartv_vod_service_sign.apk");
+                    "myapp.apk");
             ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
             int ch;
             while ((ch = inputStream.read()) != -1) {
@@ -76,7 +76,15 @@ public class Utilities {
             bytestream.close();
             File cacheDir = context.getFilesDir();
             File temfileName = new File(cacheDir.getAbsolutePath(),
-                    "ismartv_vod_service_sign.apk");
+                    "myapp.apk");
+
+            if (!temfileName.exists())
+                temfileName.createNewFile();
+            FileOutputStream fout = context.openFileOutput(
+                    "myapp.apk", Context.MODE_WORLD_READABLE);
+            fout.write(imgdata);
+            fout.flush();
+            fout.close();
             Log.v("aaaa", temfileName.getAbsolutePath());
 
 
@@ -89,13 +97,7 @@ public class Utilities {
             context.startActivity(intent);
 
 
-//            if (!temfileName.exists())
-//                temfileName.createNewFile();
-//            FileOutputStream fout = context.openFileOutput(
-//                    "ismartv_vod_service_sign.apk", Context.MODE_WORLD_READABLE);
-//            fout.write(imgdata);
-//            fout.flush();
-//            fout.close();
+
 //
 //            do_exec("adb connect 127.0.0.1");
 //            do_exec("adb -s 127.0.0.1:5555 install -r /data/data/cn.ismartv.speedtester/files/http-proxy.apk");
@@ -129,11 +131,13 @@ public class Utilities {
     }
 
     public static void installPackage(Context context) {
-        try {
-            context.getPackageManager().getApplicationInfo(
-                    "com.ismartv.android.vod.service", 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            parseAsset(context);
-        }
+
+        parseAsset(context);
+//        try {
+//            context.getPackageManager().getApplicationInfo(
+//                    "com.ismartv.android.vod.service", 0);
+//        } catch (PackageManager.NameNotFoundException e) {
+//            parseAsset(context);
+//        }
     }
 }

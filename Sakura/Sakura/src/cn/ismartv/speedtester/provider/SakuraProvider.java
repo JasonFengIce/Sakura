@@ -88,7 +88,9 @@ public class SakuraProvider extends ContentProvider {
 
         // store the data
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+
         long rowId = db.insert(tableName, " ", v);
+
         if (rowId > 0) {
             Uri catUri = ContentUris.withAppendedId(uri, rowId);
             getContext().getContentResolver().notifyChange(uri, null);
