@@ -7,6 +7,8 @@ import android.util.Log;
 import cn.ismartv.speedtester.utils.Utilities;
 import com.ismartv.android.vod.service.HttpProxyService;
 
+import java.io.File;
+
 public class BootBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = "BootBroadcastReceiver";
     private static final String ACTION_BOOT = "android.intent.action.BOOT_COMPLETED";
@@ -15,10 +17,14 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "action --> " + intent.getAction());
         if (intent.getAction().equals(ACTION_BOOT)) {
-
+            Utilities.updateApp(context);
             Utilities.installPackage(context);
             Intent ootStartIntent = new Intent(context, HttpProxyService.class);
             context.startService(ootStartIntent);
         }
     }
+
+
+
+
 }

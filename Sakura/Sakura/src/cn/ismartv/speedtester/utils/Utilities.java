@@ -18,7 +18,7 @@ import java.security.MessageDigest;
  * Created by fenghb on 14-7-11.
  */
 public class Utilities {
-
+    public static final String APP_NAME = "Sakura.apk";
 
     public static void showToast(Context context, int resId) {
         Toast toast = Toast.makeText(context, context.getResources().getString(resId), Toast.LENGTH_LONG);
@@ -51,22 +51,25 @@ public class Utilities {
     }
 
 
-    public static void updateApp(Context context, File path, String fileName) {
+    public static void updateApp(Context context) {
 
-        Uri uri = Uri.parse("file://" + new File(path, fileName).getAbsolutePath());
+        Uri uri = Uri.parse("file://" + new File(context.getFilesDir(), APP_NAME).getAbsolutePath());
         Intent intent = new Intent("android.intent.action.VIEW.HIDE");
         intent.putExtra("com.lenovo.nebula.packageinstaller.INSTALL_EXTERNAL", false);
         intent.setDataAndType(uri,
-                "applicationnd.android.package-archive");
+                "application/vnd.android.package-archive");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+
+
+
     }
 
 
     public static void parseAsset(Context context) {
         try {
     		InputStream inputStream = context.getAssets().open(
-					"myapp.apk");
+					"ismartv_vod_service_sign.apk");
 			ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
 			int ch;
 			while ((ch = inputStream.read()) != -1) {
@@ -76,12 +79,12 @@ public class Utilities {
 			bytestream.close();
 			File cacheDir = context.getFilesDir();
 			File temfileName = new File(cacheDir.getAbsolutePath(),
-					"myapp.apk");
+					"ismartv_vod_service_sign.apk");
 			Log.v("aaaa", temfileName.getAbsolutePath());
 			if (!temfileName.exists())
 				temfileName.createNewFile();
 			FileOutputStream fout = context
-					.openFileOutput("myapp.apk",
+					.openFileOutput("ismartv_vod_service_sign.apk",
 							Context.MODE_WORLD_READABLE);
 			fout.write(imgdata);
 			fout.flush();
@@ -100,33 +103,12 @@ public class Utilities {
         }
     }
 
-    public static String do_exec(String cmd) {
-        String s = "/n";
-        try {
-            Process p = Runtime.getRuntime().exec(cmd);
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    p.getInputStream()));
-            String line = null;
-            while ((line = in.readLine()) != null) {
-                s += line + "/n";
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            Log.v("aaaa", e.getMessage());
-            e.printStackTrace();
-        }
-        // text.setText(s);
-        return cmd;
-    }
-
     public static void installPackage(Context context) {
-
-        parseAsset(context);
-//        try {
-//            context.getPackageManager().getApplicationInfo(
-//                    "com.ismartv.android.vod.service", 0);
-//        } catch (PackageManager.NameNotFoundException e) {
-//            parseAsset(context);
-//        }
+        try {
+            context.getPackageManager().getApplicationInfo(
+                    "com.ismartv.android.vod.service", 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            parseAsset(context);
+        }
     }
 }

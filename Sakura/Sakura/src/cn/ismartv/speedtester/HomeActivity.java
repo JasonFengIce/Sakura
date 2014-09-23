@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import cn.ismartv.speedtester.core.httpclient.NetWorkClient;
 import cn.ismartv.speedtester.ui.fragment.FeedbackFragment;
 import cn.ismartv.speedtester.ui.fragment.HelpFragment;
 import cn.ismartv.speedtester.ui.fragment.NodeFragment;
@@ -18,27 +17,17 @@ import com.huaijie.tools.widget.viewpager_indicator.TabPageIndicator;
 
 
 public class HomeActivity extends FragmentActivity {
+    public static final int NET_EXCEPTION = 0x0001;
     private static final String FILE_URL = "http://210.14.137.56/cdn/speedtest.ts";
-
     private static final String TAG = "HomeActivity";
-
     private static final Fragment[] FRAGMENTS = {new NodeFragment(), new FeedbackFragment(), new HelpFragment()};
-
-
+    public static Handler messageHandler;
     private FragmentPagerAdapter adapter;
     private String[] CONTENT;
-
-
-    public static Handler messageHandler;
-
-    public static final int NET_EXCEPTION = 0x0001;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NetWorkClient.getLatestAppVersion(this);
-
         Crashlytics.start(this);
         messageHandler = new MessageHandler();
         setContentView(R.layout.activity_home);

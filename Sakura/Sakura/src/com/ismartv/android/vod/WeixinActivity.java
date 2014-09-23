@@ -46,7 +46,6 @@ public class WeixinActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NetWorkClient.getLatestAppVersion(this);
         messageHandler = new MessageHandler();
         setContentView(R.layout.activity_weixin);
         initViews();

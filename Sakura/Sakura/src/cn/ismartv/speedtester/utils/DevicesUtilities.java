@@ -8,7 +8,7 @@ import android.os.Environment;
 import android.util.Log;
 import org.apache.http.conn.util.InetAddressUtils;
 
-import java.io.*;
+import java.io.File;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -37,12 +37,8 @@ public class DevicesUtilities {
         }
     }
 
-    public static String getAppCacheDirectory() {
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Sakura" +
-                File.separator + "cache");
-        if (!file.exists() && !file.isDirectory())
-            file.mkdirs();
-        return file.getAbsolutePath();
+    public static String getAppCacheDirectory(Context context) {
+        return context.getCacheDir().getAbsolutePath();
     }
 
     public static String getUpdateDirectory() {
@@ -126,5 +122,11 @@ public class DevicesUtilities {
     public static String getModeName() {
 
         return android.os.Build.MODEL;
+    }
+
+    public static String getAppFileDirectory(Context context) {
+        File fileDir = context.getFilesDir();
+
+        return fileDir.getAbsolutePath();
     }
 }

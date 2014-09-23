@@ -8,21 +8,22 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  * Created by fenghb on 14-7-11.
  */
 public class SakuraProvider extends ContentProvider {
 
-    //UriMatcher
-    private static UriMatcher matcher;
-    private DatabaseHelper dbHelper;
     public static final String AUTHORITY = "cn.ismartv.sakura";
-
+    private static final String TAG = "SakuraProvider";
     private static final int CACHE = 1;
     private static final int CACHE_ID = 2;
     private static final int CITY_CACHE = 3;
     private static final int CITY_CACHE_ID = 4;
+    //UriMatcher
+    private static UriMatcher matcher;
+    private DatabaseHelper dbHelper;
 
     static {
         matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -31,6 +32,7 @@ public class SakuraProvider extends ContentProvider {
         matcher.addURI(AUTHORITY, CityCache.TABLE_NAME, CITY_CACHE);
         matcher.addURI(AUTHORITY, CityCache.TABLE_NAME + "/#", CITY_CACHE_ID);
     }
+
 
     @Override
     public boolean onCreate() {
@@ -66,6 +68,8 @@ public class SakuraProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
+
+
         String tableName;
         switch (matcher.match(uri)) {
             case CACHE:
@@ -88,9 +92,12 @@ public class SakuraProvider extends ContentProvider {
 
         // store the data
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        long rowId = db.insert(tableName, " ", v);
-
+        long rowId = 0;
+        try {
+            rowId = db.insert(tableName, " ", v);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
         if (rowId > 0) {
             Uri catUri = ContentUris.withAppendedId(uri, rowId);
             getContext().getContentResolver().notifyChange(uri, null);
@@ -126,23 +133,28 @@ public class SakuraProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
-        int length = values.length;
-        if (length < 10) {
-            for (ContentValues contentValues : values) {
-                insert(uri, contentValues);
+        try {
+
+            int length = values.length;
+            if (length < 10) {
+                for (ContentValues contentValues : values) {
+                    insert(uri, contentValues);
+                }
+                return length;
+            } else {
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                db.beginTransaction();
+                switch (matcher.match(uri)) {
+                    case CACHE:
+                        break;
+                    case CITY_CACHE:
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unknow uri: " + uri);
+                }
             }
-            return length;
-        } else {
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            db.beginTransaction();
-            switch (matcher.match(uri)) {
-                case CACHE:
-                    break;
-                case CITY_CACHE:
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknow uri: " + uri);
-            }
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
         }
         return 0;
     }

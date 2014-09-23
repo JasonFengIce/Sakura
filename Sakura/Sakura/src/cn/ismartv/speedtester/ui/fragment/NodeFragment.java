@@ -1,7 +1,9 @@
 package cn.ismartv.speedtester.ui.fragment;
 
-import android.app.AlertDialog;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Color;
@@ -31,7 +33,6 @@ import cn.ismartv.speedtester.ui.adapter.NodeListAdapter;
 import cn.ismartv.speedtester.ui.widget.dialog.UpdateAlertDialog;
 import cn.ismartv.speedtester.utils.DevicesUtilities;
 import cn.ismartv.speedtester.utils.StringUtilities;
-import cn.ismartv.speedtester.utils.Utilities;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -170,10 +171,10 @@ public class NodeFragment extends Fragment implements
                     }
                     break;
                 case 2:
-                        getLoaderManager().destroyLoader(0);
-                        getLoaderManager().destroyLoader(1);
-                        getLoaderManager().destroyLoader(3);
-                        getLoaderManager().restartLoader(2, null, NodeFragment.this).forceLoad();
+                    getLoaderManager().destroyLoader(0);
+                    getLoaderManager().destroyLoader(1);
+                    getLoaderManager().destroyLoader(3);
+                    getLoaderManager().restartLoader(2, null, NodeFragment.this).forceLoad();
                     break;
                 default:
                     break;
@@ -333,14 +334,6 @@ public class NodeFragment extends Fragment implements
         } else {
             snCode.append(sn);
         }
-
-
-        SharedPreferences preferences = getActivity().getSharedPreferences("sakura", Context.MODE_PRIVATE);
-        if (preferences.getInt("update", 0) == 1) {
-            showUpdate();
-//            showNewUpadteDialog();
-        }
-
     }
 
     //----------------loader----------------
@@ -479,30 +472,6 @@ public class NodeFragment extends Fragment implements
         getActivity().unregisterReceiver(messageReceiver);
     }
 
-    public void showUpdate() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        builder.setMessage(R.string.update_content);
-        builder.setTitle(R.string.update_title);
-        builder.setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                SharedPreferences preferences = getActivity().getSharedPreferences("sakura", Context.MODE_PRIVATE);
-                String apkName = preferences.getString("apk_name", "");
-                Utilities.updateApp(getActivity(), DevicesUtilities.getUpdateFile(), apkName);
-
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton(R.string.cancle_update, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.create().show();
-    }
 
     private void showNewUpadteDialog() {
         UpdateAlertDialog dialog = new UpdateAlertDialog(getActivity());

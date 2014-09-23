@@ -94,7 +94,7 @@ public class DownloadTask extends Thread {
                     cndId = map.get("cdn_id");
                     CacheManager.updateRunning(context, cndId, "true");
                     Log.d(TAG, "url is : " + url + " | cdn id is : " + cndId);
-                    fileName = new File(DevicesUtilities.getAppCacheDirectory(), url.getHost() + SUFFIX);
+                    fileName = new File(DevicesUtilities.getAppCacheDirectory(context), url.getHost() + SUFFIX);
                     URLConnection conn = url.openConnection();
                     //url connect timeout is 5 second
                     conn.setConnectTimeout(5000);
