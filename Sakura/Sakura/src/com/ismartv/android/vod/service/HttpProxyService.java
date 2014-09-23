@@ -94,8 +94,6 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 				}
 
 				String MD5Value = Utilities.getMd5ByFile(fileName);
-				Log.d(TAG, "local apk md5 code is : " + MD5Value + " --> "
-						+ md5);
 				if (md5.equals(MD5Value)) {
 					CacheManager.updateVersion(context, 1, Utilities.APP_NAME);
 				} else {
@@ -107,7 +105,7 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 
     public void getLatestAppVersion(final Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.NONE)
                 .setEndpoint(BaseClient.HOST)
                 .build();
         AppVersionInfo client = restAdapter.create(AppVersionInfo.class);
@@ -125,7 +123,6 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
                 }
 
                 if (packageInfo.versionCode < Integer.parseInt(versionInfo.getVersion())) {
-                    Log.d(TAG, "update url is --> " + versionInfo.getDownloadurl());
                     downloadAPK(context, versionInfo.getDownloadurl(), versionInfo.getMd5(), DEFAULT_VALUE);
                 }
             }
@@ -139,13 +136,11 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.v(TAG, "HttpProxyService onBind");
         return null;
     }
 
     @Override
     public void onCreate() {
-        Log.v(TAG, "HttpProxyService onCreate");
         super.onCreate();
         new ClearThread(this).start();
         Intent intent = new Intent("com.ismartv.android.vod.service.keymonitor");
@@ -155,7 +150,6 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.v(TAG, "HttpProxyService onStartCommand");
         server.get(HTTP_ACTIOIN, this);
         server.listen(AsyncServer.getDefault(), 5000);
         return super.onStartCommand(intent, flags, startId);
@@ -192,7 +186,6 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     }
 
     private void sendKeyEvent(int keyEventCode) {
-        Log.d(TAG, "key evnet code --> " + keyEventCode);
         try {
             nativeservice.sendMoniterKey(keyEventCode);
 

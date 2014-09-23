@@ -17,7 +17,6 @@ public class Message {
     public static final String ACTION = "cn.ismartv.sakura.download";
 
     public static void sendMessage(Context context, int status) {
-        Log.d(TAG, "Broadcasting message");
         Intent intent = new Intent(ACTION);
         intent.putExtra(STATUS, status);
         context.sendBroadcast(intent);

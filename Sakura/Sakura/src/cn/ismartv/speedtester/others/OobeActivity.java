@@ -101,14 +101,11 @@ public class OobeActivity extends Activity implements OnKeyListener {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("Receiver", intent.getAction());
             if (isSetting) {
                 Intent newIntent = new Intent("com.lenovo.nebula.settings.services.TvSettingServiceBootReceiver.shutdown");
                 OobeActivity.this.sendBroadcast(newIntent);
-                Log.d("RecevierInfo", "quit");
                 OobeActivity.this.finish();
             } else {
-                Log.d("RecevierInfo", "Disable hot key");
             }
         }
     };
@@ -976,7 +973,6 @@ public class OobeActivity extends Activity implements OnKeyListener {
                 if (mTimeEscaped >= mDisappearTime * 10) {
                     Intent newIntent = new Intent("com.lenovo.nebula.settings.services.TvSettingServiceBootReceiver.shutdown");
                     OobeActivity.this.sendBroadcast(newIntent);
-                    Log.d("Expired", "quit");
                     OobeActivity.this.finish();
                 } else {
                     mTimeEscaped += 5;

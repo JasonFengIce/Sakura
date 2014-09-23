@@ -194,7 +194,7 @@ public class NodeFragment extends Fragment implements
 
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.NONE)
                 .setEndpoint(BaseClient.HOST)
                 .build();
         BindCdn client = restAdapter.create(BindCdn.class);
@@ -522,7 +522,6 @@ public class NodeFragment extends Fragment implements
     class MessageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("MessageReceiver", "status message : " + intent.getIntExtra(Message.STATUS, -1));
             if (running == true)
                 running = false;
             speedTestBtn.setText(R.string.test);

@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -80,7 +79,7 @@ public class WeixinActivity extends Activity implements View.OnClickListener {
 
     private void getTicket(Context context) {
         final RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.NONE)
                 .setEndpoint(Ticket.HOST)
                 .build();
         Ticket ticket = restAdapter.create(Ticket.class);
@@ -118,7 +117,7 @@ public class WeixinActivity extends Activity implements View.OnClickListener {
 
     private void fetchQrCode(String ticket) {
         final RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.NONE)
                 .setEndpoint(QRCode.HOST)
                 .build();
         QRCode qrCode = restAdapter.create(QRCode.class);
@@ -140,7 +139,6 @@ public class WeixinActivity extends Activity implements View.OnClickListener {
     private static void qrcode(String ticket) {
         try {
             URL url = new URL("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + ticket);
-            Log.d(TAG, url.toString());
             HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
             urlConnection.setUseCaches(false);
             urlConnection.setRequestMethod("GET");

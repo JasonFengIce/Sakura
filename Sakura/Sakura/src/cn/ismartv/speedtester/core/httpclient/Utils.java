@@ -16,7 +16,6 @@
  */
 package cn.ismartv.speedtester.core.httpclient;
 
-import android.util.Log;
 import retrofit.client.Request;
 import retrofit.client.Response;
 import retrofit.mime.MimeUtil;

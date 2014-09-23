@@ -1,7 +1,6 @@
 package cn.ismartv.speedtester.others;
 
 import android.os.SystemClock;
-import android.util.Log;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -25,15 +24,11 @@ public class NetworkUtils {
         HttpURLConnection conn = null;
         InputStream stream = null;
         try {
-            Log.d("FileDownloader_URL: ", networkSpeedInfo.url);
             fileUrl = new URL(networkSpeedInfo.url);
             conn = (HttpURLConnection) fileUrl.openConnection();
             conn.setConnectTimeout(15000);
             conn.setReadTimeout(15000);
-            Log.d("ResponseCode: ", "Http:" + conn.getResponseCode() + "status code");
-            Log.d("ResponseMessage", conn.getResponseMessage());
             networkSpeedInfo.realUrl = conn.getURL().toString();
-            Log.d("realUrl: ", networkSpeedInfo.realUrl);
             networkSpeedInfo.filesize = conn.getContentLength();
             stream = conn.getInputStream();
 //			fileBytes = new byte[fileLength];
@@ -93,17 +88,13 @@ public class NetworkUtils {
             conn.setConnectTimeout(15000);
             conn.setReadTimeout(15000);
             conn.setRequestProperty("User-Agent", android.os.Build.MODEL.replaceAll(" ", "_") + "/" + android.os.Build.ID + " " + android.os.Build.SERIAL);
-            Log.d(TAG, "RequestProperty : " + conn.getRequestProperty("User-Agent"));
             conn.setRequestProperty("Accept-Language", localeName);
-            Log.d("request url : ", uploadURL);
-            Log.d("requestHeader q", str);
             outputStream = conn.getOutputStream();
             writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
             writer.write("q=" + str);
             writer.flush();
 //			conn.connect();
             int statusCode = conn.getResponseCode();
-            Log.d("statusCode", "" + statusCode);
             if (statusCode == 200) {
                 inputStream = conn.getInputStream();
                 reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
@@ -142,7 +133,6 @@ public class NetworkUtils {
             }
 
         }
-        Log.d(TAG, sb.toString());
         return sb.toString();
 
     }

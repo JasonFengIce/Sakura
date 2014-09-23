@@ -154,7 +154,6 @@ public class SakuraProvider extends ContentProvider {
                 }
             }
         } catch (Exception e) {
-            Log.d(TAG, e.getMessage());
         }
         return 0;
     }

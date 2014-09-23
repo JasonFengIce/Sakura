@@ -2,7 +2,6 @@ package cn.ismartv.speedtester.core.download;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import cn.ismartv.speedtester.core.Message;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.httpclient.BaseClient;
@@ -54,7 +53,7 @@ public class DownloadTask extends Thread {
 
     public static void uploadTestResult(String cdnId, String speed) {
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.NONE)
                 .setEndpoint(BaseClient.HOST)
                 .build();
         UploadResult client = restAdapter.create(UploadResult.class);
@@ -80,7 +79,6 @@ public class DownloadTask extends Thread {
     public void run() {
         for (Map<String, String> map : nodes) {
             if (running) {
-                Log.d(TAG, "call is running......");
                 Timer timer = new Timer();
                 timer.start();
                 int bytesum = 0;
@@ -93,7 +91,6 @@ public class DownloadTask extends Thread {
                     url = new URL(map.get("url"));
                     cndId = map.get("cdn_id");
                     CacheManager.updateRunning(context, cndId, "true");
-                    Log.d(TAG, "url is : " + url + " | cdn id is : " + cndId);
                     fileName = new File(DevicesUtilities.getAppCacheDirectory(context), url.getHost() + SUFFIX);
                     URLConnection conn = url.openConnection();
                     //url connect timeout is 5 second
@@ -103,12 +100,10 @@ public class DownloadTask extends Thread {
                     byte[] buffer = new byte[1024];
                     while ((byteread = inStream.read(buffer)) != -1 && timer.timer < TIME_OVER) {
                         bytesum += byteread;
-//                Log.d(TAG, getSize(bytesum) + " time : " + timer);
                         fs.write(buffer, 0, byteread);
                     }
                     long stopTime = System.currentTimeMillis();
                     String speed = getKBperSECOND(bytesum, startTime, stopTime);
-                    Log.d(TAG, "download size is : " + getSize(bytesum) + " speed is : " + speed);
                     //update node cache
                     CacheManager.updateNodeCache(context, cndId, speed);
                     CacheManager.updateRunning(context, cndId, "false");
@@ -125,12 +120,10 @@ public class DownloadTask extends Thread {
                     CacheManager.updateRunning(context, cndId, "false");
                     Message.sendMessage(context, Message.COMPLETE);
 //                    HomeActivity.messageHandler.sendEmptyMessage(HomeActivity.NET_EXCEPTION);
-                    Log.d(TAG, "speed test --> " + e.getMessage());
                 }
 
             }
         }
-        Log.d(TAG, "download complete!!!");
         Message.sendMessage(context, Message.COMPLETE);
     }
 

@@ -30,7 +30,7 @@ public class NetWorkUtil {
 
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.NONE)
                 .setEndpoint(HOST)
                 .build();
         Client client = restAdapter.create(Client.class);

@@ -27,8 +27,6 @@ public class SakuraApplication extends Application {
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
         this.startService(ootStartIntent);
 
-        Log.d(TAG, "on create ......");
-        Log.d(TAG, "sn code is : " + DevicesUtilities.getSNCode());
 
     }
 

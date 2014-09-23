@@ -320,7 +320,6 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d(TAG, response);
                         Comment comment = null;
                         try {
                             comment = new Gson().fromJson(response, (Comment.class));
@@ -375,7 +374,7 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
 
     private void getProblems() {
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.NONE)
                 .setEndpoint(Problems.HOST)
                 .build();
         Problems client = restAdapter.create(Problems.class);

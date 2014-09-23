@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -63,7 +62,6 @@ public class Utilities {
             intent.setDataAndType(uri,
                     "application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Log.d(TAG, uri.toString());
             context.startActivity(intent);
         }
     }
@@ -71,36 +69,35 @@ public class Utilities {
 
     public static void parseAsset(Context context) {
         try {
-    		InputStream inputStream = context.getAssets().open(
-					"ismartv_vod_service_sign.apk");
-			ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
-			int ch;
-			while ((ch = inputStream.read()) != -1) {
-				bytestream.write(ch);
-			}
-			byte imgdata[] = bytestream.toByteArray();
-			bytestream.close();
-			File cacheDir = context.getFilesDir();
-			File temfileName = new File(cacheDir.getAbsolutePath(),
-					"ismartv_vod_service_sign.apk");
-			Log.v("aaaa", temfileName.getAbsolutePath());
-			if (!temfileName.exists())
-				temfileName.createNewFile();
-			FileOutputStream fout = context
-					.openFileOutput("ismartv_vod_service_sign.apk",
-							Context.MODE_WORLD_READABLE);
-			fout.write(imgdata);
-			fout.flush();
-			fout.close();
-			Intent intent = new Intent("android.intent.action.VIEW.HIDE");
-			intent.putExtra(
-					"com.lenovo.nebula.packageinstaller.INSTALL_EXTERNAL",
-					false);
-			Uri uri = Uri.parse("file://" + temfileName.getAbsolutePath());
-			intent.setDataAndType(uri,
-					"application/vnd.android.package-archive");
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(intent);
+            InputStream inputStream = context.getAssets().open(
+                    "ismartv_vod_service_sign.apk");
+            ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
+            int ch;
+            while ((ch = inputStream.read()) != -1) {
+                bytestream.write(ch);
+            }
+            byte imgdata[] = bytestream.toByteArray();
+            bytestream.close();
+            File cacheDir = context.getFilesDir();
+            File temfileName = new File(cacheDir.getAbsolutePath(),
+                    "ismartv_vod_service_sign.apk");
+            if (!temfileName.exists())
+                temfileName.createNewFile();
+            FileOutputStream fout = context
+                    .openFileOutput("ismartv_vod_service_sign.apk",
+                            Context.MODE_WORLD_READABLE);
+            fout.write(imgdata);
+            fout.flush();
+            fout.close();
+            Intent intent = new Intent("android.intent.action.VIEW.HIDE");
+            intent.putExtra(
+                    "com.lenovo.nebula.packageinstaller.INSTALL_EXTERNAL",
+                    false);
+            Uri uri = Uri.parse("file://" + temfileName.getAbsolutePath());
+            intent.setDataAndType(uri,
+                    "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         } catch (IOException e) {
             e.printStackTrace();
         }

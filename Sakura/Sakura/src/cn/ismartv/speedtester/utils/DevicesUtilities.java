@@ -29,10 +29,8 @@ public class DevicesUtilities {
 
 
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            Log.d(TAG, "SDCard is available");
             return true;
         } else {
-            Log.d(TAG, "SDCard is not available");
             return false;
         }
     }
@@ -46,7 +44,6 @@ public class DevicesUtilities {
                 File.separator + "update");
         if (!file.exists() && !file.isDirectory())
             file.mkdirs();
-        Log.d(TAG, "update directory --> " + file.getAbsolutePath());
         return file.getAbsolutePath();
     }
 
@@ -106,7 +103,6 @@ public class DevicesUtilities {
 //            Log.i("SocketException--->", ""+e.getLocalizedMessage());
             return "ip is error";
         }
-        Log.d(TAG, "ip address --> " + ip);
         return ip;
     }
 

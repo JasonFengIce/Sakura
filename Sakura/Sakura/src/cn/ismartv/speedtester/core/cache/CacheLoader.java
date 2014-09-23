@@ -25,7 +25,6 @@ public class CacheLoader extends CursorLoader {
 
     @Override
     public Cursor loadInBackground() {
-        Log.d(TAG, "size is : " + super.loadInBackground().getCount());
         return super.loadInBackground();
     }
 }

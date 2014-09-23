@@ -127,7 +127,6 @@ public class MainActivity extends Activity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("Receiver", intent.getAction());
            MainActivity.this.finish();
         }
     };

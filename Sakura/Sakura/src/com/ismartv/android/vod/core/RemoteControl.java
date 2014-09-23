@@ -16,7 +16,6 @@ public class RemoteControl {
         localIntent.setAction("android.intent.action.VOD_SET_POSITION");
         localIntent.putExtra("seqId", 10000);
         localIntent.putExtra("position", second);
-        Log.d(TAG, "seek progress --> " + second);
         context.sendBroadcast(localIntent);
     }
 
@@ -27,7 +26,6 @@ public class RemoteControl {
     }
 
     public static void play(Context context, String url) {
-        Log.d(TAG, "url --> " + url);
         Intent intent = new Intent();
         intent.putExtra("Code", "387068");
         intent.putExtra("ItemUrl", url);

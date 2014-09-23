@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.util.Log;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.data.*;
 import cn.ismartv.speedtester.ui.fragment.FeedbackFragment;
@@ -43,11 +42,9 @@ public class NetWorkUtilities {
     public static void uploadFeedback(Context context, FeedBack feedBack) {
 
         final String str = new Gson().toJson(feedBack);
-        Log.d(TAG, str);
         new Thread() {
             @Override
             public void run() {
-                Log.d(TAG, "upload feedback is running...");
                 String localeName = Locale.getDefault().toString();
                 URL url;
                 HttpURLConnection conn = null;
@@ -68,16 +65,12 @@ public class NetWorkUtilities {
                     conn.setConnectTimeout(15000);
                     conn.setReadTimeout(15000);
                     conn.setRequestProperty("User-Agent", android.os.Build.MODEL.replaceAll(" ", "_") + "/" + android.os.Build.ID + " " + DevicesUtilities.getSNCode());
-                    Log.d(TAG, "RequestProperty : " + conn.getRequestProperty("User-Agent"));
                     conn.setRequestProperty("Accept-Language", localeName);
-                    Log.d("request url : ", url.toString());
-                    Log.d("requestHeader q", str);
                     outputStream = conn.getOutputStream();
                     writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
                     writer.write("q=" + str);
                     writer.flush();
                     int statusCode = conn.getResponseCode();
-                    Log.d("statusCode", "" + statusCode);
                     if (statusCode == 200) {
                         inputStream = conn.getInputStream();
                         reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
@@ -114,7 +107,6 @@ public class NetWorkUtilities {
                 } else {
                     FeedbackFragment.messageHandler.sendEmptyMessage(FeedbackFragment.UPLAOD_FEEDBACK_FAILED);
                 }
-                Log.d(TAG, "upload feedback is end...");
             }
         }.start();
     }
