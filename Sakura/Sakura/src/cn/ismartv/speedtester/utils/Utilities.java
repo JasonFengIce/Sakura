@@ -19,6 +19,7 @@ import java.security.MessageDigest;
  */
 public class Utilities {
     public static final String APP_NAME = "Sakura.apk";
+    private static final String TAG = "Utilities";
 
     public static void showToast(Context context, int resId) {
         Toast toast = Toast.makeText(context, context.getResources().getString(resId), Toast.LENGTH_LONG);
@@ -53,16 +54,18 @@ public class Utilities {
 
     public static void updateApp(Context context) {
 
-        Uri uri = Uri.parse("file://" + new File(context.getFilesDir(), APP_NAME).getAbsolutePath());
-        Intent intent = new Intent("android.intent.action.VIEW.HIDE");
-        intent.putExtra("com.lenovo.nebula.packageinstaller.INSTALL_EXTERNAL", false);
-        intent.setDataAndType(uri,
-                "application/vnd.android.package-archive");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        File file = new File(context.getFilesDir(), APP_NAME);
+        if (file.exists()) {
 
-
-
+            Uri uri = Uri.parse("file://" + file.getAbsolutePath());
+            Intent intent = new Intent("android.intent.action.VIEW.HIDE");
+            intent.putExtra("com.lenovo.nebula.packageinstaller.INSTALL_EXTERNAL", false);
+            intent.setDataAndType(uri,
+                    "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Log.d(TAG, uri.toString());
+            context.startActivity(intent);
+        }
     }
 
 

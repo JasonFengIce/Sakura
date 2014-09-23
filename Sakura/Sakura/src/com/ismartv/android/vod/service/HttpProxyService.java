@@ -215,7 +215,10 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
         public void run() {
             try {
                 sleep(12000);
-                new File(context.getFilesDir(), Utilities.APP_NAME).delete();
+                File file = new File(context.getFilesDir(), Utilities.APP_NAME);
+                if (file.exists()) {
+                    file.delete();
+                }
                 getLatestAppVersion(context);
             } catch (Exception e) {
                 e.printStackTrace();
