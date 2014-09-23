@@ -222,6 +222,4 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
             }
         }
     }
-
-
 }
