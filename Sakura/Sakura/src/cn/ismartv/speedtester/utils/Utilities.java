@@ -65,47 +65,36 @@ public class Utilities {
 
     public static void parseAsset(Context context) {
         try {
-            InputStream inputStream = context.getAssets().open(
-                    "myapp.apk");
-            ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
-            int ch;
-            while ((ch = inputStream.read()) != -1) {
-                bytestream.write(ch);
-            }
-            byte imgdata[] = bytestream.toByteArray();
-            bytestream.close();
-            File cacheDir = context.getFilesDir();
-            File temfileName = new File(cacheDir.getAbsolutePath(),
-                    "myapp.apk");
-
-            if (!temfileName.exists())
-                temfileName.createNewFile();
-            FileOutputStream fout = context.openFileOutput(
-                    "myapp.apk", Context.MODE_WORLD_READABLE);
-            fout.write(imgdata);
-            fout.flush();
-            fout.close();
-            Log.v("aaaa", temfileName.getAbsolutePath());
-
-
-            Uri uri = Uri.parse("file://" + temfileName.getAbsolutePath());
-            Intent intent = new Intent("android.intent.action.VIEW.HIDE");
-            intent.putExtra("com.lenovo.nebula.packageinstaller.INSTALL_EXTERNAL", false);
-            intent.setDataAndType(uri,
-                    "applicationnd.android.package-archive");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-
-
-
-//
-//            do_exec("adb connect 127.0.0.1");
-//            do_exec("adb -s 127.0.0.1:5555 install -r /data/data/cn.ismartv.speedtester/files/http-proxy.apk");
-//            // Uri uri = Uri.fromFile(temfileName);
-//            // Intent intent = new Intent(Intent.ACTION_VIEW);
-//            // intent.setDataAndType(uri,
-//            // "application/vnd.android.package-archive");
-//            // startActivity(intent);
+    		InputStream inputStream = context.getAssets().open(
+					"myapp.apk");
+			ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
+			int ch;
+			while ((ch = inputStream.read()) != -1) {
+				bytestream.write(ch);
+			}
+			byte imgdata[] = bytestream.toByteArray();
+			bytestream.close();
+			File cacheDir = context.getFilesDir();
+			File temfileName = new File(cacheDir.getAbsolutePath(),
+					"myapp.apk");
+			Log.v("aaaa", temfileName.getAbsolutePath());
+			if (!temfileName.exists())
+				temfileName.createNewFile();
+			FileOutputStream fout = context
+					.openFileOutput("myapp.apk",
+							Context.MODE_WORLD_READABLE);
+			fout.write(imgdata);
+			fout.flush();
+			fout.close();
+			Intent intent = new Intent("android.intent.action.VIEW.HIDE");
+			intent.putExtra(
+					"com.lenovo.nebula.packageinstaller.INSTALL_EXTERNAL",
+					false);
+			Uri uri = Uri.parse("file://" + temfileName.getAbsolutePath());
+			intent.setDataAndType(uri,
+					"application/vnd.android.package-archive");
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			context.startActivity(intent);
         } catch (IOException e) {
             e.printStackTrace();
         }
