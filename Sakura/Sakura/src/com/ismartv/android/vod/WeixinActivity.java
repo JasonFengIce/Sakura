@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import cn.ismartv.speedtester.R;
+import cn.ismartv.speedtester.core.httpclient.NetWorkClient;
 import cn.ismartv.speedtester.utils.DevicesUtilities;
 import com.huaijie.tools.utils.DeviceUtils;
 import com.ismartv.android.vod.data.TicketEntity;
@@ -45,6 +46,7 @@ public class WeixinActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NetWorkClient.getLatestAppVersion(this);
         messageHandler = new MessageHandler();
         setContentView(R.layout.activity_weixin);
         initViews();

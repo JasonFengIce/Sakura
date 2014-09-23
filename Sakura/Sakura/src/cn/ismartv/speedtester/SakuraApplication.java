@@ -18,11 +18,11 @@ public class SakuraApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        NetWorkClient.getLatestAppVersion(this);
+
         NetWorkClient.getTag(this);
 
         NodeFragment.get(this);
-        Utilities.installPackage(this);
+
 
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
         this.startService(ootStartIntent);
