@@ -205,11 +205,10 @@ public class NodeFragment extends Fragment implements
         else
             sn = DevicesUtilities.getSNCode();
 
-//        getCurrentCdn(context);
         client.excute("bindecdn", sn, cdn, new Callback<Empty>() {
             @Override
             public void success(Empty empty, Response response) {
-
+                    get(context);
             }
 
             @Override
@@ -473,10 +472,6 @@ public class NodeFragment extends Fragment implements
     }
 
 
-    private void showNewUpadteDialog() {
-        UpdateAlertDialog dialog = new UpdateAlertDialog(getActivity());
-        dialog.show();
-    }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
