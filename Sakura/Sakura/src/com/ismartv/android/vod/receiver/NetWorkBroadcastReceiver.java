@@ -23,7 +23,14 @@ public class NetWorkBroadcastReceiver extends BroadcastReceiver {
         if (ACTION.equals(intent.getAction())) {
             ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             wifiState = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-            mobileState = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+
+
+            if (null == cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE))
+                mobileState = null;
+            else
+                mobileState = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+
+
             if (wifiState != null && mobileState != null && NetworkInfo.State.CONNECTED != wifiState && NetworkInfo.State.CONNECTED == mobileState) {
                 Log.d(TAG, "mobile network connect success!!!");
                 NetWorkUtil.getInstant().weiXinUpload(context);
