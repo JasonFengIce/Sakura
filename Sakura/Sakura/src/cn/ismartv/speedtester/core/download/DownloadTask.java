@@ -5,7 +5,6 @@ import android.database.Cursor;
 import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.core.Message;
 import cn.ismartv.speedtester.core.cache.CacheManager;
-import cn.ismartv.speedtester.core.httpclient.BaseClient;
 import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.provider.NodeCache;
 import cn.ismartv.speedtester.utils.DevicesUtilities;
