@@ -19,12 +19,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.Message;
 import cn.ismartv.speedtester.core.cache.CacheLoader;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.download.DownloadTask;
-import cn.ismartv.speedtester.core.httpclient.BaseClient;
 import cn.ismartv.speedtester.core.httpclient.Utils;
 import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.HttpData;
@@ -195,7 +195,7 @@ public class NodeFragment extends Fragment implements
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.NONE)
-                .setEndpoint(BaseClient.HOST)
+                .setEndpoint(AppConstant.API_HOST)
                 .build();
         BindCdn client = restAdapter.create(BindCdn.class);
 
@@ -224,7 +224,7 @@ public class NodeFragment extends Fragment implements
     public static void get(final Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint(BaseClient.HOST)
+                .setEndpoint(AppConstant.API_HOST)
                 .build();
         GetBindCdn client = restAdapter.create(GetBindCdn.class);
         client.excute("getBindcdn", DevicesUtilities.getSNCode(), new Callback<HttpData>() {

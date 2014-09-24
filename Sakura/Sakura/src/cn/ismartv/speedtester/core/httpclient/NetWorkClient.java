@@ -2,6 +2,7 @@ package cn.ismartv.speedtester.core.httpclient;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.data.HttpData;
 import cn.ismartv.speedtester.data.NodeTag;
@@ -15,7 +16,7 @@ import retrofit.http.Query;
 /**
  * Created by <huaijiefeng@gmail.com> on 8/21/14.
  */
-public class NetWorkClient extends BaseClient {
+public class NetWorkClient  {
 
 
     public static final String TAG = "NetWorkClient";
@@ -33,7 +34,7 @@ public class NetWorkClient extends BaseClient {
     private static void getNodeList(final  Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.NONE)
-                .setEndpoint(HOST)
+                .setEndpoint(AppConstant.API_HOST)
                 .build();
         NodeList client = restAdapter.create(NodeList.class);
          client.excute("getcdnlist", new Callback<HttpData>() {
@@ -64,7 +65,7 @@ public class NetWorkClient extends BaseClient {
     public static void getTag(final Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.NONE)
-                .setEndpoint(HOST)
+                .setEndpoint(AppConstant.API_HOST)
                 .build();
         Tag client = restAdapter.create(Tag.class);
         client.excute("gettag", new Callback<NodeTag>() {

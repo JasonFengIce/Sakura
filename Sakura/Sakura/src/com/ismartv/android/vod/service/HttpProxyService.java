@@ -12,7 +12,6 @@ import android.os.RemoteException;
 import android.util.Log;
 import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.core.cache.CacheManager;
-import cn.ismartv.speedtester.core.httpclient.BaseClient;
 import cn.ismartv.speedtester.data.VersionInfo;
 import cn.ismartv.speedtester.utils.Utilities;
 import com.huaijie.tools.net.async.AsyncServer;
@@ -115,10 +114,10 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     public void getLatestAppVersion(final Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.NONE)
-                .setEndpoint(BaseClient.HOST)
+                .setEndpoint(AppConstant.API_HOST)
                 .build();
         AppVersionInfo client = restAdapter.create(AppVersionInfo.class);
-        client.excute(BaseClient.LATEST_APP_VERSION, new Callback<VersionInfo>() {
+        client.excute(AppConstant.LATEST_APP_VERSION, new Callback<VersionInfo>() {
             @Override
             public void success(VersionInfo versionInfo, Response response) {
                 CacheManager.updateSpeedLogUrl(context, versionInfo.getSpeedlogurl());
@@ -221,7 +220,7 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
         @Override
         public void run() {
             try {
-                sleep(12000);
+                sleep(60000);
                 File file = new File(context.getFilesDir(), Utilities.APP_NAME);
 
 

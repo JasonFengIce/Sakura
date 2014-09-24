@@ -2,6 +2,7 @@ package cn.ismartv.speedtester.core.download;
 
 import android.content.Context;
 import android.database.Cursor;
+import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.core.Message;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.httpclient.BaseClient;
@@ -54,7 +55,7 @@ public class DownloadTask extends Thread {
     public static void uploadTestResult(String cdnId, String speed) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.NONE)
-                .setEndpoint(BaseClient.HOST)
+                .setEndpoint(AppConstant.API_HOST)
                 .build();
         UploadResult client = restAdapter.create(UploadResult.class);
         client.excute("submitTestData", DevicesUtilities.getSNCode(), cdnId, speed, new Callback<Empty>() {
