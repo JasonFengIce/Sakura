@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
+import cn.ismartv.speedtester.core.httpclient.NetWorkClient;
 import cn.ismartv.speedtester.ui.fragment.FeedbackFragment;
 import cn.ismartv.speedtester.ui.fragment.HelpFragment;
 import cn.ismartv.speedtester.ui.fragment.NodeFragment;
@@ -29,6 +31,9 @@ public class HomeActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
+        NetWorkClient.getTag(this);
+        NodeFragment.get(this);
+
         messageHandler = new MessageHandler();
         setContentView(R.layout.activity_home);
         CONTENT = new String[]{getResources().getString(R.string.node_list),

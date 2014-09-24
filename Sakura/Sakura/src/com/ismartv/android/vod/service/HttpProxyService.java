@@ -10,10 +10,10 @@ import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
+import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.httpclient.BaseClient;
 import cn.ismartv.speedtester.data.VersionInfo;
-import cn.ismartv.speedtester.utils.DevicesUtilities;
 import cn.ismartv.speedtester.utils.Utilities;
 import com.huaijie.tools.net.async.AsyncServer;
 import com.huaijie.tools.net.async.http.server.AsyncHttpServer;
@@ -50,14 +50,23 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     private static final int ACTION_SEEK_EVNET = 2;
     private static final int ACTION_PLAY_VIDEO = 3;
     private static final String HTTP_ACTIOIN = "/keyevent";
+
+
     private AsyncHttpServer server;
+
     private ISmartvNativeService nativeservice;
+
     private ServiceConnection mConnection = new ServiceConnection() {
+
         public void onServiceConnected(ComponentName className, IBinder service) {
+
             nativeservice = ISmartvNativeService.Stub.asInterface(service);
+
         }
 
         public void onServiceDisconnected(ComponentName className) {
+
+
         }
     };
 
@@ -188,7 +197,6 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     private void sendKeyEvent(int keyEventCode) {
         try {
             nativeservice.sendMoniterKey(keyEventCode);
-
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -215,8 +223,12 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
             try {
                 sleep(12000);
                 File file = new File(context.getFilesDir(), Utilities.APP_NAME);
+
+
                 if (file.exists()) {
                     file.delete();
+                    if (AppConstant.DEBUG)
+                        Log.d(TAG, "delete file --> " + file.getAbsolutePath());
                 }
                 getLatestAppVersion(context);
             } catch (Exception e) {

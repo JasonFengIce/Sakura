@@ -72,5 +72,4 @@ public class Comment {
             this.submit_time = submit_time;
         }
     }
-
 }

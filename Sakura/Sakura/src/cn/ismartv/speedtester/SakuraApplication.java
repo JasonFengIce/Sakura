@@ -2,11 +2,6 @@ package cn.ismartv.speedtester;
 
 import android.app.Application;
 import android.content.Intent;
-import android.util.Log;
-import cn.ismartv.speedtester.core.httpclient.NetWorkClient;
-import cn.ismartv.speedtester.ui.fragment.NodeFragment;
-import cn.ismartv.speedtester.utils.DevicesUtilities;
-import cn.ismartv.speedtester.utils.Utilities;
 import com.ismartv.android.vod.service.HttpProxyService;
 
 /**
@@ -18,17 +13,7 @@ public class SakuraApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        NetWorkClient.getTag(this);
-
-        NodeFragment.get(this);
-
-
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
         this.startService(ootStartIntent);
-
-
     }
-
-
 }
