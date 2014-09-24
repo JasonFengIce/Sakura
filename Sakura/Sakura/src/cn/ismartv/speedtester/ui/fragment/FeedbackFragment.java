@@ -381,7 +381,6 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
         client.excute(new Callback<List<ProblemEntity>>() {
             @Override
             public void success(List<ProblemEntity> problemEntities, retrofit.client.Response response) {
-                Log.d(TAG, Utils.getResult(response));
                 createProblemsRadio(problemEntities);
 
             }
