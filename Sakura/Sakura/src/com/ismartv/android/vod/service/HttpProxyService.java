@@ -58,13 +58,10 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     private ServiceConnection mConnection = new ServiceConnection() {
 
         public void onServiceConnected(ComponentName className, IBinder service) {
-
             nativeservice = ISmartvNativeService.Stub.asInterface(service);
-
         }
 
         public void onServiceDisconnected(ComponentName className) {
-
 
         }
     };
@@ -74,7 +71,10 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 			@Override
 			public void run() {
 				if (count > MAX_CHECK_TIME)
-					return;
+                {
+                    Log.d(TAG, "start download apk time --> " + count);
+                    return;
+                }
 				File fileName = null;
 				try {
 					int byteread;
@@ -131,6 +131,8 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
                 }
 
                 if (packageInfo.versionCode < Integer.parseInt(versionInfo.getVersion())) {
+                    if (AppConstant.DEBUG)
+                        Log.d(TAG, "server version code --> " + versionInfo.getVersion() + " local version code --> " + packageInfo.versionCode);
                     downloadAPK(context, versionInfo.getDownloadurl(), versionInfo.getMd5(), DEFAULT_VALUE);
                 }
             }
