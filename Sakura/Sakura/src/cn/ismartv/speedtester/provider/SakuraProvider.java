@@ -68,42 +68,47 @@ public class SakuraProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
-
-
-        String tableName;
-        switch (matcher.match(uri)) {
-            case CACHE:
-                tableName = NodeCache.TABLE_NAME;
-                break;
-            case CITY_CACHE:
-                tableName = CityCache.TABLE_NAME;
-                break;
-            default:
-                throw new IllegalArgumentException("Unknow uri: " + uri);
-        }
-
-        // make a copy of the values
-        ContentValues v;
-        if (contentValues != null) {
-            v = new ContentValues(contentValues);
-        } else {
-            v = new ContentValues();
-        }
-
-        // store the data
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        long rowId = 0;
         try {
-            rowId = db.insert(tableName, " ", v);
+
+
+            String tableName;
+            switch (matcher.match(uri)) {
+                case CACHE:
+                    tableName = NodeCache.TABLE_NAME;
+                    break;
+                case CITY_CACHE:
+                    tableName = CityCache.TABLE_NAME;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknow uri: " + uri);
+            }
+
+            // make a copy of the values
+            ContentValues v;
+            if (contentValues != null) {
+                v = new ContentValues(contentValues);
+            } else {
+                v = new ContentValues();
+            }
+
+            // store the data
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            long rowId = 0;
+            try {
+                rowId = db.insert(tableName, " ", v);
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
+            if (rowId > 0) {
+                Uri catUri = ContentUris.withAppendedId(uri, rowId);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return catUri;
+            }
+            throw new RuntimeException("Failed to insert row into " + uri);
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Log.d(TAG, e.getMessage());
         }
-        if (rowId > 0) {
-            Uri catUri = ContentUris.withAppendedId(uri, rowId);
-            getContext().getContentResolver().notifyChange(uri, null);
-            return catUri;
-        }
-        throw new RuntimeException("Failed to insert row into " + uri);
+        return null;
     }
 
     @Override

@@ -76,12 +76,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.ismartv.android.vod.receiver.NetWorkBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-            </intent-filter>
-        </receiver>
-
         <!--service-->
         <service android:name="com.ismartv.android.vod.service.HttpProxyService"></service>
 

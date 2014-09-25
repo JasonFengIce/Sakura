@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import cn.ismartv.speedtester.data.Node;
 import cn.ismartv.speedtester.provider.NodeCache;
 import cn.ismartv.speedtester.utils.StringUtilities;
+import com.ismartv.android.vod.core.NetWorkUtil;
 
 import java.util.ArrayList;
 
@@ -95,5 +96,16 @@ public class CacheManager {
         editor.apply();
     }
 
+
+    public static void updatLocalIp(Context context, String localIp) {
+        SharedPreferences preferences = context.getSharedPreferences("sakura", Context.MODE_PRIVATE);
+
+        if (!preferences.getString("local_ip", "").equals(localIp)) {
+            NetWorkUtil.getInstant().weiXinUpload(context);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("local_ip", localIp);
+            editor.apply();
+        }
+    }
 
 }
