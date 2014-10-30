@@ -1,5 +1,7 @@
 package cn.ismartv.speedtester.core;
 
+import cn.ismartv.speedtester.data.HttpDataEntity;
+import cn.ismartv.speedtester.data.NodeTagEntity;
 import cn.ismartv.speedtester.data.ProblemEntity;
 import cn.ismartv.speedtester.data.TicketEntity;
 import retrofit.Callback;
@@ -33,4 +35,19 @@ public class ClientApi {
         );
     }
 
+    public interface Tag {
+        @GET("/shipinkefu/getCdninfo")
+        void excute(
+                @Query("actiontype") String actiontype,
+                Callback<NodeTagEntity> callback
+        );
+    }
+
+    public interface NodeList {
+        @GET("/shipinkefu/getCdninfo")
+        void excute(
+                @Query("actiontype") String actiontype,
+                Callback<HttpDataEntity> callback
+        );
+    }
 }
