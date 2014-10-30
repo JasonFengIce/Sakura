@@ -10,8 +10,8 @@
             android:layout_marginLeft="40dp"
             android:layout_marginTop="40dp"
             android:textSize="24sp"
-            android:id="@+id/prompt "
             android:textColor="#FFFFFF"
+            android:id="@+id/prompt "
             android:text="@string/prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

@@ -8,6 +8,15 @@
     <string name="status">状态</string>
     <string name="fast">快</string>
     <string name="slow">慢</string>
+    <string name="sn_text">您的设备SN号：</string>
+    <string name="add_description">问题描述:</string>
+    <string name="contact_phone_number">联系电话:</string>
+
+    <string name="ismartv_hotline">视云影院24小时服务热线：</string>
+    <string name="ismartv_number">4000590012</string>
+    <string name="hardware_hotline">硬件与APP应用服务热线：</string>
+    <string name="hardware_number">4001005001</string>
+    <string name="weixin">微信公共平台：</string>
 
 
 </resources>

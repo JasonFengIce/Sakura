@@ -2,7 +2,98 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
+              android:background="@drawable/bg_fragment"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+
+    <TextView
+            android:id="@+id/sn_code"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40dp"
+            android:text="@string/sn_text"
+            android:textSize="24sp"
+            android:textColor="#FFFFFF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/problem_options"
+            android:orientation="horizontal"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:layout_margin="30dip"
+            >
+    </RadioGroup>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:orientation="horizontal"
+                  android:gravity="center"
+                  android:layout_marginTop="10dp"
+                  android:layout_marginRight="40dp"
+                  android:layout_marginLeft="40dp"
+                  android:id="@+id/contact_area"
+                  android:layout_height="wrap_content">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textSize="24sp"
+                  android:text="@string/contact_phone_number"
+                />
+
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:id="@+id/phone_number_edit"
+                android:inputType="phone"
+                android:background="@drawable/edit_drawable"
+                />
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:paddingTop="20dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:id="@+id/description_area"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_below="@id/contact_area"
+            android:layout_height="wrap_content">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textSize="24sp"
+                  android:text="@string/add_description"
+                />
+
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:id="@+id/description_edit"
+                android:background="@drawable/edit_drawable"
+                android:inputType="textMultiLine"
+                />
+    </LinearLayout>
+    <Button
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:background="@drawable/selector_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+<ListView
+        android:layout_margin="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+</ListView>
+
 
 </LinearLayout>
