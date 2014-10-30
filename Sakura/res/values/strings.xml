@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sakura</string>
+    <string name="prompt">推荐的覆盖点：如果自动监测结果有误，请手动选择您的省份与网络类型</string>
+    <string name="province">所在的省份：</string>
+    <string name="isp">网络类型：</string>
+    <string name="net_type">网络类型</string>
+    <string name="status">状态</string>
+    <string name="fast">快</string>
+    <string name="slow">慢</string>
+
+
 </resources>

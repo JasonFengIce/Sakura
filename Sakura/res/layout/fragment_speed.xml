@@ -6,4 +6,124 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <TextView
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40dp"
+            android:textSize="24sp"
+            android:id="@+id/prompt "
+            android:textColor="#FFFFFF"
+            android:text="@string/prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <LinearLayout
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="80dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+
+
+        <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+
+            <TextView
+                    android:text="@string/province"
+                    android:textSize="24sp"
+                    android:textColor="#FFFFFF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+            </Spinner>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="@string/isp"
+                    android:textSize="24sp"
+                    android:textColor="#FFFFFF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+            </Spinner>
+
+        </LinearLayout>
+        <Button
+                android:background="@drawable/speed_test"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="100dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:gravity="center"
+            android:background="#d5d9e2"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+        <TextView
+                android:layout_weight="1"
+                android:text="@string/net_type"
+                android:textColor="#8f8f8f"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+        <TextView
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="@string/status"
+                android:textColor="#8f8f8f"
+                android:textSize="24sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+        <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:textColor="#8f8f8f"
+                    android:textSize="24sp"
+                    android:text="@string/slow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <ImageView
+                    android:src="@drawable/status_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <TextView
+                    android:text="@string/fast"
+                    android:textColor="#8f8f8f"
+                    android:textSize="24sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ListView
+            android:id="@+id/node_list"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+    </ListView>
 </LinearLayout>
