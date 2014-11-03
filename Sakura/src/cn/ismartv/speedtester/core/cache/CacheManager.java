@@ -35,10 +35,7 @@ public class CacheManager {
                 nodeCacheTable.ip = nodeEntity.getUrl();
                 nodeCacheTable.url = nodeEntity.getTestFile();
                 nodeCacheTable.routeTrace = nodeEntity.getRoute_trace();
-                int speed = 0;
-                if (null != nodeEntity.getSpeed() || (!"".equals(nodeEntity.getSpeed())))
-                    speed = Integer.parseInt(nodeEntity.getSpeed());
-                nodeCacheTable.speed = speed;
+                nodeCacheTable.speed = nodeEntity.getSpeed();
                 nodeCacheTable.updateTime = String.valueOf(System.currentTimeMillis());
                 nodeCacheTable.area = StringUtils.getAreaCodeByNode(nodeEntity.getNick());
                 nodeCacheTable.isp = StringUtils.getOperatorByNode(nodeEntity.getNick());

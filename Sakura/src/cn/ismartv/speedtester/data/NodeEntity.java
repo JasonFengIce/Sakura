@@ -21,15 +21,19 @@ public class NodeEntity {
         this.ping = ping;
     }
 
-    public String getSpeed() {
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
+    public int getSpeed() {
         return speed;
     }
 
-    public void setSpeed(String speed) {
+    public void setSpeed(int speed) {
         this.speed = speed;
     }
 
-    private String speed;
+    private int speed;
 
     public String getTestFile() {
         return "http://" + getUrl() + "/cdn/speedtest.ts";
