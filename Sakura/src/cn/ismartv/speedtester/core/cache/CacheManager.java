@@ -4,12 +4,14 @@ package cn.ismartv.speedtester.core.cache;
 import android.content.Context;
 import android.content.SharedPreferences;
 import cn.ismartv.speedtester.AppConstant;
+import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.data.NodeEntity;
 import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.utils.StringUtils;
 import com.activeandroid.ActiveAndroid;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by fenghb on 14-7-11.
@@ -47,6 +49,18 @@ public class CacheManager {
         } finally {
             ActiveAndroid.endTransaction();
         }
+    }
+
+    public static void updateLocationCache(Context context, String city, String isp) {
+        String[] mCity = context.getResources().getStringArray(R.array.citys);
+        String[] mIsp = context.getResources().getStringArray(R.array.isps);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        int ispPosition = Arrays.asList(mIsp).indexOf(isp);
+        int cityPositon = Arrays.asList(mCity).indexOf(city);
+        editor.putInt("city_position", cityPositon == -1 ? 0 : cityPositon);
+        editor.putInt("isp_position", ispPosition == -1 ? 0 : ispPosition);
+        editor.apply();
     }
 
     //

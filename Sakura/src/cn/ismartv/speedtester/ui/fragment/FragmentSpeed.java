@@ -4,17 +4,16 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnItemSelected;
+import butterknife.*;
 import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
@@ -27,7 +26,6 @@ import cn.ismartv.speedtester.ui.adapter.NodeListAdapter;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
 import com.activeandroid.content.ContentProvider;
-import com.activeandroid.util.Log;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -53,6 +51,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @InjectView(R.id.speed_test_btn)
     Button speedTestBtn;
 
+    private PopupWindow testProgressPopup;
+
 
     private int provincesPosition;
     private int ispPosition;
@@ -68,9 +68,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         nodeListAdapter = new NodeListAdapter(getActivity(), null, true);
         getLoaderManager().initLoader(0, null, this);
         cities = getResources().getStringArray(R.array.citys);
-
-
-        Log.d(TAG, "onCreateLoader");
     }
 
     @Override
@@ -95,25 +92,22 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         operatorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ispSpinner.setAdapter(operatorSpinnerAdapter);
 
-        nodeList.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
-        nodeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Log.d(TAG, "item positon ---> " + position);
-//                initPopWindow();
-            }
-        });
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        int cityCache = sharedPreferences.getInt("city_position", 0);
+        int ispCache = sharedPreferences.getInt("isp_position", 0);
+        provinceSpinner.setSelection(cityCache);
+        ispSpinner.setSelection(ispCache);
+
 
     }
 
-//
-//    @OnItemClick(R.id.node_list)
-//    public void pickNode(AdapterView<?> parent, View view, int position, long id) {
-//        Log.d(TAG, "item positon ---> " + position);
-//        initPopWindow();
-//
-//    }
+    @OnItemClick(R.id.node_list)
+    public void pickNode(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "item positon ---> " + position);
+        initPopWindow((Integer) view.getTag());
+
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int flag, Bundle bundle) {
@@ -140,7 +134,10 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         nodeListAdapter.swapCursor(cursor);
-
+//
+        DownloadTask downloadTask = DownloadTask.getInstance(getActivity(), nodeListAdapter.getCursor());
+        downloadTask.setSpeedTestListener(this);
+        downloadTask.start();
     }
 
     @Override
@@ -196,7 +193,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.speed_test_btn)
     public void speedTest() {
-        DownloadTask downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
+        testProgressPopup = initTestProgressPopWindow();
+        DownloadTask downloadTask = DownloadTask.getInstance(getActivity(), nodeListAdapter.getCursor());
         downloadTask.setSpeedTestListener(this);
         downloadTask.start();
     }
@@ -215,13 +213,13 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void allCompelte() {
+        if (null != testProgressPopup)
+            testProgressPopup.dismiss();
 
     }
 
 
     private static void bindCdn(final Context context, final String cdn) {
-
-
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.NONE)
                 .setEndpoint(AppConstant.API_HOST)
@@ -237,8 +235,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         client.excute("bindecdn", sn, cdn, new Callback<Empty>() {
             @Override
             public void success(Empty empty, Response response) {
-
-
+                Toast.makeText(context, "success!!", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -246,67 +243,40 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
             }
         });
-
-
     }
 
 
-    private void initPopWindow() {
-        // 加载PopupWindow的布局文件
+    private void initPopWindow(final int cdnID) {
         View contentView = LayoutInflater.from(getActivity())
                 .inflate(R.layout.popup_confirm_node, null);
-        // 设置PopupWindow的背景颜色
-        contentView.setBackgroundColor(Color.RED);
-        // 声明一个对话框
-        final PopupWindow popupWindow = new PopupWindow(null, 200, 300);
-        // 为自定义的对话框设置自定义布局
+        contentView.setBackgroundResource(R.drawable.bg_popup);
+        final PopupWindow popupWindow = new PopupWindow(null, 400, 150);
         popupWindow.setContentView(contentView);
+        popupWindow.setFocusable(true);
+        popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);
 
-        // 这个popupWindow.setFocusable(true);非常重要，如果不在弹出之前加上这条语句，你会很悲剧的发现，你是无法在
-        //
-        // editText中输入任何东西的。该方法可以设定popupWindow获取焦点的能力。当设置为true时，系统会捕获到焦点给popupWindow
-        //
-        // 上的组件。默认为false哦.该方法一定要在弹出对话框之前进行调用。
-        popupWindow.setFocusable(false);
-
-        // popupWindow.showAsDropDown（View view）弹出对话框，位置在紧挨着view组件
-        //
-        // showAsDropDown(View anchor, int xoff, int yoff)弹出对话框，位置在紧挨着view组件，x y
-        // 代表着偏移量
-        //
-        // showAtLocation(View parent, int gravity, int x, int y)弹出对话框
-        //
-        // parent 父布局 gravity 依靠父布局的位置如Gravity.CENTER x y 坐标值
-
-//        popupWindow.showAsDropDown(button);
-//
-//        final EditText editText = (EditText) contentView
-//                .findViewById(R.id.editText1);
-//        // 设定当你点击EditText时，弹出的输入框是啥样子的。这里设置默认数字是输入，非数字不能输入
-//        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-
-//        Button button_sure = (Button) contentView
-//                .findViewById(R.id.button1_sure);
-//        button_sure.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                popupWindow.dismiss();
-//                textView.setText("展示信息:" + editText.getText());
-//            }
-//        });
-//        Button button_cancel = (Button) contentView
-//                .findViewById(R.id.button2_cancel);
-//        button_cancel.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                popupWindow.dismiss();
-//            }
-//        });
+        ImageView button = (ImageView) contentView.findViewById(R.id.confirm_btn);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupWindow.dismiss();
+                bindCdn(getContext(), String.valueOf(cdnID));
+            }
+        });
     }
 
+    private Context getContext() {
+        return getActivity();
+    }
 
+    private PopupWindow initTestProgressPopWindow() {
+        View contentView = LayoutInflater.from(getActivity())
+                .inflate(R.layout.popup_test_progress, null);
+        contentView.setBackgroundColor(0x99525252);
+        final PopupWindow popupWindow = new PopupWindow(null, 400, 150);
+        popupWindow.setContentView(contentView);
+        popupWindow.setFocusable(true);
+        popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);
+        return popupWindow;
+    }
 }

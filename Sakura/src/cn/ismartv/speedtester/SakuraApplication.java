@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.data.HttpDataEntity;
+import cn.ismartv.speedtester.data.LocationEntity;
 import cn.ismartv.speedtester.data.NodeTagEntity;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.app.Application;
@@ -23,6 +24,7 @@ public class SakuraApplication extends Application {
         super.onCreate();
         ActiveAndroid.initialize(this);
         getTag(this);
+        fetchLocation();
     }
 
 
@@ -77,5 +79,27 @@ public class SakuraApplication extends Application {
             return true;
         }
         return false;
+    }
+
+
+    private void fetchLocation() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(AppConstant.API_HOST)
+                .build();
+        ClientApi.Location client = restAdapter.create(ClientApi.Location.class);
+        client.excute("getipaddress", new Callback<LocationEntity>() {
+            @Override
+            public void success(LocationEntity locationEntity, Response response) {
+                if (locationEntity.getCode() != 1)
+                    CacheManager.updateLocationCache(getApplicationContext(), locationEntity.getData().getCity(), locationEntity.getData().getIsp());
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+
     }
 }

@@ -20,6 +20,8 @@ import java.util.Locale;
  * Created by huaijie on 14-10-30.
  */
 public class ClientApi {
+    public static final String HOST = "http://wx.api.tvxio.com";
+
     public interface Problems {
         String HOST = "http://iris.tvxio.com";
 
@@ -88,6 +90,15 @@ public class ClientApi {
                 @Query("sn") String snCode,
                 @Query("cdn") String cdnNumber,
                 Callback<Empty> callback
+
+        );
+    }
+
+    public interface Location {
+        @GET("/shipinkefu/getCdninfo")
+        void excute(
+                @Query("actiontype") String actiontype,
+                Callback<LocationEntity> callback
 
         );
     }

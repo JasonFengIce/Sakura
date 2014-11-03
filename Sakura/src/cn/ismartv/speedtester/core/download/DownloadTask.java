@@ -23,12 +23,11 @@ public class DownloadTask extends Thread {
     private static final int TIME_OVER = 4;
 
     private Context context;
-    private Cursor cursor;
-
     private List<Map<String, String>> nodes;
-    private volatile boolean running = true;
-
+    public volatile boolean running = false;
     private OnSpeedTestListener listener;
+
+    private static DownloadTask instance;
 
     public interface OnSpeedTestListener {
         public void changeStatus(String id, String cdnId, boolean status);
@@ -42,9 +41,14 @@ public class DownloadTask extends Thread {
         this.listener = listener;
     }
 
-    public DownloadTask(Context context, Cursor cursor) {
+    public static DownloadTask getInstance(Context context, Cursor cursor) {
+        if (null == instance)
+            instance = new DownloadTask(context, cursor);
+        return instance;
+    }
+
+    private DownloadTask(Context context, Cursor cursor) {
         this.context = context;
-        this.cursor = cursor;
         nodes = new ArrayList<Map<String, String>>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             Map<String, String> map = new HashMap<String, String>();
@@ -56,13 +60,9 @@ public class DownloadTask extends Thread {
     }
 
 
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
-    // calculate download speed
-
     @Override
     public void run() {
+        running = true;
         for (Map<String, String> map : nodes) {
             if (running) {
                 Timer timer = new Timer();
@@ -103,16 +103,17 @@ public class DownloadTask extends Thread {
                     inStream.close();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
-
-                    e.printStackTrace();
+                    running = false;
                 } catch (IOException e) {
                     listener.compelte(recordId, cdnId, -1);
                     listener.changeStatus(recordId, cdnId, false);
+                    running = false;
                 }
 
             }
         }
         listener.allCompelte();
+        running = false;
     }
 
     private final int getKBperSECOND(long dataByte, long start, long stop) {
@@ -135,4 +136,13 @@ public class DownloadTask extends Thread {
             }
         }
     }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
 }
