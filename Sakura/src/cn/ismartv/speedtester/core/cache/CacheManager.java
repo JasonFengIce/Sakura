@@ -2,8 +2,11 @@ package cn.ismartv.speedtester.core.cache;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.data.NodeEntity;
 import cn.ismartv.speedtester.provider.NodeCacheTable;
+import cn.ismartv.speedtester.utils.StringUtils;
 import com.activeandroid.ActiveAndroid;
 
 import java.util.ArrayList;
@@ -12,11 +15,12 @@ import java.util.ArrayList;
  * Created by fenghb on 14-7-11.
  */
 public class CacheManager {
-//    public static void updateNodeCache(Context context, String cdnId, String speed) {
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(NodeCache.SPEED, speed);
-//        context.getContentResolver().update(NodeCache.CONTENT_URI, contentValues, NodeCache.CDN_ID, new String[]{cdnId});
-//    }
+    public static void updateNodeCache(int id, int cdnId, int speed) {
+        NodeCacheTable nodeCacheTable = NodeCacheTable.load(NodeCacheTable.class, id);
+        nodeCacheTable.cdnID = cdnId;
+        nodeCacheTable.speed = speed;
+        nodeCacheTable.save();
+    }
 
     public static void updateNodeCache(Context context, ArrayList<NodeEntity> nodes) {
 
@@ -31,10 +35,10 @@ public class CacheManager {
                 nodeCacheTable.ip = nodeEntity.getUrl();
                 nodeCacheTable.url = nodeEntity.getTestFile();
                 nodeCacheTable.routeTrace = nodeEntity.getRoute_trace();
-                nodeCacheTable.speed = nodeEntity.getSpeed();
+                nodeCacheTable.speed = Integer.parseInt(nodeEntity.getSpeed());
                 nodeCacheTable.updateTime = String.valueOf(System.currentTimeMillis());
-                nodeCacheTable.area = "";
-                nodeCacheTable.isp = "";
+                nodeCacheTable.area = StringUtils.getAreaCodeByNode(nodeEntity.getNick());
+                nodeCacheTable.isp = StringUtils.getOperatorByNode(nodeEntity.getNick());
                 nodeCacheTable.checked = "false";
                 nodeCacheTable.running = "false";
                 nodeCacheTable.save();
@@ -43,28 +47,9 @@ public class CacheManager {
         } finally {
             ActiveAndroid.endTransaction();
         }
-
-//
-//        ContentValues contentValues = new ContentValues();
-//        for (Node node : nodes) {
-//            contentValues.put(NodeCache.NODE, node.getName());
-//            contentValues.put(NodeCache.CDN_ID, node.getCdnID());
-//            contentValues.put(NodeCache.NICK, node.getNick());
-//            contentValues.put(NodeCache.FLAG, node.getFlag());
-//            contentValues.put(NodeCache.IP, node.getUrl());
-//            contentValues.put(NodeCache.URL, node.getTestFile());
-//            contentValues.put(NodeCache.ROUTE_TRACE, node.getRoute_trace());
-//            contentValues.put(NodeCache.SPEED, node.getSpeed());
-//            contentValues.put(NodeCache.UPDATE_TIME, System.currentTimeMillis());
-//            contentValues.put(NodeCache.AREA, StringUtilities.getAreaCodeByNode(node.getNick()));
-//            contentValues.put(NodeCache.OPERATOR, StringUtilities.getOperatorByNode(node.getNick()));
-//            contentValues.put(NodeCache.CHECKED, "false");
-//            contentValues.put(NodeCache.RUNNING, "false");
-//            context.getContentResolver().insert(NodeCache.CONTENT_URI, contentValues);
-//        }
     }
 
-//
+    //
 //    public static void updateCheck(Context context, String cdnId, String checked) {
 //        ContentValues contentValues = new ContentValues();
 //        contentValues.put(NodeCache.CHECKED, checked);
@@ -109,15 +94,12 @@ public class CacheManager {
 //        editor.apply();
 //    }
 //
-//    public static void updatFeedBack(Context context, int province, int netType, int netWidth, String phoneNumber) {
-//        SharedPreferences preferences = context.getSharedPreferences("sakura", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.putInt("feedback_province", province);
-//        editor.putInt("feedback_netType", netType);
-//        editor.putInt("feedback_netWidth", netWidth);
-//        editor.putString("feedback_phoneNumber", phoneNumber);
-//        editor.apply();
-//    }
+    public static void updatFeedBack(Context context, String phoneNumber) {
+        SharedPreferences preferences = context.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("feedback_phoneNumber", phoneNumber);
+        editor.apply();
+    }
 //
 //
 //    public static void updatLocalIp(Context context, String localIp) {

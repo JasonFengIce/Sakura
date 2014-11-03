@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_1">#663366</color>
+    <color name="color_2">#FF0033</color>
+    <color name="color_3">#FF6600</color>
+    <color name="color_4">#FFFF00</color>
+    <color name="color_5">#00CC00</color>
+
+    <color name="node_item_focus">#2235b5e5</color>
+    <color name="help_fragment_bg">#00000000</color>
+
+    <color name="button_bg">#ef7307</color>
+
+
+</resources>

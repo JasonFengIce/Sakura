@@ -10,6 +10,11 @@ import com.activeandroid.annotation.Table;
 
 @Table(name = "nodes")
 public class NodeCacheTable extends Model {
+    public static final String CDN_ID = "cdn_id";
+    public static final String URL = "url";
+    public static final String ID = "_id";
+    public static final String SPEED = "speed";
+
     @Column(name = "cdn_id", uniqueGroups = {"group1"}, onUniqueConflicts = {Column.ConflictAction.IGNORE})
     public int cdnID = 0;
 
@@ -23,10 +28,10 @@ public class NodeCacheTable extends Model {
     public String flag = "";
 
     @Column(name = "area")
-    public String area = "";
+    public int area = 0;
 
     @Column(name = "isp")
-    public String isp = "";
+    public int isp = 0;
 
     @Column(name = "ip")
     public String ip = "";
@@ -38,7 +43,7 @@ public class NodeCacheTable extends Model {
     public String routeTrace = "";
 
     @Column(name = "speed")
-    public String speed = "";
+    public int speed = 0;
 
     @Column(name = "update_time")
     public String updateTime = "";

@@ -19,6 +19,8 @@ import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.data.TicketEntity;
 import cn.ismartv.speedtester.utils.DeviceUtils;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;

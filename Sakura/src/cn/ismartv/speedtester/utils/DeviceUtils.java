@@ -48,4 +48,13 @@ public class DeviceUtils {
             macAddress = "0:0:0:0:0:0";
         return macAddress;
     }
+
+    public static String getModel() {
+        return Build.MODEL;
+    }
+
+    public static String getAppCacheDirectory(Context context) {
+        return context.getCacheDir().getAbsolutePath();
+    }
+
 }

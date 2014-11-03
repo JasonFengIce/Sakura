@@ -1,45 +1,82 @@
 package cn.ismartv.speedtester.ui.fragment;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
+import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
+import cn.ismartv.speedtester.core.cache.CacheManager;
+import cn.ismartv.speedtester.data.ChatMsgEntity;
+import cn.ismartv.speedtester.data.FeedBackEntity;
 import cn.ismartv.speedtester.data.ProblemEntity;
+import cn.ismartv.speedtester.ui.adapter.FeedbackListAdapter;
 import cn.ismartv.speedtester.utils.DeviceUtils;
+import cn.ismartv.speedtester.utils.StringUtils;
+import cn.ismartv.speedtester.utils.Utilities;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import java.util.List;
 
 /**
  * Created by huaijie on 14-10-29.
  */
-public class FragmentFeedback extends Fragment {
+public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedChangeListener {
+
+    public static final int UPLAOD_FEEDBACK_COMPLETE = 0x0001;
+    public static final int UPLAOD_FEEDBACK_FAILED = 0x0002;
+
     @InjectView(R.id.sn_code)
     TextView snCode;
-    @InjectView(R.id.problem_options)
     RadioGroup problemType;
+    @InjectView(R.id.feedback_list)
+    ListView feedbackList;
+    @InjectView(R.id.phone_number_edit)
+    EditText phone;
+    @InjectView(R.id.description_edit)
+    EditText description;
+    @InjectView(R.id.submit_btn)
+    Button submitBtn;
+
+    private int problemText = 6;
+    private Handler messageHandler;
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        messageHandler = new MessageHandler();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_feedback, container, false);
+        View mView = inflater.inflate(R.layout.fragment_feedback, null);
         ButterKnife.inject(this, mView);
         return mView;
-
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        problemType = (RadioGroup) view.findViewById(R.id.problem_options);
+        problemType.setOnCheckedChangeListener(this);
+        SharedPreferences preferences = getActivity().getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        phone.setText(preferences.getString("feedback_phoneNumber", ""));
+
         fetchProblems();
+        fetchFeedback(DeviceUtils.getSnCode(), "5");
         snCode.append(DeviceUtils.getSnCode());
     }
 
@@ -63,6 +100,26 @@ public class FragmentFeedback extends Fragment {
         });
     }
 
+
+    private void fetchFeedback(String sn, String top) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(ClientApi.Feedback.HOST)
+                .build();
+        ClientApi.Feedback client = restAdapter.create(ClientApi.Feedback.class);
+        client.excute(sn, top, new Callback<ChatMsgEntity>() {
+            @Override
+            public void success(ChatMsgEntity chatMsgEntities, Response response) {
+                feedbackList.setAdapter(new FeedbackListAdapter(getActivity(), chatMsgEntities.getData()));
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
     private void createProblemsRadio(List<ProblemEntity> problemEntities) {
         for (int i = 0; i < problemEntities.size(); i++) {
             RadioButton radioButton = new RadioButton(getActivity());
@@ -75,5 +132,50 @@ public class FragmentFeedback extends Fragment {
             radioButton.setTag(problemEntities.get(i).getPoint_id());
             problemType.addView(radioButton);
         }
+    }
+
+    private void setFeedBack() {
+        if (StringUtils.isEmpty(phone.getEditableText().toString()) || phone.getEditableText().toString().length() < 7) {
+            Utilities.showToast(getActivity(), R.string.you_should_give_an_phone_number);
+            return;
+        } else {
+            FeedBackEntity feedBack = new FeedBackEntity();
+            feedBack.setCity("");
+            feedBack.setDescription(description.getEditableText().toString());
+            feedBack.setIp("");
+            feedBack.setPhone(phone.getEditableText().toString());
+            feedBack.setIsp("");
+            feedBack.setOption(problemText);
+            feedBack.setWidth("");
+            ClientApi.uploadFeedback(getActivity(), feedBack, messageHandler);
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup radioGroup, int i) {
+        problemText = (Integer) radioGroup.getFocusedChild().getTag();
+    }
+
+
+    class MessageHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case UPLAOD_FEEDBACK_COMPLETE:
+                    Utilities.showToast(getActivity(), R.string.submit_sucess);
+                    break;
+                case UPLAOD_FEEDBACK_FAILED:
+                    Utilities.showToast(getActivity(), R.string.submit_failed);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @OnClick(R.id.submit_btn)
+    public void submitFeedback(View view) {
+        CacheManager.updatFeedBack(getActivity(), phone.getText().toString());
+        setFeedBack();
     }
 }

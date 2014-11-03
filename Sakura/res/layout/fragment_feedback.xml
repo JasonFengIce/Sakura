@@ -81,19 +81,34 @@
                 />
     </LinearLayout>
     <Button
+            android:id="@+id/submit_btn"
             android:layout_marginTop="20dp"
             android:layout_gravity="center"
             android:background="@drawable/selector_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-<ListView
-        android:layout_margin="40dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ListView
+            android:id="@+id/feedback_list"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:divider="#00000000"
+            android:listSelector="@drawable/list_selector"
+            android:scrollbars="none"
+            android:dividerHeight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="230dp">
 
 
-</ListView>
+    </ListView>
+
+    <ImageView
+            android:src="@drawable/arrow"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:layout_width="60dp"
+            android:layout_height="60dp"/>
 
 
 </LinearLayout>

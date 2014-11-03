@@ -25,7 +25,7 @@
         </activity>
 
         <!--content provider-->
-        <provider android:authorities="cn.ismartv.sakura"
+        <provider android:authorities="cn.ismartv.speedtester"
                   android:exported="false"
                   android:name="com.activeandroid.content.ContentProvider"/>
     </application>
