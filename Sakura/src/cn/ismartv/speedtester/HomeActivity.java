@@ -2,6 +2,7 @@ package cn.ismartv.speedtester;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -13,6 +14,7 @@ import butterknife.InjectView;
 import cn.ismartv.speedtester.ui.fragment.FragmentFeedback;
 import cn.ismartv.speedtester.ui.fragment.FragmentHelp;
 import cn.ismartv.speedtester.ui.fragment.FragmentSpeed;
+import com.ismartv.android.vod.service.HttpProxyService;
 
 
 public class HomeActivity extends Activity implements View.OnFocusChangeListener {
@@ -36,6 +38,9 @@ public class HomeActivity extends Activity implements View.OnFocusChangeListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent ootStartIntent = new Intent(this, HttpProxyService.class);
+        this.startService(ootStartIntent);
+
         setContentView(R.layout.main);
         ButterKnife.inject(this);
         initViews();
