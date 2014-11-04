@@ -104,6 +104,26 @@ public class ClientApi {
     }
 
 
+   public interface AppVersionInfo {
+        @GET("/shipinkefu/getCdninfo")
+        void excute(
+                @Query("actiontype") String actiontype,
+                Callback<VersionInfoEntity> callback
+        );
+    }
+
+   public interface UploadClientIp {
+        @GET("/weixin4server/uploadclientip")
+        void excute(
+                @Query("mac_address") String mac_address,
+                @Query("client_ip") String client_ip,
+                @Query("sn") String sn,
+                @Query("tvmode") String tvmode,
+                Callback<Empty> callback
+        );
+    }
+
+
     public static void uploadFeedback(Context context, FeedBackEntity feedBack, final Handler handler) {
 
         final String str = new Gson().toJson(feedBack);

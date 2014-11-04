@@ -23,7 +23,6 @@ import cn.ismartv.speedtester.data.ProblemEntity;
 import cn.ismartv.speedtester.ui.adapter.FeedbackListAdapter;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
-import cn.ismartv.speedtester.utils.Utilities;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -136,7 +135,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
 
     private void setFeedBack() {
         if (StringUtils.isEmpty(phone.getEditableText().toString()) || phone.getEditableText().toString().length() < 7) {
-            Utilities.showToast(getActivity(), R.string.you_should_give_an_phone_number);
+            Toast.makeText(getActivity(), R.string.you_should_give_an_phone_number, Toast.LENGTH_LONG).show();
             return;
         } else {
             FeedBackEntity feedBack = new FeedBackEntity();
@@ -162,10 +161,10 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case UPLAOD_FEEDBACK_COMPLETE:
-                    Utilities.showToast(getActivity(), R.string.submit_sucess);
+                    Toast.makeText(getActivity(), R.string.submit_sucess, Toast.LENGTH_LONG).show();
                     break;
                 case UPLAOD_FEEDBACK_FAILED:
-                    Utilities.showToast(getActivity(), R.string.submit_failed);
+                    Toast.makeText(getActivity(), R.string.submit_failed, Toast.LENGTH_LONG).show();
                     break;
                 default:
                     break;

@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 import cn.ismartv.speedtester.core.cache.CacheManager;
+import cn.ismartv.speedtester.utils.DeviceUtils;
 
 
 /**
@@ -27,7 +28,7 @@ public class NetWorkBroadcastReceiver extends BroadcastReceiver {
             ethernetState = cm.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET).getState();
             if (NetworkInfo.State.CONNECTED == wifiState || NetworkInfo.State.CONNECTED == ethernetState) {
                 Log.d(TAG, "mobile network connect success!!!");
-//                CacheManager.updatLocalIp(context, DevicesUtilities.getLocalIpAddressV4());
+                CacheManager.updatLocalIp(context, DeviceUtils.getLocalIpAddressV4());
             }else{
                 Log.d(TAG, "can't connect network!!!");
             }

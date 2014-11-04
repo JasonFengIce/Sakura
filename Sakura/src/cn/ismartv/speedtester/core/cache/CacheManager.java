@@ -5,10 +5,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
+import cn.ismartv.speedtester.core.ClientApi;
+import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.NodeEntity;
 import cn.ismartv.speedtester.provider.NodeCacheTable;
+import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
 import com.activeandroid.ActiveAndroid;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,68 +69,47 @@ public class CacheManager {
         editor.apply();
     }
 
-    //
-//    public static void updateCheck(Context context, String cdnId, String checked) {
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(NodeCache.CHECKED, checked);
-//        ContentValues clear = new ContentValues();
-//        clear.put(NodeCache.CHECKED, "false");
-//        context.getContentResolver().update(NodeCache.CONTENT_URI, clear, NodeCache.CHECKED, new String[]{"true"});
-//        context.getContentResolver().update(NodeCache.CONTENT_URI, contentValues, NodeCache.CDN_ID, new String[]{cdnId});
-//    }
-//
-//    //when the node speed test,update the data
-//    public static void updateRunning(Context context, String cdnId, String running) {
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(NodeCache.RUNNING, running);
-//        ContentValues clear = new ContentValues();
-//        clear.put(NodeCache.RUNNING, "false");
-//        context.getContentResolver().update(NodeCache.CONTENT_URI, clear, NodeCache.CDN_ID, new String[]{"true"});
-//        context.getContentResolver().update(NodeCache.CONTENT_URI, contentValues, NodeCache.CDN_ID, new String[]{cdnId});
-//    }
-//
-//
-//    public static void updateSpeedLogUrl(Context context, String speedlogurl) {
-//        SharedPreferences preferences = context.getSharedPreferences("sakura", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.putString("speedlogurl", speedlogurl);
-//        editor.apply();
-//    }
-//
-//
-//    public static void updateSelectNodeCache(Context context, int province, int netType) {
-//        SharedPreferences preferences = context.getSharedPreferences("sakura", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.putInt("node_province", province);
-//        editor.putInt("node_netType", netType);
-//        editor.apply();
-//    }
-//
-//    public static void updateVersion(Context context, int isUpdate, String name) {
-//        SharedPreferences preferences = context.getSharedPreferences("sakura", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.putInt("update", isUpdate);
-//        editor.putString("apk_name", name);
-//        editor.apply();
-//    }
-//
+    public static void updateSpeedLogUrl(Context context, String speedlogurl) {
+        SharedPreferences preferences = context.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("speedlogurl", speedlogurl);
+        editor.apply();
+    }
+
     public static void updatFeedBack(Context context, String phoneNumber) {
         SharedPreferences preferences = context.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("feedback_phoneNumber", phoneNumber);
         editor.apply();
     }
-//
-//
-//    public static void updatLocalIp(Context context, String localIp) {
-//        SharedPreferences preferences = context.getSharedPreferences("sakura", Context.MODE_PRIVATE);
-//
-//        if (!preferences.getString("local_ip", "").equals(localIp)) {
-//            NetWorkUtil.getInstant().weiXinUpload(context);
-//            SharedPreferences.Editor editor = preferences.edit();
-//            editor.putString("local_ip", localIp);
-//            editor.apply();
-//        }
-//    }
 
+    public static void updatLocalIp(Context context, String localIp) {
+        SharedPreferences preferences = context.getSharedPreferences("sakura", Context.MODE_PRIVATE);
+
+        if (!preferences.getString("local_ip", "").equals(localIp)) {
+            weiXinUpload(context);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("local_ip", localIp);
+            editor.apply();
+        }
+    }
+
+    private static void weiXinUpload(Context context) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(AppConstant.API_HOST)
+                .build();
+        ClientApi.UploadClientIp client = restAdapter.create(ClientApi.UploadClientIp.class);
+        client.excute(DeviceUtils.getLocalMacAddress(context), DeviceUtils.getLocalIpAddressV4(), DeviceUtils.getSnCode(),
+                DeviceUtils.getModel(), new Callback<Empty>() {
+                    @Override
+                    public void success(Empty o, retrofit.client.Response response) {
+                    }
+
+                    @Override
+                    public void failure(RetrofitError retrofitError) {
+                    }
+                }
+        );
+    }
 }
