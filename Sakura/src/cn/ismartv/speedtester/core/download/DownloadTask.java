@@ -27,7 +27,6 @@ public class DownloadTask extends Thread {
     public volatile boolean running = false;
     private OnSpeedTestListener listener;
 
-    private static DownloadTask instance;
 
     public interface OnSpeedTestListener {
         public void changeStatus(String id, String cdnId, boolean status);
@@ -41,13 +40,7 @@ public class DownloadTask extends Thread {
         this.listener = listener;
     }
 
-    public static DownloadTask getInstance(Context context, Cursor cursor) {
-        if (null == instance)
-            instance = new DownloadTask(context, cursor);
-        return instance;
-    }
-
-    private DownloadTask(Context context, Cursor cursor) {
+    public DownloadTask(Context context, Cursor cursor) {
         this.context = context;
         nodes = new ArrayList<Map<String, String>>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {

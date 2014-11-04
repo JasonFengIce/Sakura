@@ -62,6 +62,9 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     private String[] cities;
 
+    boolean running = false;
+    DownloadTask downloadTask;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +102,9 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         provinceSpinner.setSelection(cityCache);
         ispSpinner.setSelection(ispCache);
 
+        firstSpeedTest();
+        nodeList.post(new showProgressViewRunnable());
+
 
     }
 
@@ -133,12 +139,24 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        if (AppConstant.DEBUG)
+            Log.d(TAG, "onLoadFinished");
         nodeListAdapter.swapCursor(cursor);
-//
-        DownloadTask downloadTask = DownloadTask.getInstance(getActivity(), nodeListAdapter.getCursor());
-        downloadTask.setSpeedTestListener(this);
-        downloadTask.start();
     }
+
+    private void speedTest(boolean running) {
+
+        if (running) {
+//            nodeList.post(new showProgressViewRunnable());
+            downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
+            downloadTask.setSpeedTestListener(this);
+            downloadTask.start();
+        } else {
+            downloadTask.setRunning(running);
+            downloadTask = null;
+        }
+    }
+
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
@@ -194,7 +212,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @OnClick(R.id.speed_test_btn)
     public void speedTest() {
         testProgressPopup = initTestProgressPopWindow();
-        DownloadTask downloadTask = DownloadTask.getInstance(getActivity(), nodeListAdapter.getCursor());
+        DownloadTask downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
         downloadTask.setSpeedTestListener(this);
         downloadTask.start();
     }
@@ -215,6 +233,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void allCompelte() {
         if (null != testProgressPopup)
             testProgressPopup.dismiss();
+
 
     }
 
@@ -279,4 +298,33 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);
         return popupWindow;
     }
+
+
+    private class showProgressViewRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            testProgressPopup = initTestProgressPopWindow();
+        }
+    }
+
+
+    private void firstSpeedTest() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+
+                    sleep(5000);
+                    DownloadTask task = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
+                    task.setSpeedTestListener(FragmentSpeed.this);
+                    task.start();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
 }
+
+
