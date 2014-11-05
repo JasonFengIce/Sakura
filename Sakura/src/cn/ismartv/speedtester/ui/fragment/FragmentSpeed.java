@@ -1,12 +1,11 @@
 package cn.ismartv.speedtester.ui.fragment;
 
-import android.app.Fragment;
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -80,6 +79,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         return mView;
     }
 
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -103,20 +103,19 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         ispSpinner.setSelection(ispCache);
 
         firstSpeedTest();
-        nodeList.post(new showProgressViewRunnable());
 
 
     }
+
 
     @OnItemClick(R.id.node_list)
     public void pickNode(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "item positon ---> " + position);
         initPopWindow((Integer) view.getTag());
-
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int flag, Bundle bundle) {
+    public android.support.v4.content.Loader<Cursor> onCreateLoader(int flag, Bundle bundle) {
         String selection1 = "area" + "=? and " + "isp" + "=?";
         String selection2 = "area" + "=? and " + "isp" + " in (?, ?)";
         CacheLoader cacheLoader = new CacheLoader(getActivity(), ContentProvider.createUri(NodeCacheTable.class, null),
@@ -138,11 +137,17 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+    public void onLoadFinished(android.support.v4.content.Loader<Cursor> cursorLoader, Cursor cursor) {
         if (AppConstant.DEBUG)
             Log.d(TAG, "onLoadFinished");
         nodeListAdapter.swapCursor(cursor);
     }
+
+    @Override
+    public void onLoaderReset(android.support.v4.content.Loader<Cursor> cursorLoader) {
+        nodeListAdapter.swapCursor(null);
+    }
+
 
     private void speedTest(boolean running) {
 
@@ -157,11 +162,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        nodeListAdapter.swapCursor(null);
-    }
 
     @OnItemSelected(R.id.province_spinner)
     public void pickProvince(AdapterView<?> parent, View view, int position, long id) {
@@ -306,19 +306,28 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
 
     private void firstSpeedTest() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(5000);
-                    DownloadTask task = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
-                    task.setSpeedTestListener(FragmentSpeed.this);
-                    task.start();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        if (!sharedPreferences.getBoolean("launched", false)) {
+            CacheManager.updateLaunched(getActivity(), true);
+            nodeList.post(new showProgressViewRunnable());
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        sleep(5000);
+                        DownloadTask task = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
+                        task.setSpeedTestListener(FragmentSpeed.this);
+                        task.start();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        }.start();
+            }.start();
+
+
+        }
+
+
     }
 }
 

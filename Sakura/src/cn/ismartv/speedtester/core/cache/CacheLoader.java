@@ -1,9 +1,9 @@
 package cn.ismartv.speedtester.core.cache;
 
 import android.content.Context;
-import android.content.CursorLoader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.content.CursorLoader;
 
 /**
  * Created by fenghb on 14-7-14.

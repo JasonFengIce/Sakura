@@ -1,89 +1,52 @@
 package cn.ismartv.speedtester.ui;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.ScaleAnimation;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.Toast;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import cn.ismartv.speedtester.R;
-
-import java.util.List;
+import cn.ismartv.speedtester.ui.fragment.FragmentFeedback;
+import cn.ismartv.speedtester.ui.fragment.FragmentHelp;
+import cn.ismartv.speedtester.ui.fragment.FragmentSpeed;
+import cn.ismartv.speedtester.ui.widget.indicator.IconPagerAdapter;
 
 /**
  * Created by huaijie on 14-10-29.
  */
-public class TabAdapter extends BaseAdapter implements View.OnFocusChangeListener {
-    private Context context;
-    private List<Integer> list;
+public class TabAdapter extends FragmentPagerAdapter implements IconPagerAdapter {
 
-    private AnimationSet mAnimationSet;
+    protected static final int[] ICONS = new int[]{
+            R.drawable.selector_tab_speed,
+            R.drawable.selector_tab_help,
+            R.drawable.selector_tab_feedback
+    };
 
-    public TabAdapter(Context context, List<Integer> list) {
-        this.context = context;
-        this.list = list;
+    FragmentSpeed fragmentSpeed;
+
+    private int mCount = ICONS.length;
+    private Fragment[] FRAGMENTS = new Fragment[3];
+
+
+    public TabAdapter(FragmentManager fm) {
+        super(fm);
+        fragmentSpeed = new FragmentSpeed();
+        FRAGMENTS[0] = fragmentSpeed;
+        FRAGMENTS[1] = new FragmentHelp();
+        FRAGMENTS[2] = new FragmentFeedback();
+
+    }
+
+    @Override
+    public Fragment getItem(int position) {
+        return FRAGMENTS[position];
+    }
+
+    @Override
+    public int getIconResId(int index) {
+        return ICONS[index % ICONS.length];
     }
 
     @Override
     public int getCount() {
-        return list.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return position;
-    }
-
-    @Override
-    public long getItemId(int id) {
-        return id;
-    }
-
-    @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        ViewHolder holder;
-        if (view != null) {
-            holder = (ViewHolder) view.getTag();
-        } else {
-            view = LayoutInflater.from(context).inflate(R.layout.item_tab, parent, false);
-            holder = new ViewHolder(view);
-            view.setTag(holder);
-        }
-
-        holder.tabIcon.setImageResource(list.get(position));
-        view.setOnFocusChangeListener(this);
-        return view;
-    }
-
-    @Override
-    public void onFocusChange(View view, boolean focused) {
-        Toast.makeText(context, "test", Toast.LENGTH_LONG).show();
-        if (focused) {
-            AnimationSet animationSet = new AnimationSet(true);
-            ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2f, 1, 2f,
-                    Animation.RELATIVE_TO_SELF, 0.5f,
-                    Animation.RELATIVE_TO_SELF, 0.5f);
-            scaleAnimation.setDuration(500);
-            animationSet.addAnimation(scaleAnimation);
-            animationSet.setFillAfter(true);
-            view.startAnimation(animationSet);
-//            mAnimationSet = animationSet;
-        }
-    }
-
-
-    static class ViewHolder {
-        @InjectView(R.id.tab_icon)
-        ImageView tabIcon;
-
-        public ViewHolder(View view) {
-            ButterKnife.inject(this, view);
-        }
+        return mCount;
     }
 }

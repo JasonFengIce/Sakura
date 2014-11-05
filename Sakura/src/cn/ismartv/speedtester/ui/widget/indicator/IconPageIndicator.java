@@ -22,7 +22,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import cn.ismartv.speedtester.R;
@@ -34,7 +38,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * This widget implements the dynamic action bar tab behavior that can change
  * across different configurations or circumstances.
  */
-public class IconPageIndicator extends HorizontalScrollView implements PageIndicator {
+public class IconPageIndicator extends HorizontalScrollView implements PageIndicator, View.OnClickListener {
     private final IcsLinearLayout mIconsLayout;
 
     private ViewPager mViewPager;
@@ -129,11 +133,29 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
         mIconsLayout.removeAllViews();
         IconPagerAdapter iconAdapter = (IconPagerAdapter) mViewPager.getAdapter();
         int count = iconAdapter.getCount();
+        View linearLayout = LayoutInflater.from(getContext()).inflate(R.layout.indicator_icon, null);
+        ImageView imageView1 = (ImageView) linearLayout.findViewById(R.id.icon_node);
+        ImageView imageView2 = (ImageView) linearLayout.findViewById(R.id.icon_help);
+        ImageView imageView3 = (ImageView) linearLayout.findViewById(R.id.icon_feedback);
+
+        ImageView[] imageViews = {imageView1, imageView2, imageView3};
+
         for (int i = 0; i < count; i++) {
-            ImageView view = new ImageView(getContext(), null, R.attr.vpiIconPageIndicatorStyle);
-            view.setImageResource(iconAdapter.getIconResId(i));
-            mIconsLayout.addView(view);
+            imageViews[i].setImageResource(iconAdapter.getIconResId(i));
+            imageViews[i].setOnClickListener(this);
+
+//
+//
+//            ImageView view = new ImageView(getContext(), null, R.attr.vpiIconPageIndicatorStyle);
+//            view.setImageResource(iconAdapter.getIconResId(i));
+//            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(80, 80);
+//            layoutParams.setMargins(80, 0, 80, 0);
+//
+//            view.setLayoutParams(layoutParams);
+//            mIconsLayout.addView(view);
         }
+        mIconsLayout.addView(linearLayout);
+
         if (mSelectedIndex > count) {
             mSelectedIndex = count - 1;
         }
@@ -170,4 +192,31 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
     public void setOnPageChangeListener(OnPageChangeListener listener) {
         mListener = listener;
     }
+
+    @Override
+    public void onClick(View view) {
+        AnimationSet animationSet = new AnimationSet(true);
+        ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2f, 1, 2f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setDuration(200);
+        animationSet.addAnimation(scaleAnimation);
+        animationSet.setFillAfter(true);
+        view.startAnimation(animationSet);
+        if (null != pretTab && view.getId() != pretTab.getId()) {
+            AnimationSet animationSet2 = new AnimationSet(true);
+            ScaleAnimation scaleAnimation2 = new ScaleAnimation(2, 1f, 2, 1f,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f);
+            scaleAnimation2.setDuration(200);
+            animationSet2.addAnimation(scaleAnimation2);
+            animationSet2.setFillAfter(true);
+            pretTab.startAnimation(animationSet2);
+        }
+        pretTab = view;
+
+
+    }
+
+    private View pretTab;
 }

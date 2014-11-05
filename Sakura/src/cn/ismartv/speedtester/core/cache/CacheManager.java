@@ -94,6 +94,13 @@ public class CacheManager {
         }
     }
 
+    public static void updateLaunched(Context context, boolean b) {
+        SharedPreferences preferences = context.getSharedPreferences("sakura", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("launched", b);
+        editor.apply();
+    }
+
     private static void weiXinUpload(Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(AppConstant.LOG_LEVEL)
