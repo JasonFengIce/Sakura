@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
-import com.ismartv.android.vod.core.RemoteControl;
+import com.ismartv.android.vod.core.keyevent.EventDeliver;
+import com.ismartv.android.vod.core.keyevent.KeyEventInterface;
 import com.koushikdutta.async.AsyncServer;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse;
 import com.koushikdutta.async.http.server.HttpServerRequestCallback;
+import org.apache.http.NameValuePair;
+
+import java.util.Iterator;
 
 /**
  * Created by huaijie on 14-7-31.
@@ -24,10 +28,7 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     private static final int PORT = 9114;
     private static final int DEFAULT_VALUE = 1;
     private static final int MAX_CHECK_TIME = 3;
-    private static final int ACTION_KEY_EVNET = 1;
-    private static final int ACTION_SEEK_EVNET = 2;
-    private static final int ACTION_PLAY_VIDEO = 3;
-    private static final int PING = 4;
+
     private static final String HTTP_ACTIOIN = "/keyevent";
 
 
@@ -69,25 +70,12 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 
     @Override
     public void onRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
-
-        int actionCode = Integer.parseInt(request.getQuery().getString("action"));
-
-        switch (actionCode) {
-            case ACTION_KEY_EVNET:
-                sendKeyEvent(Integer.parseInt(request.getQuery().getString("keycode")));
-                break;
-            case ACTION_SEEK_EVNET:
-                RemoteControl.seekVolume(this, Integer.parseInt(request.getQuery().getString("seek")));
-                break;
-            case ACTION_PLAY_VIDEO:
-                RemoteControl.play(this, request.getQuery().getString("url"));
-                break;
-            case PING:
-                break;
-            default:
-                break;
-        }
-        response.send("Hello!!!");
+        Iterator<NameValuePair> iterator = request.getQuery().iterator();
+        int actionCode = Integer.parseInt(iterator.next().getValue());
+        String params = iterator.next().getValue();
+        KeyEventInterface keyEventInterface = EventDeliver.create(getApplicationContext(), actionCode, params);
+        keyEventInterface.deliverEvent();
+        response.send("OK!");
     }
 
     @Override
