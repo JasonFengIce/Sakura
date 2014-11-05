@@ -17,7 +17,7 @@ import cn.ismartv.speedtester.ui.fragment.FragmentSpeed;
 import com.ismartv.android.vod.service.HttpProxyService;
 
 
-public class HomeActivity extends Activity implements View.OnFocusChangeListener {
+public class HomeActivity extends Activity implements View.OnFocusChangeListener, View.OnClickListener {
     private static final String TAG = "HomeActivity";
 
     @InjectView(R.id.speed_tab)
@@ -59,6 +59,47 @@ public class HomeActivity extends Activity implements View.OnFocusChangeListener
         speedTab.setOnFocusChangeListener(this);
         feedbackTab.setOnFocusChangeListener(this);
         helpTab.setOnFocusChangeListener(this);
+        helpTab.setOnClickListener(this);
+        speedTab.setOnClickListener(this);
+        feedbackTab.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+
+            case R.id.speed_tab:
+                FragmentTransaction fragmentTransaction1 = getFragmentManager().beginTransaction();
+                fragmentTransaction1.setCustomAnimations(R.animator.fragment_slide_left_enter, R.animator.fragment_slide_left_exit,
+                        R.animator.fragment_slide_right_enter, R.animator.fragment_slide_right_exit
+                );
+                fragmentTransaction1.replace(R.id.fragment, fragmentSpeed);
+                fragmentTransaction1.commit();
+
+                break;
+            case R.id.feedback_tab:
+
+                FragmentTransaction fragmentTransaction2 = getFragmentManager().beginTransaction();
+                fragmentTransaction2.setCustomAnimations(R.animator.fragment_slide_left_enter, R.animator.fragment_slide_left_exit,
+                        R.animator.fragment_slide_right_enter, R.animator.fragment_slide_right_exit
+                );
+                fragmentTransaction2.replace(R.id.fragment, fragmentFeedback);
+                fragmentTransaction2.commit();
+
+                break;
+            case R.id.help_tab:
+                FragmentTransaction fragmentTransaction3 = getFragmentManager().beginTransaction();
+                fragmentTransaction3.setCustomAnimations(R.animator.fragment_slide_left_enter, R.animator.fragment_slide_left_exit,
+                        R.animator.fragment_slide_right_enter, R.animator.fragment_slide_right_exit
+                );
+
+                fragmentTransaction3.replace(R.id.fragment, fragmentHelp);
+                fragmentTransaction3.commit();
+                break;
+            default:
+                break;
+        }
+
     }
 
     @Override
@@ -116,5 +157,7 @@ public class HomeActivity extends Activity implements View.OnFocusChangeListener
             view.startAnimation(animationSet);
         }
     }
+
+
 }
 

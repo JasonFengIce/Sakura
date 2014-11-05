@@ -103,7 +103,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         ispSpinner.setSelection(ispCache);
 
         firstSpeedTest();
-        nodeList.post(new showProgressViewRunnable());
+        nodeList.postDelayed(new showProgressViewRunnable(),2000);
 
 
     }
@@ -192,7 +192,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     public static void uploadTestResult(String cdnId, String speed) {
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.NONE)
+                .setLogLevel(AppConstant.LOG_LEVEL)
                 .setEndpoint(AppConstant.API_HOST)
                 .build();
         ClientApi.UploadResult client = restAdapter.create(ClientApi.UploadResult.class);
@@ -220,7 +220,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void changeStatus(String recordId, String cdnId, boolean status) {
 
-
     }
 
     @Override
@@ -233,8 +232,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void allCompelte() {
         if (null != testProgressPopup)
             testProgressPopup.dismiss();
-
-
     }
 
 
@@ -301,7 +298,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
 
     private class showProgressViewRunnable implements Runnable {
-
         @Override
         public void run() {
             testProgressPopup = initTestProgressPopWindow();
@@ -314,7 +310,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             @Override
             public void run() {
                 try {
-
                     sleep(5000);
                     DownloadTask task = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
                     task.setSpeedTestListener(FragmentSpeed.this);

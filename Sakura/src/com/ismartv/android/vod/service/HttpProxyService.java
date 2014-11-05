@@ -27,6 +27,7 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     private static final int ACTION_KEY_EVNET = 1;
     private static final int ACTION_SEEK_EVNET = 2;
     private static final int ACTION_PLAY_VIDEO = 3;
+    private static final int PING = 4;
     private static final String HTTP_ACTIOIN = "/keyevent";
 
 
@@ -81,10 +82,11 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
             case ACTION_PLAY_VIDEO:
                 RemoteControl.play(this, request.getQuery().getString("url"));
                 break;
+            case PING:
+                break;
             default:
                 break;
         }
-
         response.send("Hello!!!");
     }
 
