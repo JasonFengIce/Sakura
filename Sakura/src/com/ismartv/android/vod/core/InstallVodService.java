@@ -9,6 +9,7 @@ import android.util.Log;
 import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheManager;
+import cn.ismartv.speedtester.core.logger.Logger;
 import cn.ismartv.speedtester.data.VersionInfoEntity;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -42,8 +43,15 @@ public class InstallVodService {
 
     private static void selfUpdate(Context context) {
 
-        File file = new File(context.getFilesDir(), AppConstant.APP_NAME);
+
+        File file = new File(context.getFilesDir(), AppConstant.APP_NAME + ".apk");
         if (file.exists()) {
+            Logger logger = new Logger.Builder()
+                    .setLevel(Logger.I)
+                    .setMessage("self update file, path is ---> " + file.getAbsolutePath())
+                    .setTag(TAG)
+                    .build();
+            logger.log();
             Uri uri = Uri.parse("file://" + file.getAbsolutePath());
             Intent intent = new Intent("android.intent.action.VIEW.HIDE");
             intent.putExtra("com.lenovo.nebula.packageinstaller.INSTALL_EXTERNAL", false);
@@ -101,7 +109,7 @@ public class InstallVodService {
     }
 
 
-    public void getLatestAppVersion(final Context context) {
+    public static void getLatestAppVersion(final Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(AppConstant.LOG_LEVEL)
                 .setEndpoint(AppConstant.API_HOST)
@@ -121,6 +129,13 @@ public class InstallVodService {
                 }
 
                 if (packageInfo.versionCode < Integer.parseInt(versionInfo.getVersion())) {
+                    Logger logger = new Logger.Builder()
+                            .setLevel(Logger.I)
+                            .setMessage("find app update, server version code is ---> " + versionInfo.getVersion())
+                            .setMessage("local version code is ---> " + packageInfo.versionCode)
+                            .setTag(TAG)
+                            .build();
+                    logger.log();
                     if (AppConstant.DEBUG)
                         Log.d(TAG, "server version code --> " + versionInfo.getVersion() + " local version code --> " + packageInfo.versionCode);
                     downloadAPK(context, versionInfo.getDownloadurl(), versionInfo.getMd5(), DEFAULT_VALUE);
@@ -135,7 +150,7 @@ public class InstallVodService {
     }
 
 
-    private void downloadAPK(final Context context, final String downloadUrl, final String md5, final int count) {
+    private static void downloadAPK(final Context context, final String downloadUrl, final String md5, final int count) {
         new Thread() {
             @Override
             public void run() {
@@ -149,13 +164,13 @@ public class InstallVodService {
                     URL url = new URL(downloadUrl);
                     fileName = new File(
                             context.getFilesDir().getAbsolutePath(),
-                            AppConstant.APP_NAME);
+                            AppConstant.APP_NAME + ".apk");
                     if (!fileName.exists())
                         fileName.createNewFile();
                     URLConnection conn = url.openConnection();
                     InputStream inStream = conn.getInputStream();
                     FileOutputStream fs = context.openFileOutput(
-                            AppConstant.APP_NAME, Context.MODE_WORLD_READABLE);
+                            AppConstant.APP_NAME + ".apk", Context.MODE_WORLD_READABLE);
                     byte[] buffer = new byte[1024];
                     while ((byteread = inStream.read(buffer)) != -1) {
                         fs.write(buffer, 0, byteread);

@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.os.RemoteException;
 import com.ismartv.android.vod.core.keyevent.EventDeliver;
 import com.ismartv.android.vod.core.keyevent.KeyEventInterface;
 import com.koushikdutta.async.AsyncServer;
@@ -23,17 +22,10 @@ import java.util.Iterator;
 
 
 public class HttpProxyService extends Service implements HttpServerRequestCallback {
-
     private static final String TAG = "HttpProxyService";
     private static final int PORT = 9114;
-    private static final int DEFAULT_VALUE = 1;
-    private static final int MAX_CHECK_TIME = 3;
-
     private static final String HTTP_ACTIOIN = "/keyevent";
-
-
     private AsyncHttpServer server;
-
     private ISmartvNativeService nativeservice;
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -46,7 +38,6 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 
         }
     };
-
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -80,18 +71,8 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         server.stop();
         unbindService(mConnection);
-
+        super.onDestroy();
     }
-
-    private void sendKeyEvent(int keyEventCode) {
-        try {
-            nativeservice.sendMoniterKey(keyEventCode);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

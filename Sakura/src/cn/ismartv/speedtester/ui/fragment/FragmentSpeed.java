@@ -103,7 +103,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         ispSpinner.setSelection(ispCache);
 
         firstSpeedTest();
-        nodeList.postDelayed(new showProgressViewRunnable(),2000);
+        nodeList.post(new showProgressViewRunnable());
 
 
     }

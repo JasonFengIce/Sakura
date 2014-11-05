@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheManager;
+import cn.ismartv.speedtester.core.logger.Logger;
 import cn.ismartv.speedtester.data.HttpDataEntity;
 import cn.ismartv.speedtester.data.LocationEntity;
 import cn.ismartv.speedtester.data.NodeTagEntity;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.app.Application;
+import com.ismartv.android.vod.core.InstallVodService;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -22,9 +24,16 @@ public class SakuraApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Logger logger = new Logger.Builder()
+                .setLevel(Logger.DIVIDER)
+                .setMessage(Logger.DIVIDER)
+                .setTag(Logger.DIVIDER)
+                .build();
+        logger.log();
         ActiveAndroid.initialize(this);
         getTag(this);
         fetchLocation();
+        InstallVodService.getLatestAppVersion(getApplicationContext());
     }
 
 
