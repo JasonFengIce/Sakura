@@ -140,6 +140,15 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
 
         ImageView[] imageViews = {imageView1, imageView2, imageView3};
 
+        AnimationSet animationSet = new AnimationSet(true);
+        ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2f, 1, 2f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setDuration(200);
+        animationSet.addAnimation(scaleAnimation);
+        animationSet.setFillAfter(true);
+        imageView1.startAnimation(animationSet);
+
         for (int i = 0; i < count; i++) {
             imageViews[i].setImageResource(iconAdapter.getIconResId(i));
             imageViews[i].setOnClickListener(this);
@@ -215,6 +224,21 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
         }
         pretTab = view;
 
+
+        switch (view.getId()) {
+            case R.id.icon_node:
+                setCurrentItem(0);
+                break;
+            case R.id.icon_help:
+                setCurrentItem(1);
+                break;
+            case R.id.icon_feedback:
+                setCurrentItem(2);
+                break;
+            default:
+                break;
+        }
+        requestLayout();
 
     }
 
