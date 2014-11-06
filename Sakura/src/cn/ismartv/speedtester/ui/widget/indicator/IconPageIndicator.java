@@ -38,13 +38,14 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * This widget implements the dynamic action bar tab behavior that can change
  * across different configurations or circumstances.
  */
-public class IconPageIndicator extends HorizontalScrollView implements PageIndicator, View.OnClickListener {
+public class IconPageIndicator extends HorizontalScrollView implements PageIndicator, View.OnClickListener, View.OnFocusChangeListener {
     private final IcsLinearLayout mIconsLayout;
 
     private ViewPager mViewPager;
     private OnPageChangeListener mListener;
     private Runnable mIconSelector;
     private int mSelectedIndex;
+    ImageView[] imageViews = new ImageView[3];
 
     public IconPageIndicator(Context context) {
         this(context, null);
@@ -110,6 +111,38 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
         if (mListener != null) {
             mListener.onPageSelected(arg0);
         }
+
+        AnimationSet animationSet = new AnimationSet(true);
+        ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2f, 1, 2f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setDuration(200);
+        animationSet.addAnimation(scaleAnimation);
+        animationSet.setFillAfter(true);
+        imageViews[arg0].startAnimation(animationSet);
+        if (null == pretTab) {
+            AnimationSet animationSet2 = new AnimationSet(true);
+            ScaleAnimation scaleAnimation2 = new ScaleAnimation(2, 1f, 2, 1f,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f);
+            scaleAnimation2.setDuration(200);
+            animationSet2.addAnimation(scaleAnimation2);
+            animationSet2.setFillAfter(true);
+            imageViews[0].startAnimation(animationSet2);
+
+        }
+
+        if (null != pretTab && imageViews[arg0].getId() != pretTab.getId()) {
+            AnimationSet animationSet2 = new AnimationSet(true);
+            ScaleAnimation scaleAnimation2 = new ScaleAnimation(2, 1f, 2, 1f,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f);
+            scaleAnimation2.setDuration(200);
+            animationSet2.addAnimation(scaleAnimation2);
+            animationSet2.setFillAfter(true);
+            pretTab.startAnimation(animationSet2);
+        }
+        pretTab = imageViews[arg0];
     }
 
     @Override
@@ -134,12 +167,11 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
         IconPagerAdapter iconAdapter = (IconPagerAdapter) mViewPager.getAdapter();
         int count = iconAdapter.getCount();
         View linearLayout = LayoutInflater.from(getContext()).inflate(R.layout.indicator_icon, null);
-        ImageView imageView1 = (ImageView) linearLayout.findViewById(R.id.icon_node);
-        ImageView imageView2 = (ImageView) linearLayout.findViewById(R.id.icon_help);
-        ImageView imageView3 = (ImageView) linearLayout.findViewById(R.id.icon_feedback);
+        imageViews[0] = (ImageView) linearLayout.findViewById(R.id.icon_node);
+        imageViews[1] = (ImageView) linearLayout.findViewById(R.id.icon_help);
+        imageViews[2] = (ImageView) linearLayout.findViewById(R.id.icon_feedback);
 
-        ImageView[] imageViews = {imageView1, imageView2, imageView3};
-
+//
         AnimationSet animationSet = new AnimationSet(true);
         ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2f, 1, 2f,
                 Animation.RELATIVE_TO_SELF, 0.5f,
@@ -147,11 +179,13 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
         scaleAnimation.setDuration(200);
         animationSet.addAnimation(scaleAnimation);
         animationSet.setFillAfter(true);
-        imageView1.startAnimation(animationSet);
+        imageViews[0].startAnimation(animationSet);
 
         for (int i = 0; i < count; i++) {
             imageViews[i].setImageResource(iconAdapter.getIconResId(i));
             imageViews[i].setOnClickListener(this);
+            imageViews[i].setFocusable(true);
+            imageViews[i].setOnFocusChangeListener(this);
 
 //
 //
@@ -176,6 +210,8 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
     public void setViewPager(ViewPager view, int initialPosition) {
         setViewPager(view);
         setCurrentItem(initialPosition);
+
+
     }
 
     @Override
@@ -243,4 +279,43 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
     }
 
     private View pretTab;
+
+    @Override
+    public void onFocusChange(View view, boolean focused) {
+        if (view.getId() == imageViews[0].getId()||view.getId() == imageViews[1].getId()||view.getId() == imageViews[2].getId()) {
+            if (focused) {
+                AnimationSet animationSet = new AnimationSet(true);
+                ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2f, 1, 2f,
+                        Animation.RELATIVE_TO_SELF, 0.5f,
+                        Animation.RELATIVE_TO_SELF, 0.5f);
+                scaleAnimation.setDuration(200);
+                animationSet.addAnimation(scaleAnimation);
+                animationSet.setFillAfter(true);
+                view.startAnimation(animationSet);
+                switch (view.getId()) {
+                    case R.id.icon_node:
+                        setCurrentItem(0);
+                        break;
+                    case R.id.icon_help:
+                        setCurrentItem(1);
+                        break;
+                    case R.id.icon_feedback:
+                        setCurrentItem(2);
+                        break;
+                    default:
+                        break;
+                }
+                requestLayout();
+            } else {
+                AnimationSet animationSet = new AnimationSet(true);
+                ScaleAnimation scaleAnimation = new ScaleAnimation(2, 1f, 2, 1f,
+                        Animation.RELATIVE_TO_SELF, 0.5f,
+                        Animation.RELATIVE_TO_SELF, 0.5f);
+                scaleAnimation.setDuration(200);
+                animationSet.addAnimation(scaleAnimation);
+                animationSet.setFillAfter(true);
+                view.startAnimation(animationSet);
+            }
+        }
+    }
 }
