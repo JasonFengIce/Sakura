@@ -66,6 +66,7 @@ public class CacheManager {
         int cityPositon = Arrays.asList(mCity).indexOf(city);
         editor.putInt("city_position", cityPositon == -1 ? 0 : cityPositon);
         editor.putInt("isp_position", ispPosition == -1 ? 0 : ispPosition);
+
         editor.apply();
     }
 
@@ -98,6 +99,15 @@ public class CacheManager {
         SharedPreferences preferences = context.getSharedPreferences("sakura", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("launched", b);
+        editor.apply();
+    }
+
+
+    public static void updateNodePosition(Context context, int cityPostion, int ispPosition) {
+        SharedPreferences preferences = context.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("l_city_position", cityPostion);
+        editor.putInt("l_isp_position", ispPosition);
         editor.apply();
     }
 

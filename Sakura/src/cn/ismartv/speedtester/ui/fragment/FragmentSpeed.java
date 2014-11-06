@@ -97,14 +97,23 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
-        int cityCache = sharedPreferences.getInt("city_position", 0);
-        int ispCache = sharedPreferences.getInt("isp_position", 0);
-        provinceSpinner.setSelection(cityCache);
-        ispSpinner.setSelection(ispCache);
+        if (sharedPreferences.getBoolean("areadly_fetch_net", false)) {
+            int cityCache = sharedPreferences.getInt("l_city_position", 0);
+            int ispCache = sharedPreferences.getInt("l_isp_position", 0);
+            provinceSpinner.setSelection(cityCache);
+            ispSpinner.setSelection(ispCache);
 
+        } else {
+            int cityCache = sharedPreferences.getInt("city_position", 0);
+            int ispCache = sharedPreferences.getInt("isp_position", 0);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("areadly_fetch_net", true);
+            editor.apply();
+            CacheManager.updateNodePosition(getContext(), cityCache, ispCache);
+            provinceSpinner.setSelection(cityCache);
+            ispSpinner.setSelection(ispCache);
+        }
         firstSpeedTest();
-
-
     }
 
 
@@ -212,6 +221,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @OnClick(R.id.speed_test_btn)
     public void speedTest() {
         testProgressPopup = initTestProgressPopWindow();
+        CacheManager.updateNodePosition(getContext(), provincesPosition, ispPosition - 1);
         DownloadTask downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
         downloadTask.setSpeedTestListener(this);
         downloadTask.start();
