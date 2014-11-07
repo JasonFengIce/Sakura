@@ -30,6 +30,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+                android:name="cn.ismartv.speedtester.setting.OobeActivity"
+                android:label="@string/app_name"
+                android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+                android:finishOnCloseSystemDialogs="true">
+            <intent-filter>
+                <action android:name="cn.ismartv.speedtester.settings"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
 
         <!--receiver-->
         <receiver android:name="com.ismartv.android.vod.receiver.BootBroadcastReceiver">

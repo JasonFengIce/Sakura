@@ -30,9 +30,13 @@ public class TabAdapter extends FragmentPagerAdapter implements IconPagerAdapter
         super(fm);
         fragmentSpeed = new FragmentSpeed();
         FRAGMENTS[0] = fragmentSpeed;
-        FRAGMENTS[1] = new FragmentHelp();
-        FRAGMENTS[2] = new FragmentFeedback();
+        FRAGMENTS[1] = new FragmentFeedback();
+        FRAGMENTS[2] = new FragmentHelp();
 
+    }
+
+    public Fragment getSpeedFragment() {
+        return getItem(0);
     }
 
     @Override

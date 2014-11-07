@@ -3,10 +3,13 @@ package cn.ismartv.speedtester;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.ismartv.speedtester.core.cache.CacheManager;
+import cn.ismartv.speedtester.core.download.DownloadTask;
 import cn.ismartv.speedtester.ui.TabAdapter;
+import cn.ismartv.speedtester.ui.fragment.FragmentSpeed;
 import cn.ismartv.speedtester.ui.widget.indicator.IconPageIndicator;
 
 
@@ -37,6 +40,22 @@ public class HomeActivity extends FragmentActivity {
 
         CacheManager.updateLaunched(this, false);
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed");
+
+        FragmentSpeed fragmentSpeed = ((FragmentSpeed) tabAdapter.getSpeedFragment());
+        DownloadTask downloadTask = fragmentSpeed.getDownloadTask();
+        Log.d(TAG, "down " + downloadTask.isRunning());
+        if (null != downloadTask && downloadTask.isRunning()) {
+            downloadTask.setRunning(false);
+        } else {
+            if (fragmentSpeed.testProgressPopup.isShowing())
+                fragmentSpeed.testProgressPopup.dismiss();
+            super.onBackPressed();
+        }
     }
 
     //

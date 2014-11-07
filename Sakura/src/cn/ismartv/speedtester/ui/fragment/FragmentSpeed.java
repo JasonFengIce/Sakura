@@ -50,7 +50,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @InjectView(R.id.speed_test_btn)
     Button speedTestBtn;
 
-    private PopupWindow testProgressPopup;
+    public PopupWindow testProgressPopup;
 
 
     private int provincesPosition;
@@ -158,20 +158,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
 
-    private void speedTest(boolean running) {
-
-        if (running) {
-//            nodeList.post(new showProgressViewRunnable());
-            downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
-            downloadTask.setSpeedTestListener(this);
-            downloadTask.start();
-        } else {
-            downloadTask.setRunning(running);
-            downloadTask = null;
-        }
-    }
-
-
     @OnItemSelected(R.id.province_spinner)
     public void pickProvince(AdapterView<?> parent, View view, int position, long id) {
         provincesPosition = position;
@@ -222,7 +208,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void speedTest() {
         testProgressPopup = initTestProgressPopWindow();
         CacheManager.updateNodePosition(getContext(), provincesPosition, ispPosition - 1);
-        DownloadTask downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
+        downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
         downloadTask.setSpeedTestListener(this);
         downloadTask.start();
     }
@@ -301,7 +287,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         contentView.setBackgroundColor(0x99525252);
         final PopupWindow popupWindow = new PopupWindow(null, 400, 150);
         popupWindow.setContentView(contentView);
-        popupWindow.setFocusable(true);
+        popupWindow.setFocusable(false);
         popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);
         return popupWindow;
     }
@@ -325,20 +311,23 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
                 public void run() {
                     try {
                         sleep(5000);
-                        DownloadTask task = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
-                        task.setSpeedTestListener(FragmentSpeed.this);
-                        task.start();
+                        downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
+                        downloadTask.setSpeedTestListener(FragmentSpeed.this);
+                        downloadTask.start();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }.start();
 
-
         }
-
-
     }
+
+    public DownloadTask getDownloadTask() {
+        return downloadTask;
+    }
+
+
 }
 
 

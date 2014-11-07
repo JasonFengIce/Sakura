@@ -33,5 +33,47 @@
 
     <string name="speed_testing">正在测速...</string>
 
+    <string name="button_label_stop">中止测试</string>
+    <string name="button_label_retest">重新测试</string>
+    <string name="oobe_subtitle">网络测速功能可以为您评估下载速度和带宽</string>
+    <string name="your_bandwidth">你的网速</string>
 
+    <string name="is">属于</string>
+
+
+    <string name="adsl_1m">1M宽带</string>
+    <string name="adsl_2m">2M宽带</string>
+    <string name="adsl_4m">4M宽带</string>
+    <string name="adsl_8m">8M宽带</string>
+    <string name="adsl_10m">10M宽带</string>
+    <string name="adsl_20m">20M宽带</string>
+
+    <string name="speed_unit_byte">B/秒</string>
+    <string name="speed_unit_kb">KB/秒</string>
+    <string name="speed_unit_mb">MB/秒</string>
+
+    <string name="your_avg_speed_is">当前网络环境下，下载速度可达</string>
+    <string name="t1">专线</string>
+    <string name="seems_failed">你的网络似乎有点问题</string>
+    <string name="numbers_of_total">第@次测试（共#次）</string>
+    <string name="default_ip">ICANN保留地址</string>
+
+    <string name="quit">退&#160;&#160;出</string>
+    <string name="back">返&#160;&#160;回</string>
+
+    <string name="msg_network_exception">网络连接异常</string>
+    <string name="msg_network_unestablished">无网络连接，请检查设置</string>
+    <string name="button_label_setup_network">网络设置</string>
+
+    <string name="unknown_area">未知地区</string>
+    <string name="unknown_isp">未知运营商</string>
+
+    <string name="button_label_OK">确定</string>
+    <string name="between">介于#speed1#与#speed2#之间</string>
+
+    <string name="setting">网络与蓝牙&gt;</string>
+
+    <string name="StartTesting">开始测速</string>
+
+    <string name="net_speedtester">网络测速</string>
 </resources>
