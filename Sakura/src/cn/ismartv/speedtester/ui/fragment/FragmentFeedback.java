@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,8 @@ import java.util.List;
  * Created by huaijie on 14-10-29.
  */
 public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedChangeListener {
+
+    private static final String TAG = "FragmentFeedback";
 
     public static final int UPLAOD_FEEDBACK_COMPLETE = 0x0001;
     public static final int UPLAOD_FEEDBACK_FAILED = 0x0002;
@@ -128,7 +131,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
             params.setMargins(0, 0, 15, 0);
             radioButton.setLayoutParams(params);
             radioButton.setText(problemEntities.get(i).getPoint_name());
-            radioButton.setTag(problemEntities.get(i).getPoint_id());
+            radioButton.setId(problemEntities.get(i).getPoint_id());
             problemType.addView(radioButton);
         }
     }
@@ -152,7 +155,11 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
-        problemText = (Integer) radioGroup.getFocusedChild().getTag();
+
+        Log.d(TAG, "radioGroup position is ---> " + i);
+        problemText = i;
+
+
     }
 
 
