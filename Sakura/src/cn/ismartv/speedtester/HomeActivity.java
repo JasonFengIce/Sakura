@@ -13,6 +13,7 @@ import cn.ismartv.speedtester.ui.widget.indicator.IconPageIndicator;
 
 
 public class HomeActivity extends FragmentActivity {
+
     private static final String TAG = "HomeActivity";
 
     private TabAdapter tabAdapter;
@@ -32,6 +33,11 @@ public class HomeActivity extends FragmentActivity {
         pager.setAdapter(tabAdapter);
         indicator.setViewPager(pager);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override

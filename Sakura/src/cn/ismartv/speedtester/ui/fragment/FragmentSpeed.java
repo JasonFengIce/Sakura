@@ -63,6 +63,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     boolean running = false;
     DownloadTask downloadTask;
+    private static int count = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,7 +114,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             provinceSpinner.setSelection(cityCache);
             ispSpinner.setSelection(ispCache);
         }
-        firstSpeedTest();
     }
 
 
@@ -150,6 +150,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         if (AppConstant.DEBUG)
             Log.d(TAG, "onLoadFinished");
         nodeListAdapter.swapCursor(cursor);
+
+        if (count == 1) {
+            firstSpeedTest(cursor);
+
+        }
+        count = count + 1;
     }
 
     @Override
@@ -183,6 +189,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             getLoaderManager().destroyLoader(1);
             getLoaderManager().restartLoader(0, null, FragmentSpeed.this).forceLoad();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        count = 0;
     }
 
     public static void uploadTestResult(String cdnId, String speed) {
@@ -301,7 +313,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
 
-    private void firstSpeedTest() {
+    private void firstSpeedTest(final Cursor cursor) {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
         if (!sharedPreferences.getBoolean("launched", false)) {
             CacheManager.updateLaunched(getActivity(), true);
@@ -309,14 +321,9 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             new Thread() {
                 @Override
                 public void run() {
-                    try {
-                        sleep(5000);
-                        downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
-                        downloadTask.setSpeedTestListener(FragmentSpeed.this);
-                        downloadTask.start();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    downloadTask = new DownloadTask(getActivity(), cursor);
+                    downloadTask.setSpeedTestListener(FragmentSpeed.this);
+                    downloadTask.start();
                 }
             }.start();
 
