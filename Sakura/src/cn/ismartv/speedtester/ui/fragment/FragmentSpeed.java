@@ -151,7 +151,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             Log.d(TAG, "onLoadFinished");
         nodeListAdapter.swapCursor(cursor);
 
-        if (count == 1) {
+        if (count == 1 && cursor.getCount()!=0) {
             firstSpeedTest(cursor);
 
         }
@@ -259,7 +259,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         client.excute("bindecdn", sn, cdn, new Callback<Empty>() {
             @Override
             public void success(Empty empty, Response response) {
-                Toast.makeText(context, "success!!", Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, "success!!", Toast.LENGTH_LONG).show();
             }
 
             @Override
