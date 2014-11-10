@@ -37,14 +37,16 @@ public class NodeListAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        TextView nodeNmae = (TextView) view.findViewById(R.id.node_name);
-        TextView titleNumber = (TextView) view.findViewById(R.id.title_number);
-        SakuraProgressBar speedProgress = (SakuraProgressBar) view.findViewById(R.id.speed_progress);
-        titleNumber.setText(String.valueOf(cursor.getPosition() + 1));
-        String node = cursor.getString(cursor.getColumnIndex("nick"));
-        int progress = cursor.getInt(cursor.getColumnIndex(NodeCacheTable.SPEED));
-        speedProgress.setProgress((int) (progress / 20.84));
-        nodeNmae.setText(node);
-        view.setTag((cursor.getInt(cursor.getColumnIndex(NodeCacheTable.SPEED))));
+        if (cursor.getCount() != 0) {
+            TextView nodeNmae = (TextView) view.findViewById(R.id.node_name);
+            TextView titleNumber = (TextView) view.findViewById(R.id.title_number);
+            SakuraProgressBar speedProgress = (SakuraProgressBar) view.findViewById(R.id.speed_progress);
+            titleNumber.setText(String.valueOf(cursor.getPosition() + 1));
+            String node = cursor.getString(cursor.getColumnIndex("nick"));
+            int progress = cursor.getInt(cursor.getColumnIndex(NodeCacheTable.SPEED));
+            speedProgress.setProgress((int) (progress / 20.84));
+            nodeNmae.setText(node);
+            view.setTag((cursor.getInt(cursor.getColumnIndex(NodeCacheTable.SPEED))));
+        }
     }
 }
