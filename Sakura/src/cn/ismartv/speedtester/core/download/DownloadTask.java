@@ -78,7 +78,7 @@ public class DownloadTask extends Thread {
                     InputStream inStream = conn.getInputStream();
                     FileOutputStream fs = new FileOutputStream(fileName);
                     byte[] buffer = new byte[1024];
-                    while ((byteread = inStream.read(buffer)) != -1 && timer.timer < TIME_OVER) {
+                    while ((byteread = inStream.read(buffer)) != -1 && timer.timer < TIME_OVER && running == true) {
                         bytesum += byteread;
                         fs.write(buffer, 0, byteread);
                     }

@@ -94,6 +94,16 @@ public class ClientApi {
         );
     }
 
+   public interface GetBindCdn {
+        @GET("/shipinkefu/getCdninfo")
+        void excute(
+                @Query("actiontype") String actiontype,
+                @Query("sn") String snCode,
+                Callback<HttpDataEntity> callback
+        );
+    }
+
+
     public interface Location {
         @GET("/shipinkefu/getCdninfo")
         void excute(

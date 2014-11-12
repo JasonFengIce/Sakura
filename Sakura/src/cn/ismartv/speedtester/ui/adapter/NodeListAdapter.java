@@ -46,7 +46,7 @@ public class NodeListAdapter extends CursorAdapter {
             int progress = cursor.getInt(cursor.getColumnIndex(NodeCacheTable.SPEED));
             speedProgress.setProgress((int) (progress / 20.84));
             nodeNmae.setText(node);
-            view.setTag((cursor.getInt(cursor.getColumnIndex(NodeCacheTable.SPEED))));
+            view.setTag((cursor.getInt(cursor.getColumnIndex(NodeCacheTable.CDN_ID))));
         }
     }
 }

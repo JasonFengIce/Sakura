@@ -23,7 +23,7 @@ import java.util.Iterator;
 
 public class HttpProxyService extends Service implements HttpServerRequestCallback {
     private static final String TAG = "HttpProxyService";
-    private static final int PORT = 9114;
+    private static final int PORT = 10114;
     private static final String HTTP_ACTIOIN = "/keyevent";
     private AsyncHttpServer server;
     private ISmartvNativeService nativeservice;

@@ -12,6 +12,7 @@ import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Select;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -28,6 +29,19 @@ public class CacheManager {
         nodeCacheTable.cdnID = cdnId;
         nodeCacheTable.speed = speed;
         nodeCacheTable.save();
+    }
+
+    public static void updateCheck(String cdnId, boolean checked) {
+        NodeCacheTable nodeCacheTable = NodeCacheTable.loadByCdnId(NodeCacheTable.class, Long.parseLong(cdnId));
+        nodeCacheTable.checked = checked;
+        nodeCacheTable.save();
+    }
+
+    public static NodeCacheTable fetchCheck() {
+        return new Select()
+                .from(NodeCacheTable.class)
+                .where("checked = ?", true)
+                .executeSingle();
     }
 
     public static void updateNodeCache(Context context, ArrayList<NodeEntity> nodes) {
@@ -47,7 +61,7 @@ public class CacheManager {
                 nodeCacheTable.updateTime = String.valueOf(System.currentTimeMillis());
                 nodeCacheTable.area = StringUtils.getAreaCodeByNode(nodeEntity.getNick());
                 nodeCacheTable.isp = StringUtils.getOperatorByNode(nodeEntity.getNick());
-                nodeCacheTable.checked = "false";
+                nodeCacheTable.checked = false;
                 nodeCacheTable.running = "false";
                 nodeCacheTable.save();
             }

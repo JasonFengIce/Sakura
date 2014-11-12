@@ -1,8 +1,11 @@
 package cn.ismartv.speedtester.provider;
 
+import com.activeandroid.Cache;
 import com.activeandroid.Model;
+import com.activeandroid.TableInfo;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 
 /**
  * Created by huaijie on 14-10-30.
@@ -16,7 +19,7 @@ public class NodeCacheTable extends Model {
     public static final String SPEED = "speed";
 
     @Column(name = "cdn_id", uniqueGroups = {"group1"}, onUniqueConflicts = {Column.ConflictAction.IGNORE})
-    public int cdnID = 0;
+    public long cdnID = 0;
 
     @Column(name = "node_name")
     public String nodeName = "";
@@ -49,9 +52,17 @@ public class NodeCacheTable extends Model {
     public String updateTime = "";
 
     @Column(name = "checked")
-    public String checked = "";
+    public boolean checked = false;
 
     @Column(name = "running")
     public String running = "";
+
+    public static <T extends Model> T loadByCdnId(Class<T> type, long cdnId) {
+        TableInfo tableInfo = Cache.getTableInfo(type);
+        return (T) new Select().from(type).where(CDN_ID + "=?", cdnId).executeSingle();
+    }
+
+
+
 }
 

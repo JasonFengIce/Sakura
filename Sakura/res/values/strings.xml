@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">视频客服</string>
-    <string name="prompt">推荐的覆盖点：如果自动监测结果有误，请手动选择您的省份与网络类型</string>
+    <string name="prompt">推荐的视频源：如果自动监测结果有误，请手动选择您的省份与网络类型</string>
     <string name="province">所在的省份：</string>
     <string name="isp">网络类型：</string>
     <string name="net_type">网络类型</string>
@@ -76,4 +76,6 @@
     <string name="StartTesting">开始测速</string>
 
     <string name="net_speedtester">网络测速</string>
+
+    <string name="current_node">当前节点:</string>
 </resources>
