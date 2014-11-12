@@ -169,7 +169,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         }
         count = count + 1;
 
-        currentNode.setText(getText(R.string.current_node) + CacheManager.fetchCheck().nick);
+        if (null != CacheManager.fetchCheck().nick)
+            currentNode.setText(getText(R.string.current_node) + CacheManager.fetchCheck().nick);
     }
 
     @Override
