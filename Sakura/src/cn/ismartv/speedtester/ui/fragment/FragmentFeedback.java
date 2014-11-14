@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.InjectViews;
 import butterknife.OnClick;
 import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
@@ -52,6 +53,9 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     EditText description;
     @InjectView(R.id.submit_btn)
     Button submitBtn;
+
+    @InjectViews({R.id.arrow_up, R.id.arrow_down})
+    List<ImageView> arrows;
 
     private int problemText = 6;
     private Handler messageHandler;
@@ -183,5 +187,23 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     public void submitFeedback(View view) {
         CacheManager.updatFeedBack(getActivity(), phone.getText().toString());
         setFeedBack();
+    }
+
+
+    @OnClick({R.id.arrow_up, R.id.arrow_down})
+    public void scrollList(View view) {
+
+        switch (view.getId()) {
+            case R.id.arrow_up:
+                feedbackList.smoothScrollByOffset(-1);
+
+                break;
+            case R.id.arrow_down:
+                feedbackList.smoothScrollByOffset(1);
+
+                break;
+            default:
+                break;
+        }
     }
 }

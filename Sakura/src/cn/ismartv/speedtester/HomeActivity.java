@@ -1,5 +1,6 @@
 package cn.ismartv.speedtester;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -24,14 +25,24 @@ public class HomeActivity extends FragmentActivity {
     @InjectView(R.id.pager)
     ViewPager pager;
 
+    private int positon;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        positon = intent.getIntExtra(MenuActivity.TAB_FLAG, 0);
+
+
         setContentView(R.layout.main);
+
+
         ButterKnife.inject(this);
         tabAdapter = new TabAdapter(getSupportFragmentManager());
         pager.setAdapter(tabAdapter);
         indicator.setViewPager(pager);
+
+        pager.setCurrentItem(positon);
 
     }
 

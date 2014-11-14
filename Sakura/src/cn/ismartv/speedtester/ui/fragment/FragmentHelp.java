@@ -12,13 +12,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
+import cn.ismartv.speedtester.data.Empty;
+import cn.ismartv.speedtester.data.TeleEntity;
 import cn.ismartv.speedtester.data.TicketEntity;
 import cn.ismartv.speedtester.utils.DeviceUtils;
+import org.w3c.dom.Text;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -28,6 +32,7 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by huaijie on 14-10-29.
@@ -41,10 +46,23 @@ public class FragmentHelp extends Fragment {
     @InjectView(R.id.weixin_image)
     ImageView weixinImage;
 
+    @InjectView(R.id.ismartv_title)
+    TextView ismartvTitle;
+
+    @InjectView(R.id.ismartv_tel)
+    TextView ismartvTel;
+
+    @InjectView(R.id.tv_title)
+    TextView tvTitle;
+
+    @InjectView(R.id.tv_tel)
+    TextView tvTel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         messageHandler = new MessageHandler();
+
     }
 
     @Override
@@ -59,6 +77,7 @@ public class FragmentHelp extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getTicket(getActivity());
+        fetchTel();
 
     }
 
@@ -111,12 +130,39 @@ public class FragmentHelp extends Fragment {
         }
     }
 
+
+    private void fetchTel() {
+        final RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(ClientApi.Ticket.HOST)
+                .build();
+        ClientApi.FetchTel client = restAdapter.create(ClientApi.FetchTel.class);
+        client.excute(ClientApi.FetchTel.ACTION,
+                DeviceUtils.getSnCode(),
+                DeviceUtils.getModel(),
+                new Callback<List<TeleEntity>>() {
+                    @Override
+                    public void success(List<TeleEntity> teleEntities, Response response) {
+                        ismartvTitle.setText(teleEntities.get(0).getTitle() + " : ");
+                        ismartvTel.setText(teleEntities.get(0).getPhoneNo());
+                        tvTitle.setText(teleEntities.get(1).getTitle() + " : ");
+                        tvTel.setText(teleEntities.get(1).getPhoneNo());
+                    }
+
+                    @Override
+                    public void failure(RetrofitError retrofitError) {
+
+                    }
+                }
+        );
+    }
+
+
     class MessageHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case QR_CODE:
-                    weixinImage.setImageBitmap((Bitmap) msg.obj);
                     break;
                 default:
                     break;

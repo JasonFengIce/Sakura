@@ -12,6 +12,8 @@ import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.Cache;
+import com.activeandroid.TableInfo;
 import com.activeandroid.query.Select;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -32,6 +34,13 @@ public class CacheManager {
     }
 
     public static void updateCheck(String cdnId, boolean checked) {
+
+        TableInfo tableInfo = Cache.getTableInfo(NodeCacheTable.class);
+        NodeCacheTable checkedItem = new Select().from(NodeCacheTable.class).where(NodeCacheTable.CHECKED + "=?", true).executeSingle();
+        if (null != checkedItem) {
+            checkedItem.checked = false;
+            checkedItem.save();
+        }
         NodeCacheTable nodeCacheTable = NodeCacheTable.loadByCdnId(NodeCacheTable.class, Long.parseLong(cdnId));
         nodeCacheTable.checked = checked;
         nodeCacheTable.save();

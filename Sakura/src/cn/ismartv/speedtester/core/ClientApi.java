@@ -84,7 +84,7 @@ public class ClientApi {
 
 
     public interface BindCdn {
-        @POST("/shipinkefu/getCdninfo")
+        @GET("/shipinkefu/getCdninfo")
         void excute(
                 @Query("actiontype") String actiontype,
                 @Query("sn") String snCode,
@@ -94,7 +94,7 @@ public class ClientApi {
         );
     }
 
-   public interface GetBindCdn {
+    public interface GetBindCdn {
         @GET("/shipinkefu/getCdninfo")
         void excute(
                 @Query("actiontype") String actiontype,
@@ -114,7 +114,7 @@ public class ClientApi {
     }
 
 
-   public interface AppVersionInfo {
+    public interface AppVersionInfo {
         @GET("/shipinkefu/getCdninfo")
         void excute(
                 @Query("actiontype") String actiontype,
@@ -122,7 +122,7 @@ public class ClientApi {
         );
     }
 
-   public interface UploadClientIp {
+    public interface UploadClientIp {
         @GET("/weixin4server/uploadclientip")
         void excute(
                 @Query("mac_address") String mac_address,
@@ -130,6 +130,18 @@ public class ClientApi {
                 @Query("sn") String sn,
                 @Query("tvmode") String tvmode,
                 Callback<Empty> callback
+        );
+    }
+
+    public interface FetchTel {
+        public String ACTION = "getContact";
+
+        @GET("/shipinkefu/getCdninfo")
+        void excute(
+                @Query("actiontype") String actiontype,
+                @Query("ModeName") String modeName,
+                @Query("sn") String sn,
+                Callback<List<TeleEntity>> callback
         );
     }
 

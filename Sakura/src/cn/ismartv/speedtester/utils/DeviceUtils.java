@@ -17,7 +17,7 @@ import java.util.Enumeration;
 public class DeviceUtils {
 
     public static String getSnCode() {
-        return Build.SERIAL;
+        return "1";
     }
 
     public static String getLocalIpAddressV4() {

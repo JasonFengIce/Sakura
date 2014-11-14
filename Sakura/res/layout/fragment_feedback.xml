@@ -102,11 +102,36 @@
 
 
     </ListView>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
 
-    <ImageView
-            android:src="@drawable/arrow"
-            android:layout_marginTop="20dp"
-            android:layout_gravity="center"
-            android:layout_width="60dp"
-            android:layout_height="60dp"/>
+        <ImageView
+                android:layout_marginRight="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:id="@+id/arrow_up"
+                android:src="@drawable/arrow_up"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center"
+                android:layout_width="60dp"
+                android:layout_height="60dp"/>
+        <ImageView
+                android:layout_marginLeft="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:id="@+id/arrow_down"
+                android:src="@drawable/arrow"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center"
+                android:layout_width="60dp"
+
+                android:layout_height="60dp"/>
+
+    </LinearLayout>
+
+
 </LinearLayout>

@@ -17,6 +17,7 @@ public class NodeCacheTable extends Model {
     public static final String URL = "url";
     public static final String ID = "_id";
     public static final String SPEED = "speed";
+    public static final String CHECKED = "checked";
 
     @Column(name = "cdn_id", uniqueGroups = {"group1"}, onUniqueConflicts = {Column.ConflictAction.IGNORE})
     public long cdnID = 0;
@@ -61,7 +62,6 @@ public class NodeCacheTable extends Model {
         TableInfo tableInfo = Cache.getTableInfo(type);
         return (T) new Select().from(type).where(CDN_ID + "=?", cdnId).executeSingle();
     }
-
 
 
 }

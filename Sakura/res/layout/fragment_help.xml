@@ -11,15 +11,15 @@
                   android:layout_marginLeft="40dp"
                   android:layout_height="wrap_content">
         <TextView
+                android:id="@+id/ismartv_title"
                 android:layout_gravity="center"
                 android:textSize="24sp"
                 android:textColor="#FFFFFF"
-                android:text="@string/ismartv_hotline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         <TextView
+                android:id="@+id/ismartv_tel"
                 android:layout_gravity="center"
-                android:text="@string/ismartv_number"
                 android:textSize="36sp"
                 android:textColor="#FFFFFF"
                 android:layout_width="wrap_content"
@@ -34,15 +34,15 @@
             android:orientation="horizontal"
             android:layout_height="wrap_content">
         <TextView
+                android:id="@+id/tv_title"
                 android:layout_gravity="center"
-                android:text="@string/hardware_hotline"
                 android:textSize="24sp"
                 android:textColor="#FFFFFF"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         <TextView
+                android:id="@+id/tv_tel"
                 android:layout_gravity="center"
-                android:text="@string/hardware_number"
                 android:textSize="36sp"
                 android:textColor="#FFFFFF"
                 android:layout_width="wrap_content"
@@ -62,6 +62,7 @@
     <ImageView
             android:layout_gravity="center"
             android:id="@+id/weixin_image"
+            android:src="@drawable/qr_code"
             android:layout_width="500dp"
             android:layout_height="500dp"/>
 

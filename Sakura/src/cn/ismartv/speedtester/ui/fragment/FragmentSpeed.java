@@ -25,6 +25,7 @@ import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.ui.adapter.NodeListAdapter;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
+import com.activeandroid.Cache;
 import com.activeandroid.content.ContentProvider;
 import com.ismartv.android.vod.core.Utils;
 import retrofit.Callback;
@@ -50,7 +51,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
 
     @InjectView(R.id.speed_test_btn)
-    Button speedTestBtn;
+    TextView speedTestBtn;
 
     @InjectView(R.id.current_node_text)
     TextView currentNode;
@@ -169,7 +170,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         }
         count = count + 1;
 
-        if (null != CacheManager.fetchCheck().nick)
+        if (null!= CacheManager.fetchCheck() &&null != CacheManager.fetchCheck().nick)
             currentNode.setText(getText(R.string.current_node) + CacheManager.fetchCheck().nick);
     }
 
@@ -319,7 +320,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         View contentView = LayoutInflater.from(getActivity())
                 .inflate(R.layout.popup_confirm_node, null);
         contentView.setBackgroundResource(R.drawable.bg_popup);
-        final PopupWindow popupWindow = new PopupWindow(null, 400, 150);
+        final PopupWindow popupWindow = new PopupWindow(null, 500, 150);
         popupWindow.setContentView(contentView);
         popupWindow.setFocusable(true);
         popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);
