@@ -56,6 +56,9 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @InjectView(R.id.current_node_text)
     TextView currentNode;
 
+    @InjectView(R.id.unbind_node)
+    Button unbindNode;
+
     public PopupWindow testProgressPopup;
 
 
@@ -75,7 +78,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         nodeListAdapter = new NodeListAdapter(getActivity(), null, true);
-
         cities = getResources().getStringArray(R.array.citys);
     }
 
@@ -178,6 +180,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
         if (null != CacheManager.fetchCheck() && null != CacheManager.fetchCheck().nick)
             currentNode.setText(getText(R.string.current_node) + CacheManager.fetchCheck().nick);
+        else
+            currentNode.setText(getText(R.string.current_node));
     }
 
     @Override
@@ -386,7 +390,32 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         return downloadTask;
     }
 
+    @OnClick(R.id.unbind_node)
+    public void unbindNode() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setEndpoint(AppConstant.API_HOST)
+                .build();
+        ClientApi.UnbindNode client = restAdapter.create(ClientApi.UnbindNode.class);
+        String sn;
+        if ("unknown".equals(DeviceUtils.getSnCode()))
+            sn = "other";
+        else
+            sn = DeviceUtils.getSnCode();
 
+        client.excute(ClientApi.UnbindNode.ACTION, sn, new Callback<Empty>() {
+            @Override
+            public void success(Empty empty, Response response) {
+
+                CacheManager.clearCheck();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
 }
 
 

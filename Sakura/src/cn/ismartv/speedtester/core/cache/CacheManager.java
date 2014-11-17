@@ -35,7 +35,6 @@ public class CacheManager {
 
     public static void updateCheck(String cdnId, boolean checked) {
 
-        TableInfo tableInfo = Cache.getTableInfo(NodeCacheTable.class);
         NodeCacheTable checkedItem = new Select().from(NodeCacheTable.class).where(NodeCacheTable.CHECKED + "=?", true).executeSingle();
         if (null != checkedItem) {
             checkedItem.checked = false;
@@ -44,6 +43,14 @@ public class CacheManager {
         NodeCacheTable nodeCacheTable = NodeCacheTable.loadByCdnId(NodeCacheTable.class, Long.parseLong(cdnId));
         nodeCacheTable.checked = checked;
         nodeCacheTable.save();
+    }
+
+    public static void clearCheck() {
+        NodeCacheTable checkedItem = new Select().from(NodeCacheTable.class).where(NodeCacheTable.CHECKED + "=?", true).executeSingle();
+        if (null != checkedItem) {
+            checkedItem.checked = false;
+            checkedItem.save();
+        }
     }
 
     public static NodeCacheTable fetchCheck() {

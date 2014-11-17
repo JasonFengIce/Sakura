@@ -77,10 +77,11 @@
 
     <string name="net_speedtester">网络测速</string>
 
-    <string name="current_node">当前节点:</string>
+    <string name="current_node">当前视频源:</string>
     <string name="feedback_problem">问题反馈</string>
     <string name="service_help">客服帮助</string>
 
     <string name="net_speed_test">测速</string>
+    <string name="unbind_node">取消绑定</string>
 
 </resources>
