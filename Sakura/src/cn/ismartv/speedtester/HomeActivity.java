@@ -11,6 +11,7 @@ import cn.ismartv.speedtester.core.download.DownloadTask;
 import cn.ismartv.speedtester.ui.TabAdapter;
 import cn.ismartv.speedtester.ui.fragment.FragmentSpeed;
 import cn.ismartv.speedtester.ui.widget.indicator.IconPageIndicator;
+import com.ismartv.android.vod.service.HttpProxyService;
 
 
 public class HomeActivity extends FragmentActivity {
@@ -30,6 +31,7 @@ public class HomeActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Intent intent = getIntent();
         positon = intent.getIntExtra(MenuActivity.TAB_FLAG, 0);
 

@@ -19,18 +19,25 @@ import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheManager;
+import cn.ismartv.speedtester.core.logger.Logger;
 import cn.ismartv.speedtester.data.ChatMsgEntity;
 import cn.ismartv.speedtester.data.FeedBackEntity;
 import cn.ismartv.speedtester.data.ProblemEntity;
 import cn.ismartv.speedtester.ui.adapter.FeedbackListAdapter;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
+import com.google.gson.Gson;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by huaijie on 14-10-29.
@@ -146,14 +153,13 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
             return;
         } else {
             FeedBackEntity feedBack = new FeedBackEntity();
-            feedBack.setCity("");
             feedBack.setDescription(description.getEditableText().toString());
-            feedBack.setIp("");
             feedBack.setPhone(phone.getEditableText().toString());
-            feedBack.setIsp("");
             feedBack.setOption(problemText);
-            feedBack.setWidth("");
-            ClientApi.uploadFeedback(getActivity(), feedBack, messageHandler);
+            feedBack.setCity("no data");
+            feedBack.setIp("no data");
+            feedBack.setIsp("no data");
+            uploadFeedback(getActivity(), feedBack, messageHandler);
         }
     }
 
@@ -185,6 +191,8 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
 
     @OnClick(R.id.submit_btn)
     public void submitFeedback(View view) {
+        if (AppConstant.DEBUG)
+            Log.d(TAG, "submit problem feedback");
         CacheManager.updatFeedBack(getActivity(), phone.getText().toString());
         setFeedBack();
     }
@@ -205,5 +213,86 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
             default:
                 break;
         }
+    }
+
+    public  void uploadFeedback(Context context, FeedBackEntity feedBack, final Handler handler) {
+        Log.d(TAG, "result is ---> " + "run");
+        final String str = new Gson().toJson(feedBack);
+        new Thread() {
+            @Override
+            public void run() {
+                com.activeandroid.util.Log.d(TAG, "result is ---> " + "run");
+                String localeName = Locale.getDefault().toString();
+                URL url;
+                HttpURLConnection conn = null;
+                InputStream inputStream;
+                BufferedReader reader = null;
+                StringBuffer sb = new StringBuffer();
+                OutputStream outputStream;
+                BufferedWriter writer = null;
+                try {
+                    url = new URL("http://iris.tvxio.com/customer/pointlogs/");
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setDoInput(true);
+                    conn.setDoOutput(true);
+                    conn.setUseCaches(false);
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Charset", "UTF-8");
+                    conn.setRequestProperty("content-type", "text/json");
+                    conn.setConnectTimeout(15000);
+                    conn.setReadTimeout(15000);
+                    conn.setRequestProperty("User-Agent", android.os.Build.MODEL.replaceAll(" ", "_") + "/" + android.os.Build.ID + " " + DeviceUtils.getSnCode());
+                    conn.setRequestProperty("Accept-Language", localeName);
+                    outputStream = conn.getOutputStream();
+                    writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    writer.write("q=" + str);
+                    writer.flush();
+                    int statusCode = conn.getResponseCode();
+                    if (statusCode == 200) {
+                        inputStream = conn.getInputStream();
+                        reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                        String line = null;
+                        while ((line = reader.readLine()) != null) {
+                            sb.append(line);
+                        }
+
+                        Logger logger = new Logger.Builder()
+                                .setLevel(Logger.D)
+                                .setMessage(sb.toString())
+                                .setTag(TAG)
+                                .build();
+                        logger.log();
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (conn != null) {
+                        conn.disconnect();
+                    }
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (writer != null) {
+                        try {
+                            writer.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                if ("OK".equals(sb.toString()) && null != handler) {
+                    Log.d(TAG, "result is ---> " + sb.toString());
+                    handler.sendEmptyMessage(FragmentFeedback.UPLAOD_FEEDBACK_COMPLETE);
+                } else {
+                    handler.sendEmptyMessage(FragmentFeedback.UPLAOD_FEEDBACK_FAILED);
+                }
+            }
+        }.start();
     }
 }

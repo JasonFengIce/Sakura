@@ -2,9 +2,11 @@ package cn.ismartv.speedtester.core;
 
 import android.content.Context;
 import android.os.Handler;
+import cn.ismartv.speedtester.core.logger.Logger;
 import cn.ismartv.speedtester.data.*;
 import cn.ismartv.speedtester.ui.fragment.FragmentFeedback;
 import cn.ismartv.speedtester.utils.DeviceUtils;
+import com.activeandroid.util.Log;
 import com.google.gson.Gson;
 import retrofit.Callback;
 import retrofit.http.*;
@@ -20,7 +22,7 @@ import java.util.Locale;
  * Created by huaijie on 14-10-30.
  */
 public class ClientApi {
-    public static final String HOST = "http://wx.api.tvxio.com";
+    private static final String TAG = "ClientApi";
 
     public interface Problems {
         String HOST = "http://iris.tvxio.com";
@@ -146,12 +148,13 @@ public class ClientApi {
     }
 
 
-    public static void uploadFeedback(Context context, FeedBackEntity feedBack, final Handler handler) {
-
+    public  void uploadFeedback(Context context, FeedBackEntity feedBack, final Handler handler) {
+        Log.d(TAG, "result is ---> " +"run");
         final String str = new Gson().toJson(feedBack);
         new Thread() {
             @Override
             public void run() {
+                Log.d(TAG, "result is ---> " +"run");
                 String localeName = Locale.getDefault().toString();
                 URL url;
                 HttpURLConnection conn = null;
@@ -185,6 +188,13 @@ public class ClientApi {
                         while ((line = reader.readLine()) != null) {
                             sb.append(line);
                         }
+
+                        Logger logger = new Logger.Builder()
+                                .setLevel(Logger.D)
+                                .setMessage(sb.toString())
+                                .setTag(TAG)
+                                .build();
+                        logger.log();
                     }
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
@@ -210,6 +220,7 @@ public class ClientApi {
                     }
                 }
                 if ("OK".equals(sb.toString()) && null != handler) {
+                    Log.d(TAG, "result is ---> " + sb.toString());
                     handler.sendEmptyMessage(FragmentFeedback.UPLAOD_FEEDBACK_COMPLETE);
                 } else {
                     handler.sendEmptyMessage(FragmentFeedback.UPLAOD_FEEDBACK_FAILED);

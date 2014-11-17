@@ -7,11 +7,13 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_marginRight="60dp"
+                    android:layout_height="wrap_content">
         <ImageView
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_marginRight="60dp"
+
                 android:id="@+id/tab_speed"
                 android:src="@drawable/selector_indactor_speed"
                 android:layout_width="200dp"
@@ -29,13 +31,16 @@
 
     </RelativeLayout>
 
-    <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="60dp"
+                    android:layout_marginLeft="60dp"
+            >
 
         <ImageView
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_marginRight="60dp"
-                android:layout_marginLeft="60dp"
+
                 android:id="@+id/tab_help"
                 android:src="@drawable/selector_indactor_feedback"
                 android:layout_width="200dp"
@@ -53,13 +58,15 @@
 
     </RelativeLayout>
 
-    <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_marginLeft="60dp"
+                    android:layout_height="wrap_content">
 
         <ImageView
                 android:clickable="true"
                 android:layout_centerHorizontal="true"
                 android:focusable="true"
-                android:layout_marginLeft="60dp"
+
                 android:src="@drawable/selector_indactor_help"
                 android:id="@+id/tab_feedback"
                 android:layout_width="200dp"

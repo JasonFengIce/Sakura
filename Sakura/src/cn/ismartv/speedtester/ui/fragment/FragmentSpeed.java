@@ -127,6 +127,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getBindCdn();
+    }
+
     @OnItemClick(R.id.node_list)
     public void pickNode(AdapterView<?> parent, View view, int position, long id) {
         if (AppConstant.DEBUG) {
@@ -170,7 +176,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         }
         count = count + 1;
 
-        if (null!= CacheManager.fetchCheck() &&null != CacheManager.fetchCheck().nick)
+        if (null != CacheManager.fetchCheck() && null != CacheManager.fetchCheck().nick)
             currentNode.setText(getText(R.string.current_node) + CacheManager.fetchCheck().nick);
     }
 

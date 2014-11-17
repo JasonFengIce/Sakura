@@ -5,6 +5,8 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import cn.ismartv.speedtester.AppConstant;
+import com.activeandroid.util.Log;
 import com.ismartv.android.vod.core.keyevent.EventDeliver;
 import com.ismartv.android.vod.core.keyevent.KeyEventInterface;
 import com.koushikdutta.async.AsyncServer;
@@ -25,6 +27,7 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     private static final String TAG = "HttpProxyService";
     private static final int PORT = 10114;
     private static final String HTTP_ACTIOIN = "/keyevent";
+    private static final String PING = "/ping";
     private AsyncHttpServer server;
     private ISmartvNativeService nativeservice;
 
@@ -54,20 +57,29 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        server.post(PING, this);
         server.get(HTTP_ACTIOIN, this);
-        server.listen(AsyncServer.getDefault(), PORT);
+        server.listen(PORT);
+
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
-        Iterator<NameValuePair> iterator = request.getQuery().iterator();
-        int actionCode = Integer.parseInt(iterator.next().getValue());
-        String params = iterator.next().getValue();
-        KeyEventInterface keyEventInterface = EventDeliver.create(getApplicationContext(), actionCode, params);
-        keyEventInterface.deliverEvent();
+        if (AppConstant.DEBUG)
+            android.util.Log.d(TAG, "path is ---> " + request.getPath());
+        if (PING.equals(request.getPath())) {
+
+        } else if (HTTP_ACTIOIN.equals(request.getPath())) {
+            Iterator<NameValuePair> iterator = request.getQuery().iterator();
+            int actionCode = Integer.parseInt(iterator.next().getValue());
+            String params = iterator.next().getValue();
+            KeyEventInterface keyEventInterface = EventDeliver.create(getApplicationContext(), actionCode, params);
+            keyEventInterface.deliverEvent();
+        }
         response.send("OK!");
     }
+
 
     @Override
     public void onDestroy() {
