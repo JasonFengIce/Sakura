@@ -17,7 +17,7 @@ public class StringUtils {
     private static final int WS_CHINA_CODE = 8;
     private static final int WN_CHINA_CODE = 9;
     private static final int EN_CHINA_CODE = 10;
-    private static final int OTHERS_CODE = 6;
+    public static final int OTHERS_CODE = 6;
 
     private static final String NORTH_CHINA = "华北";
     private static final String EAST_CHINA = "华东";

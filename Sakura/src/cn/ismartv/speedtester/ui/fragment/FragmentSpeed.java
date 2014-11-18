@@ -38,6 +38,8 @@ import retrofit.client.Response;
  * Created by huaijie on 14-10-29.
  */
 public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, DownloadTask.OnSpeedTestListener {
+
+
     private static final String TAG = "FragmentSpeed";
     private static int count = 0;
     public PopupWindow testProgressPopup;
@@ -60,6 +62,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     private int ispPosition;
     private String[] selectionArgs;
     private String[] cities;
+
+    private Context context;
 
     public static void uploadTestResult(String cdnId, String speed) {
         RestAdapter restAdapter = new RestAdapter.Builder()
@@ -110,7 +114,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
-    private static void bindCdn(final String cdn) {
+    private static void bindCdn(final String cdn, final Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(AppConstant.LOG_LEVEL)
                 .setEndpoint(AppConstant.API_HOST)
@@ -126,6 +130,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         client.excute("bindecdn", sn, cdn, new Callback<Empty>() {
             @Override
             public void success(Empty empty, Response response) {
+
+                Toast.makeText(context, R.string.node_bind_success, Toast.LENGTH_LONG).show();
                 getBindCdn();
             }
 
@@ -136,9 +142,11 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.context = getContext();
         nodeListAdapter = new NodeListAdapter(getActivity(), null, true);
         cities = getResources().getStringArray(R.array.citys);
     }
@@ -209,8 +217,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int flag, Bundle bundle) {
-        String selection1 = "area" + "=? and " + "isp" + "=?";
-        String selection2 = "area" + "=? and " + "isp" + " in (?, ?)";
+        String selection1 = "area" + "=? and " + "isp" + "=?" + " or isp = ?";
+        String selection2 = "area" + "=? and " + "isp" + " in (?, ?)" + " or isp = ?";
         CacheLoader cacheLoader = new CacheLoader(getActivity(), ContentProvider.createUri(NodeCacheTable.class, null),
                 null,
                 null, null, null);
@@ -244,7 +252,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         if (null != CacheManager.fetchCheck() && null != CacheManager.fetchCheck().nick)
             currentNode.setText(getText(R.string.current_node) + CacheManager.fetchCheck().nick);
         else
-            currentNode.setText(getText(R.string.current_node));
+            currentNode.setText(getText(R.string.current_node) + getString(R.string.auto_fetch));
     }
 
     @Override
@@ -267,12 +275,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     private void notifiySourceChanged() {
         if (ispPosition == 4) {
             selectionArgs = new String[]{String.valueOf(StringUtils.getAreaCodeByProvince(cities[provincesPosition])),
-                    String.valueOf(2), String.valueOf(3)};
+                    String.valueOf(2), String.valueOf(3), "6"};
             getLoaderManager().destroyLoader(0);
             getLoaderManager().restartLoader(1, null, FragmentSpeed.this).forceLoad();
         } else {
             selectionArgs = new String[]{String.valueOf(StringUtils.getAreaCodeByProvince(cities[provincesPosition])),
-                    String.valueOf(ispPosition)};
+                    String.valueOf(ispPosition), "6"};
             getLoaderManager().destroyLoader(1);
             getLoaderManager().restartLoader(0, null, FragmentSpeed.this).forceLoad();
         }
@@ -330,7 +338,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
-                bindCdn(String.valueOf(cdnID));
+                bindCdn(String.valueOf(cdnID), context);
             }
         });
         cancleButton.setOnClickListener(new View.OnClickListener() {

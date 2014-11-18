@@ -86,6 +86,12 @@
 
     <string name="cancle">取消</string>
 
+    <string name="auto_fetch">自动获取</string>
+
+    <string name="node_bind_success">选择成功，请返回播放影片测试！</string>
+
+    <string name="tring">可以尝试</string>
+    <string name="can_select">建议选择</string>
 
 
 </resources>

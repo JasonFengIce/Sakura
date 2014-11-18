@@ -22,7 +22,23 @@
             android:gravity="center"
             >
 
+
         <TextView
+                android:gravity="center"
+                android:textSize="22sp"
+                android:textColor="#ffffffff"
+
+                android:id="@+id/confirm_btn"
+                android:clickable="true"
+                android:text="@string/button_label_OK"
+                android:focusable="true"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/selector_button"
+                android:layout_width="120dp"
+                android:layout_height="60dp"/>
+
+        <TextView
+                android:layout_marginLeft="100dp"
                 android:id="@+id/cancle_btn"
                 android:clickable="true"
                 android:focusable="true"
@@ -35,19 +51,6 @@
                 android:layout_width="120dp"
                 android:layout_height="60dp"/>
 
-        <TextView
-                android:gravity="center"
-                android:textSize="22sp"
-                android:textColor="#ffffffff"
-                android:layout_marginLeft="100dp"
-                android:id="@+id/confirm_btn"
-                android:clickable="true"
-                android:text="@string/button_label_OK"
-                android:focusable="true"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/selector_button"
-                android:layout_width="120dp"
-                android:layout_height="60dp"/>
 
     </LinearLayout>
 

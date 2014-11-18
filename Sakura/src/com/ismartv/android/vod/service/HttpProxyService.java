@@ -69,6 +69,8 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
         if (AppConstant.DEBUG)
             android.util.Log.d(TAG, "path is ---> " + request.getPath());
         if (PING.equals(request.getPath())) {
+            response.send("OK!");
+            response.writeHead();
 
         } else if (HTTP_ACTIOIN.equals(request.getPath())) {
             Iterator<NameValuePair> iterator = request.getQuery().iterator();
