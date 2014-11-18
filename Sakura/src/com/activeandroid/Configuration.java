@@ -241,7 +241,6 @@ public class Configuration {
 					configuration.mTypeSerializers = loadSerializerList(serializerList.split(","));
 				}
 			}
-
 			return configuration;
 		}
 
@@ -256,7 +255,6 @@ public class Configuration {
 			if (aaName == null) {
 				aaName = DEFAULT_DB_NAME;
 			}
-
 			return aaName;
 		}
 

@@ -29,7 +29,7 @@
     <string name="definition_3">一般</string>
     <string name="definition_4">通畅</string>
     <string name="definition_5">较快</string>
-    <string name="select_success">您已链接选择的覆盖点！</string>
+    <string name="select_success">是否选择该视频源？</string>
 
     <string name="speed_testing">正在测速...</string>
 
@@ -83,5 +83,9 @@
 
     <string name="net_speed_test">测速</string>
     <string name="unbind_node">取消绑定</string>
+
+    <string name="cancle">取消</string>
+
+
 
 </resources>

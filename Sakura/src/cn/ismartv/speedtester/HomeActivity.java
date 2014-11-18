@@ -28,6 +28,8 @@ public class HomeActivity extends FragmentActivity {
 
     private int positon;
 
+    public boolean isFirstSpeedTest = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

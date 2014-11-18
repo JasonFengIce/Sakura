@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import butterknife.*;
 import cn.ismartv.speedtester.AppConstant;
+import cn.ismartv.speedtester.HomeActivity;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheLoader;
@@ -38,41 +39,102 @@ import retrofit.client.Response;
  */
 public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, DownloadTask.OnSpeedTestListener {
     private static final String TAG = "FragmentSpeed";
-
-    private NodeListAdapter nodeListAdapter;
-
+    private static int count = 0;
+    public PopupWindow testProgressPopup;
     @InjectView(R.id.node_list)
     ListView nodeList;
-
     @InjectView(R.id.province_spinner)
     Spinner provinceSpinner;
     @InjectView(R.id.isp_spinner)
     Spinner ispSpinner;
-
-
     @InjectView(R.id.speed_test_btn)
     TextView speedTestBtn;
-
     @InjectView(R.id.current_node_text)
     TextView currentNode;
-
     @InjectView(R.id.unbind_node)
     Button unbindNode;
-
-    public PopupWindow testProgressPopup;
-
-
-    private int provincesPosition;
-    private int ispPosition;
-
-
-    private String[] selectionArgs;
-
-    private String[] cities;
-
     boolean running = false;
     DownloadTask downloadTask;
-    private static int count = 0;
+    private NodeListAdapter nodeListAdapter;
+    private int provincesPosition;
+    private int ispPosition;
+    private String[] selectionArgs;
+    private String[] cities;
+
+    public static void uploadTestResult(String cdnId, String speed) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(AppConstant.API_HOST)
+                .build();
+        ClientApi.UploadResult client = restAdapter.create(ClientApi.UploadResult.class);
+        client.excute("submitTestData", DeviceUtils.getSnCode(), cdnId, speed, new Callback<Empty>() {
+            @Override
+            public void success(Empty empty, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+    public static void getBindCdn() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setEndpoint(AppConstant.API_HOST)
+                .build();
+        ClientApi.GetBindCdn client = restAdapter.create(ClientApi.GetBindCdn.class);
+        String sn;
+        if ("unknown".equals(DeviceUtils.getSnCode()))
+            sn = "other";
+        else
+            sn = DeviceUtils.getSnCode();
+        client.excute("getBindcdn", sn, new Callback<HttpDataEntity>() {
+            @Override
+            public void success(HttpDataEntity httpData, Response response) {
+                String result = Utils.getResult(response);
+                Log.d(TAG, result);
+                if ("104".equals(httpData.getRetcode())) {
+                    return;
+                } else {
+                    CacheManager.updateCheck(httpData.getSncdn().getCdnid(), true);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+    private static void bindCdn(final String cdn) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(AppConstant.API_HOST)
+                .build();
+        ClientApi.BindCdn client = restAdapter.create(ClientApi.BindCdn.class);
+
+        String sn;
+        if ("unknown".equals(DeviceUtils.getSnCode()))
+            sn = "other";
+        else
+            sn = DeviceUtils.getSnCode();
+
+        client.excute("bindecdn", sn, cdn, new Callback<Empty>() {
+            @Override
+            public void success(Empty empty, Response response) {
+                getBindCdn();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +150,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
         return mView;
     }
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -124,10 +185,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             ispSpinner.setSelection(ispCache);
         }
 
+        if (!((HomeActivity) getActivity()).isFirstSpeedTest) {
+            speedTestBtn.setText(R.string.button_label_retest);
+        }
         getLoaderManager().initLoader(0, null, this);
         getBindCdn();
     }
-
 
     @Override
     public void onResume() {
@@ -189,13 +252,11 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         nodeListAdapter.swapCursor(null);
     }
 
-
     @OnItemSelected(R.id.province_spinner)
     public void pickProvince(AdapterView<?> parent, View view, int position, long id) {
         provincesPosition = position;
         notifiySourceChanged();
     }
-
 
     @OnItemSelected(R.id.isp_spinner)
     public void pickIsp(AdapterView<?> parent, View view, int position, long id) {
@@ -223,57 +284,13 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         count = 0;
     }
 
-    public static void uploadTestResult(String cdnId, String speed) {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(AppConstant.LOG_LEVEL)
-                .setEndpoint(AppConstant.API_HOST)
-                .build();
-        ClientApi.UploadResult client = restAdapter.create(ClientApi.UploadResult.class);
-        client.excute("submitTestData", DeviceUtils.getSnCode(), cdnId, speed, new Callback<Empty>() {
-            @Override
-            public void success(Empty empty, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-
-            }
-        });
-    }
-
-    public static void getBindCdn() {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint(AppConstant.API_HOST)
-                .build();
-        ClientApi.GetBindCdn client = restAdapter.create(ClientApi.GetBindCdn.class);
-        String sn;
-        if ("unknown".equals(DeviceUtils.getSnCode()))
-            sn = "other";
-        else
-            sn = DeviceUtils.getSnCode();
-        client.excute("getBindcdn", sn, new Callback<HttpDataEntity>() {
-            @Override
-            public void success(HttpDataEntity httpData, Response response) {
-                String result = Utils.getResult(response);
-                Log.d(TAG, result);
-                if ("104".equals(httpData.getRetcode())) {
-                    return;
-                } else {
-                    CacheManager.updateCheck(httpData.getSncdn().getCdnid(), true);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-
-            }
-        });
-    }
-
     @OnClick(R.id.speed_test_btn)
     public void speedTest() {
+        ((HomeActivity) getActivity()).isFirstSpeedTest = false;
+        if (!((HomeActivity) getActivity()).isFirstSpeedTest) {
+            speedTestBtn.setText(R.string.button_label_retest);
+        }
+
         testProgressPopup = initTestProgressPopWindow();
         CacheManager.updateNodePosition(getContext(), provincesPosition, ispPosition - 1);
         downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
@@ -298,34 +315,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             testProgressPopup.dismiss();
     }
 
-
-    private static void bindCdn(final String cdn) {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(AppConstant.LOG_LEVEL)
-                .setEndpoint(AppConstant.API_HOST)
-                .build();
-        ClientApi.BindCdn client = restAdapter.create(ClientApi.BindCdn.class);
-
-        String sn;
-        if ("unknown".equals(DeviceUtils.getSnCode()))
-            sn = "other";
-        else
-            sn = DeviceUtils.getSnCode();
-
-        client.excute("bindecdn", sn, cdn, new Callback<Empty>() {
-            @Override
-            public void success(Empty empty, Response response) {
-                getBindCdn();
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-
-            }
-        });
-    }
-
-
     private void initPopWindow(final int cdnID) {
         View contentView = LayoutInflater.from(getActivity())
                 .inflate(R.layout.popup_confirm_node, null);
@@ -335,14 +324,23 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         popupWindow.setFocusable(true);
         popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);
 
-        ImageView button = (ImageView) contentView.findViewById(R.id.confirm_btn);
-        button.setOnClickListener(new View.OnClickListener() {
+        TextView confirmButton = (TextView) contentView.findViewById(R.id.confirm_btn);
+        TextView cancleButton = (TextView) contentView.findViewById(R.id.cancle_btn);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
                 bindCdn(String.valueOf(cdnID));
             }
         });
+        cancleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupWindow.dismiss();
+            }
+        });
+
+
     }
 
     private Context getContext() {
@@ -360,31 +358,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         return popupWindow;
     }
 
-
-    private class showProgressViewRunnable implements Runnable {
-        @Override
-        public void run() {
-            testProgressPopup = initTestProgressPopWindow();
-        }
-    }
-
-
-    private void firstSpeedTest(final Cursor cursor) {
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
-        if (!sharedPreferences.getBoolean("launched", false)) {
-            CacheManager.updateLaunched(getActivity(), true);
-            nodeList.post(new showProgressViewRunnable());
-            new Thread() {
-                @Override
-                public void run() {
-                    downloadTask = new DownloadTask(getActivity(), cursor);
-                    downloadTask.setSpeedTestListener(FragmentSpeed.this);
-                    downloadTask.start();
-                }
-            }.start();
-
-        }
-    }
 
     public DownloadTask getDownloadTask() {
         return downloadTask;
