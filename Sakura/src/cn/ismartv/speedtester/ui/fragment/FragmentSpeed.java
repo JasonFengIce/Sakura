@@ -217,8 +217,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int flag, Bundle bundle) {
-        String selection1 = "area" + "=? and " + "isp" + "=?" + " or isp = ?";
-        String selection2 = "area" + "=? and " + "isp" + " in (?, ?)" + " or isp = ?";
+        String selection1 = "area" + "=? and " + "isp" + "=?" + " or isp = ?" + " ORDER BY isp ASC";
+        String selection2 = "area" + "=? and " + "isp" + " in (?, ?)" + " or isp = ?" + " ORDER BY isp ASC";
         CacheLoader cacheLoader = new CacheLoader(getActivity(), ContentProvider.createUri(NodeCacheTable.class, null),
                 null,
                 null, null, null);

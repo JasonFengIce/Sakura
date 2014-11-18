@@ -69,8 +69,11 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
         if (AppConstant.DEBUG)
             android.util.Log.d(TAG, "path is ---> " + request.getPath());
         if (PING.equals(request.getPath())) {
+
+            response.getHeaders().getHeaders().add("Access-Control-Allow-Origin", "*");
             response.send("OK!");
             response.writeHead();
+
 
         } else if (HTTP_ACTIOIN.equals(request.getPath())) {
             Iterator<NameValuePair> iterator = request.getQuery().iterator();
@@ -78,8 +81,9 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
             String params = iterator.next().getValue();
             KeyEventInterface keyEventInterface = EventDeliver.create(getApplicationContext(), actionCode, params);
             keyEventInterface.deliverEvent();
+            response.send("OK!");
         }
-        response.send("OK!");
+        response.end();
     }
 
 

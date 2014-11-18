@@ -18,6 +18,7 @@ public class NodeCacheTable extends Model {
     public static final String ID = "_id";
     public static final String SPEED = "speed";
     public static final String CHECKED = "checked";
+    public static final String ISP = "isp";
 
     @Column(name = "cdn_id", uniqueGroups = {"group1"}, onUniqueConflicts = {Column.ConflictAction.IGNORE})
     public long cdnID = 0;
