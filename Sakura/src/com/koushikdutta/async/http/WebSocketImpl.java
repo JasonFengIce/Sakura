@@ -127,7 +127,6 @@ public class WebSocketImpl implements WebSocket {
 //        if (origin != null)
 //            response.getHeaders().getHeaders().set("Access-Control-Allow-Origin", "http://" + origin);
         response.writeHead();
-        
         setupParser(false, false);
     }
     

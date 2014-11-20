@@ -41,8 +41,11 @@ public class CacheManager {
             checkedItem.save();
         }
         NodeCacheTable nodeCacheTable = NodeCacheTable.loadByCdnId(NodeCacheTable.class, Long.parseLong(cdnId));
-        nodeCacheTable.checked = checked;
-        nodeCacheTable.save();
+
+        if (null!= nodeCacheTable) {
+            nodeCacheTable.checked = checked;
+            nodeCacheTable.save();
+        }
     }
 
     public static void clearCheck() {

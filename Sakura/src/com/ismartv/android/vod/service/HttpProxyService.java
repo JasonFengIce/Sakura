@@ -24,6 +24,10 @@ import java.util.Iterator;
 
 
 public class HttpProxyService extends Service implements HttpServerRequestCallback {
+
+    private static final int BUTTON_KEY_EVENT =1;
+    private static final int VOL_SEEK_EVENT =2;
+    private static final int PLAY_VIDEO_EVENT =3;
     private static final String TAG = "HttpProxyService";
     private static final int PORT = 10114;
     private static final String HTTP_ACTIOIN = "/keyevent";
@@ -60,7 +64,6 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
         server.post(PING, this);
         server.get(HTTP_ACTIOIN, this);
         server.listen(PORT);
-
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -69,23 +72,33 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
         if (AppConstant.DEBUG)
             android.util.Log.d(TAG, "path is ---> " + request.getPath());
         if (PING.equals(request.getPath())) {
-
             response.getHeaders().getHeaders().add("Access-Control-Allow-Origin", "*");
             response.send("OK!");
             response.writeHead();
-
-
         } else if (HTTP_ACTIOIN.equals(request.getPath())) {
-            Iterator<NameValuePair> iterator = request.getQuery().iterator();
-            int actionCode = Integer.parseInt(iterator.next().getValue());
-            String params = iterator.next().getValue();
-            KeyEventInterface keyEventInterface = EventDeliver.create(getApplicationContext(), actionCode, params);
+
+            int actionCode =Integer.parseInt(request.getQuery().getString("action"));
+            KeyEventInterface keyEventInterface = null;
+            switch (actionCode)
+            {
+                case BUTTON_KEY_EVENT:
+                    keyEventInterface = EventDeliver.create(getApplicationContext(), actionCode, request.getQuery().getString("keycode"), nativeservice);
+                    break;
+                case VOL_SEEK_EVENT:
+                    keyEventInterface =  EventDeliver.create(getApplicationContext(), actionCode, request.getQuery().getString("seek"), nativeservice);
+                    break;
+                case PLAY_VIDEO_EVENT:
+                    keyEventInterface =  EventDeliver.create(getApplicationContext(), actionCode, request.getQuery().getString("url"), nativeservice);
+                    break;
+                default:
+                    break;
+            }
             keyEventInterface.deliverEvent();
             response.send("OK!");
+
         }
         response.end();
     }
-
 
     @Override
     public void onDestroy() {
