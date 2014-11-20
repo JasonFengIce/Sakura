@@ -2,7 +2,9 @@ package cn.ismartv.speedtester.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
@@ -11,6 +13,8 @@ import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.ui.widget.progressbar.SakuraProgressBar;
 import cn.ismartv.speedtester.utils.StringUtils;
+
+import static android.view.MotionEvent.*;
 
 /**
  * Created by huaijie on 14-10-31.
@@ -31,6 +35,21 @@ public class NodeListAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
         View mView = LayoutInflater.from(context).inflate(R.layout.item_node_list, null);
+        mView.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View view, MotionEvent motionEvent) {
+
+                switch (motionEvent.getAction()) {
+                    case ACTION_HOVER_MOVE:
+                        view.setBackgroundResource(R.drawable.list_selector);
+                        break;
+                    default:
+                        view.setBackgroundColor(0x00000000);
+                        break;
+                }
+                return false;
+            }
+        });
 
 
         return mView;
@@ -50,7 +69,6 @@ public class NodeListAdapter extends CursorAdapter {
             speedProgress.setProgress((int) (progress / 20.84));
             if ((progress / 20.84) < 60 || isp == StringUtils.OTHERS_CODE)
                 message.setText(R.string.tring);
-
             else
                 message.setText(R.string.can_select);
             nodeNmae.setText(node);

@@ -2,10 +2,11 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true"
-          android:drawable="@drawable/button_focus"/>
+          android:drawable="@drawable/list_selector"/>
     <item android:state_pressed="true"
-          android:drawable="@drawable/button_focus"/>
+          android:drawable="@drawable/list_selector"/>
     <item android:state_hovered="true"
-          android:drawable="@drawable/button_focus"/>
-    <item android:drawable="@drawable/button_normal"/>
+          android:drawable="@drawable/list_selector"/>
+    <!--<item android:drawable="@drawable/button_normal"/>-->
+
 </selector>
