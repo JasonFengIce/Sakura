@@ -38,25 +38,40 @@ import java.util.List;
  * Created by huaijie on 14-10-29.
  */
 public class FragmentHelp extends Fragment {
-    private static final String TAG = "FragmentHelp";
-
     public static final int QR_CODE = 0x0001;
-    private Handler messageHandler;
-
+    private static final String TAG = "FragmentHelp";
     @InjectView(R.id.weixin_image)
     ImageView weixinImage;
-
     @InjectView(R.id.ismartv_title)
     TextView ismartvTitle;
-
     @InjectView(R.id.ismartv_tel)
     TextView ismartvTel;
-
     @InjectView(R.id.tv_title)
     TextView tvTitle;
-
     @InjectView(R.id.tv_tel)
     TextView tvTel;
+    private Handler messageHandler;
+
+    private static void qrcode(String ticket, Handler handler) {
+        if (AppConstant.DEBUG)
+            Log.d(TAG, "ticket ---> " + ticket);
+
+        try {
+            URL url = new URL("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + ticket);
+            HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+            urlConnection.setUseCaches(false);
+            urlConnection.setRequestMethod("GET");
+            InputStream in = urlConnection.getInputStream();
+            Bitmap bmp = BitmapFactory.decodeStream(in);
+            if (null != handler) {
+                Message message = handler.obtainMessage(QR_CODE, bmp);
+                handler.sendMessage(message);
+            }
+            in.close();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +87,6 @@ public class FragmentHelp extends Fragment {
         return mView;
     }
 
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -80,7 +94,6 @@ public class FragmentHelp extends Fragment {
         fetchTel();
 
     }
-
 
     private void getTicket(Context context) {
         final RestAdapter restAdapter = new RestAdapter.Builder()
@@ -109,28 +122,6 @@ public class FragmentHelp extends Fragment {
         );
     }
 
-    private static void qrcode(String ticket, Handler handler) {
-        if (AppConstant.DEBUG)
-            Log.d(TAG, "ticket ---> " + ticket);
-
-        try {
-            URL url = new URL("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + ticket);
-            HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
-            urlConnection.setUseCaches(false);
-            urlConnection.setRequestMethod("GET");
-            InputStream in = urlConnection.getInputStream();
-            Bitmap bmp = BitmapFactory.decodeStream(in);
-            if (null != handler) {
-                Message message = handler.obtainMessage(QR_CODE, bmp);
-                handler.sendMessage(message);
-            }
-            in.close();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    }
-
-
     private void fetchTel() {
         final RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(AppConstant.LOG_LEVEL)
@@ -138,8 +129,8 @@ public class FragmentHelp extends Fragment {
                 .build();
         ClientApi.FetchTel client = restAdapter.create(ClientApi.FetchTel.class);
         client.excute(ClientApi.FetchTel.ACTION,
-                DeviceUtils.getSnCode(),
                 DeviceUtils.getModel(),
+                DeviceUtils.getSnCode(),
                 new Callback<List<TeleEntity>>() {
                     @Override
                     public void success(List<TeleEntity> teleEntities, Response response) {

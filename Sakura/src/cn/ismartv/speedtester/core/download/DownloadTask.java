@@ -72,7 +72,7 @@ public class DownloadTask extends Thread {
                     cdnId = map.get(NodeCacheTable.CDN_ID);
                     recordId = map.get(NodeCacheTable.ID);
                     listener.changeStatus(recordId, cdnId, true);
-                    fileName = new File(DeviceUtils.getAppCacheDirectory(context), url.getHost() + SUFFIX);
+                    fileName = new File(DeviceUtils.getAppCacheDirectory(context), "speed_test" + SUFFIX);
                     URLConnection conn = url.openConnection();
                     conn.setConnectTimeout(5000);
                     InputStream inStream = conn.getInputStream();
