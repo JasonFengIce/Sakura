@@ -17,37 +17,32 @@ import com.ismartv.android.vod.service.HttpProxyService;
 public class HomeActivity extends FragmentActivity {
 
     private static final String TAG = "HomeActivity";
-
-    private TabAdapter tabAdapter;
-
+    public boolean isFirstSpeedTest = true;
     @InjectView(R.id.indicator)
     IconPageIndicator indicator;
-
     @InjectView(R.id.pager)
     ViewPager pager;
-
-    private int positon;
-
-    public boolean isFirstSpeedTest = true;
+    private TabAdapter tabAdapter;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /////////////////////////////////////////////////////////////
+        //Get The Position Of Page
+        /////////////////////////////////////////////////////////////
         Intent intent = getIntent();
-        positon = intent.getIntExtra(MenuActivity.TAB_FLAG, 0);
-
-
+        position = intent.getIntExtra(MenuActivity.TAB_FLAG, 0);
         setContentView(R.layout.main);
-
-
         ButterKnife.inject(this);
         tabAdapter = new TabAdapter(getSupportFragmentManager());
         pager.setAdapter(tabAdapter);
         indicator.setViewPager(pager);
-
-        pager.setCurrentItem(positon);
-
+        /////////////////////////////////////////////////////////////
+        //Init Page Position
+        /////////////////////////////////////////////////////////////
+        pager.setCurrentItem(position);
     }
 
     @Override

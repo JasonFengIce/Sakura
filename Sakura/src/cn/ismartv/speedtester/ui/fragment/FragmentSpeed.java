@@ -156,6 +156,15 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         View mView = inflater.inflate(R.layout.fragment_speed, container, false);
         ButterKnife.inject(this, mView);
 
+//        nodeList.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean b) {
+//                if (!b) {
+//                    ((ListView) view).getChildAt(0).setBackgroundColor(0x00000000);
+//                }
+//            }
+//        });
+
         return mView;
     }
 
@@ -163,6 +172,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         nodeList.setAdapter(nodeListAdapter);
+
         ArrayAdapter<CharSequence> provinceSpinnerAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.citys, R.layout.spinner_text);
         provinceSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -217,8 +227,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int flag, Bundle bundle) {
-        String selection1 = "area" + "=? and " + "isp" + "=?" + " or isp = ?" + " ORDER BY isp ASC";
-        String selection2 = "area" + "=? and " + "isp" + " in (?, ?)" + " or isp = ?" + " ORDER BY isp ASC";
+        String selection1 = "area" + "=? and " + "isp" + "=?" + " or flag  <> ?" + " ORDER BY isp,speed DESC";
+        String selection2 = "area" + "=? and " + "isp" + " in (?, ?)" + " or flag  <> ?" + " ORDER BY isp,speed DESC";
         CacheLoader cacheLoader = new CacheLoader(getActivity(), ContentProvider.createUri(NodeCacheTable.class, null),
                 null,
                 null, null, null);
@@ -275,12 +285,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     private void notifiySourceChanged() {
         if (ispPosition == 4) {
             selectionArgs = new String[]{String.valueOf(StringUtils.getAreaCodeByProvince(cities[provincesPosition])),
-                    String.valueOf(2), String.valueOf(3), "6"};
+                    String.valueOf(2), String.valueOf(3), "0"};
             getLoaderManager().destroyLoader(0);
             getLoaderManager().restartLoader(1, null, FragmentSpeed.this).forceLoad();
         } else {
             selectionArgs = new String[]{String.valueOf(StringUtils.getAreaCodeByProvince(cities[provincesPosition])),
-                    String.valueOf(ispPosition), "6"};
+                    String.valueOf(ispPosition), "0"};
             getLoaderManager().destroyLoader(1);
             getLoaderManager().restartLoader(0, null, FragmentSpeed.this).forceLoad();
         }
