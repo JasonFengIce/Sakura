@@ -10,7 +10,6 @@ import cn.ismartv.speedtester.data.LocationEntity;
 import cn.ismartv.speedtester.data.NodeTagEntity;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.app.Application;
-import com.ismartv.android.vod.core.InstallVodService;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;

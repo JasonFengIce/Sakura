@@ -1,4 +1,4 @@
-package cn.ismartv.speedtester;
+package cn.ismartv.speedtester.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.download.DownloadTask;
 import cn.ismartv.speedtester.ui.TabAdapter;

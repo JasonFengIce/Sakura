@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import butterknife.*;
 import cn.ismartv.speedtester.AppConstant;
-import cn.ismartv.speedtester.HomeActivity;
+import cn.ismartv.speedtester.ui.activity.HomeActivity;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheLoader;
