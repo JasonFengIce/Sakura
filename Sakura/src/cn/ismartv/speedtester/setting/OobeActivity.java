@@ -1,26 +1,5 @@
 package cn.ismartv.speedtester.setting;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.*;
-import android.content.res.Resources;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.*;
-import android.provider.Settings;
-import android.provider.Settings.SettingNotFoundException;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
-import android.widget.*;
-import cn.ismartv.speedtester.R;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +9,46 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.RemoteController;
+import android.os.SystemClock;
+import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import cn.ismartv.speedtester.R;
+import cn.ismartv.speedtester.setting.domain.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 public class OobeActivity extends Activity implements OnKeyListener {
 
@@ -60,6 +79,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
     private Thread mDownloaderThread = null;
     private GetTestUrlRunnable mGetTestUrlRunnable = null;
 
+    private RemoteController mRemoteController;
 
     private LayoutInflater mInflater;
 
@@ -83,7 +103,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
     private String mJsonStr = null;
     private ArrayList<NetworkSpeedInfo> mNetworkSpeedInfoList = null;
     private NetworkSpeedInfo mCurrentNetworkSpeedInfo = null;
-    private FakeNetworkSpeedInfo mCurrFakeNetworkSpeedInfo = null;
+    private FakeNetWorkSpeedInfo mCurrFakeNetWorkSpeedInfo = null;
     private ArrayList<SpeedInfoUploadEntity> mCurrentSpeedTestResults = null;
     private FeedBackEntity mFeedBackEntity = null;
 
@@ -101,11 +121,14 @@ public class OobeActivity extends Activity implements OnKeyListener {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d("Receiver", intent.getAction());
             if (isSetting) {
                 Intent newIntent = new Intent("com.lenovo.nebula.settings.services.TvSettingServiceBootReceiver.shutdown");
                 OobeActivity.this.sendBroadcast(newIntent);
+                Log.d("RecevierInfo", "quit");
                 OobeActivity.this.finish();
             } else {
+                Log.d("RecevierInfo", "Disable hot key");
             }
         }
     };
@@ -229,13 +252,13 @@ public class OobeActivity extends Activity implements OnKeyListener {
                 } else {
                     mCurrentNetworkSpeedInfo.timeEscalpsed = SystemClock.uptimeMillis() - mCurrentNetworkSpeedInfo.timeStarted;
                     mCurrentNetworkSpeedInfo.speed = (float) mCurrentNetworkSpeedInfo.filesizeFinished / (float) mCurrentNetworkSpeedInfo.timeEscalpsed * 1000.0F / 1024.0F;
-                    mCurrFakeNetworkSpeedInfo.setSpeed(mCurrentNetworkSpeedInfo.speed);
+                    mCurrFakeNetWorkSpeedInfo.setSpeed(mCurrentNetworkSpeedInfo.speed);
                     mCurrentProgressBar.setProgress((int) mCurrentNetworkSpeedInfo.timeEscalpsed);
-                    updateSpeedIndicatorText(mCurrFakeNetworkSpeedInfo.speed);
+                    updateSpeedIndicatorText(mCurrFakeNetWorkSpeedInfo.speed);
                     counter++;
                     if (counter % 2 == 0) {
 //						Log.d("counter", ""+counter);
-                        float speed = mCurrFakeNetworkSpeedInfo.speed < 2000 ? mCurrFakeNetworkSpeedInfo.speed : 2000;
+                        float speed = mCurrFakeNetWorkSpeedInfo.speed < 2000 ? mCurrFakeNetWorkSpeedInfo.speed : 2000;
                         mDashBoardPointer.updatePointer(speed, 400);
                     }
                 }
@@ -367,6 +390,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
         if (isSetting) {
             try {
                 mDisappearTime = Settings.System.getInt(getContentResolver(), "menu_disappear_time");
+                Log.d("OobeActivity", "disappear time=" + mDisappearTime);
                 if (mDisappearTime != 0) {
                     mExpiredHandler.post(mExpiredTimer);
                 }
@@ -410,7 +434,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
 //    	final int bandwidthRange = 151;
 //    	final int bandwidthTotalRange = 831;
         /*
-    	 * according to averageSpeed give advice to user. show a bandwidth indicator and tip text.
+         * according to averageSpeed give advice to user. show a bandwidth indicator and tip text.
     	 */
         float fakeAverageSpeed = averageSpeed * 0.8f;
         if (isSetting) {
@@ -577,7 +601,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
     protected void startToTest() {
         mTestState = TEST_STATE_TESTING;
         mCurrentNetworkSpeedInfo = mNetworkSpeedInfoList.get(mCurrentPosition);
-        mCurrFakeNetworkSpeedInfo = new FakeNetworkSpeedInfo();
+        mCurrFakeNetWorkSpeedInfo = new FakeNetWorkSpeedInfo();
         mCurrentStateShowArea.setVisibility(View.VISIBLE);
 //    	mAverageSpeedShowText.setVisibility(View.INVISIBLE);
         mTestResultArea.setVisibility(View.INVISIBLE);
@@ -760,7 +784,7 @@ public class OobeActivity extends Activity implements OnKeyListener {
 
     @Override
     protected void onPause() {
-        hideCursor(false);
+//		hideCursor(false);
         mTestState = TEST_STATE_IDLE;
         mDownloadHandler.removeCallbacks(downloadFileTask);
         mTimingHandler.removeCallbacks(updateStatusTask);
@@ -804,6 +828,15 @@ public class OobeActivity extends Activity implements OnKeyListener {
     }
 
     public void hideCursor(boolean hide) {
+        if (mRemoteController == null) {
+            mRemoteController = (RemoteController) getSystemService(Context.REMOTECONTROLLER_SERVICE);
+        }
+        if (hide) {
+            mRemoteController.setRcGestureOnly();
+            mRemoteController.displayCursor(false);
+        } else {
+            mRemoteController.setDefaultMode();
+        }
     }
 
     class GetFeedBackInfo extends AsyncTask<Void, Void, Void> {
@@ -971,8 +1004,9 @@ public class OobeActivity extends Activity implements OnKeyListener {
             // TODO Auto-generated method stub
             if (mTestState == TEST_STATE_IDLE) {
                 if (mTimeEscaped >= mDisappearTime * 10) {
-                    Intent newIntent = new Intent("com.lenovo.nebula.settings.services.TvSettingServiceBootReceiver.shutdown");
+                    Intent newIntent = new Intent("lenovo.settings.action.finish");
                     OobeActivity.this.sendBroadcast(newIntent);
+                    Log.d("Expired", "quit");
                     OobeActivity.this.finish();
                 } else {
                     mTimeEscaped += 5;
@@ -986,5 +1020,21 @@ public class OobeActivity extends Activity implements OnKeyListener {
     };
 
     private Handler mExpiredHandler = new Handler();
+
+
+    @Override
+    public boolean onFnKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_RC_SETTINGS || keyCode == KeyEvent.KEYCODE_SETTINGS || keyCode == KeyEvent.KEYCODE_RC_SOURCE) {
+            Log.d("OobeActivity", "rc_setting is pressed: " + (keyCode == KeyEvent.KEYCODE_RC_SETTINGS));
+            Intent intent = new Intent("lenovo.settings.action.finish");
+            this.sendBroadcast(intent);
+            this.finish();
+        }
+        if (keyCode == KeyEvent.KEYCODE_RC_SETTINGS) {
+            return true;
+        } else {
+            return super.onFnKeyUp(keyCode, event);
+        }
+    }
 
 }
