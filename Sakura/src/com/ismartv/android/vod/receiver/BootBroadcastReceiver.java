@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import cn.ismartv.speedtester.AppConstant;
-import com.ismartv.android.vod.core.InstallVodService;
+import com.ismartv.android.vod.core.install.BootInstallTask;
 import com.ismartv.android.vod.service.HttpProxyService;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
@@ -18,9 +18,10 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
             Log.d(TAG, "action --> " + intent.getAction());
 
         if (intent.getAction().equals(ACTION_BOOT)) {
-            InstallVodService.install(context);
             Intent ootStartIntent = new Intent(context, HttpProxyService.class);
             context.startService(ootStartIntent);
+            BootInstallTask bootInstallTask = new BootInstallTask(context);
+            bootInstallTask.execute();
         }
     }
 }

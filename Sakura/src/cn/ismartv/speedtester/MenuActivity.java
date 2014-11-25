@@ -10,6 +10,7 @@ import butterknife.InjectViews;
 import butterknife.OnClick;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.ismartv.android.vod.core.install.BootInstallTask;
 import com.ismartv.android.vod.service.HttpProxyService;
 
 import java.util.List;
@@ -32,6 +33,8 @@ public class MenuActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
         this.startService(ootStartIntent);
         setContentView(R.layout.activity_menu);

@@ -117,6 +117,7 @@ public class ClientApi {
 
 
     public interface AppVersionInfo {
+        public static final String ACTION = "getLatestAppVersion";
         @GET("/shipinkefu/getCdninfo")
         void excute(
                 @Query("actiontype") String actiontype,

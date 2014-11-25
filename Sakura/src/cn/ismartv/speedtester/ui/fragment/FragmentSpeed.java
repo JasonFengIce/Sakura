@@ -156,11 +156,11 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         View mView = inflater.inflate(R.layout.fragment_speed, container, false);
         ButterKnife.inject(this, mView);
 
-//        nodeList.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//        ispSpinner.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 //            @Override
 //            public void onFocusChange(View view, boolean b) {
-//                if (!b) {
-//                    ((ListView) view).getChildAt(0).setBackgroundColor(0x00000000);
+//                if (b) {
+//                    nodeList.setSelection(-1);
 //                }
 //            }
 //        });
@@ -218,6 +218,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @OnItemClick(R.id.node_list)
     public void pickNode(AdapterView<?> parent, View view, int position, long id) {
+
+
         if (AppConstant.DEBUG) {
             Log.d(TAG, "item positon ---> " + position);
             Log.d(TAG, "item tag ---> " + view.getTag() + "   " + parent.getTag());

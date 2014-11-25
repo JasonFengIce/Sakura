@@ -33,7 +33,7 @@ public class SakuraApplication extends Application {
         ActiveAndroid.initialize(this);
         getTag(this);
         fetchLocation();
-        InstallVodService.getLatestAppVersion(getApplicationContext());
+//        InstallVodService.getLatestAppVersion(getApplicationContext());
     }
 
 

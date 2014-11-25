@@ -93,5 +93,7 @@
     <string name="tring">可以尝试</string>
     <string name="can_select">建议选择</string>
 
+    <string name="app_update_message">视频客服正在准备更新...</string>
+
 
 </resources>
