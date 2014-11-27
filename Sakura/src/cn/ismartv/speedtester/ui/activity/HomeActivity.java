@@ -16,7 +16,7 @@ import com.ismartv.android.vod.core.install.BootInstallTask;
 import com.ismartv.android.vod.service.HttpProxyService;
 
 
-public class HomeActivity extends FragmentActivity {
+public class HomeActivity extends BaseActivity {
 
     private static final String TAG = "HomeActivity";
     public boolean isFirstSpeedTest = true;

@@ -1,8 +1,10 @@
 package cn.ismartv.speedtester.ui.activity;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
@@ -19,7 +21,7 @@ import java.util.List;
 /**
  * Created by huaijie on 14-11-12.
  */
-public class MenuActivity extends Activity{
+public class MenuActivity extends BaseActivity {
     public static final String TAB_FLAG = "TAB_FLAG";
     public static final int TAB_SPEED = 0;
     public static final int TAB_HELP = 1;
