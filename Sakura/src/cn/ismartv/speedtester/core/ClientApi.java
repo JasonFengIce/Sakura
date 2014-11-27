@@ -1,28 +1,18 @@
 package cn.ismartv.speedtester.core;
 
-import android.content.Context;
-import android.os.Handler;
-import cn.ismartv.speedtester.core.logger.Logger;
 import cn.ismartv.speedtester.data.*;
-import cn.ismartv.speedtester.ui.fragment.FragmentFeedback;
-import cn.ismartv.speedtester.utils.DeviceUtils;
-import com.activeandroid.util.Log;
-import com.google.gson.Gson;
 import retrofit.Callback;
 import retrofit.http.*;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by huaijie on 14-10-30.
  */
 public class ClientApi {
     private static final String TAG = "ClientApi";
+
+    public static final String LILY_HOST = "http://lily.tvxio.com";
 
     public interface Problems {
         String HOST = "http://iris.tvxio.com";
@@ -118,6 +108,7 @@ public class ClientApi {
 
     public interface AppVersionInfo {
         public static final String ACTION = "getLatestAppVersion";
+
         @GET("/shipinkefu/getCdninfo")
         void excute(
                 @Query("actiontype") String actiontype,
@@ -148,7 +139,7 @@ public class ClientApi {
         );
     }
 
-    public interface UnbindNode{
+    public interface UnbindNode {
         public String ACTION = "unbindCdn";
 
         @GET("/shipinkefu/getCdninfo")
@@ -157,8 +148,12 @@ public class ClientApi {
                 @Query("sn") String sn,
                 Callback<Empty> callback
         );
-
     }
 
-
+    public interface IpLookUp {
+        @GET("/iplookup")
+        void execute(
+                Callback<IpLookUpEntity> callback
+        );
+    }
 }

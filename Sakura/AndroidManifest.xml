@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="cn.ismartv.speedtester"
-          android:versionCode="100"
-          android:versionName="1.03">
+          android:versionCode="104"
+          android:versionName="1.04">
     <uses-sdk android:minSdkVersion="14"/>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -28,7 +28,7 @@
             >
         <uses-library android:name="android.test.runner"/>
         <meta-data android:name="AA_DB_NAME" android:value="sakura.db"/>
-        <meta-data android:name="AA_DB_VERSION" android:value="1"/>
+        <meta-data android:name="AA_DB_VERSION" android:value="2"/>
 
         <activity android:name=".ui.activity.MenuActivity"
                   android:launchMode="singleTask"
@@ -60,11 +60,6 @@
             </intent-filter>
         </activity>
 
-
-        <!--showcase view sample-->
-        <activity android:name="app.sample.showcaseview.SingleShotActivity"></activity>
-        <activity android:name="app.sample.showcaseview.animations.AnimationSampleActivity"></activity>
-        <activity android:name="app.sample.showcaseview.legacy.MultipleShowcaseSampleActivity"></activity>
 
 
         <!--receiver-->

@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.*;
 import butterknife.*;
 import cn.ismartv.speedtester.AppConstant;
-import cn.ismartv.speedtester.ui.activity.HomeActivity;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheLoader;
@@ -22,11 +21,12 @@ import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.download.DownloadTask;
 import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.HttpDataEntity;
+import cn.ismartv.speedtester.data.IpLookUpEntity;
 import cn.ismartv.speedtester.provider.NodeCacheTable;
+import cn.ismartv.speedtester.ui.activity.HomeActivity;
 import cn.ismartv.speedtester.ui.adapter.NodeListAdapter;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
-import com.activeandroid.Cache;
 import com.activeandroid.content.ContentProvider;
 import com.ismartv.android.vod.core.Utils;
 import retrofit.Callback;
@@ -34,12 +34,12 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static cn.ismartv.speedtester.core.cache.CacheManager.*;
+
 /**
  * Created by huaijie on 14-10-29.
  */
 public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, DownloadTask.OnSpeedTestListener {
-
-
     private static final String TAG = "FragmentSpeed";
     private static int count = 0;
     public PopupWindow testProgressPopup;
@@ -62,85 +62,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     private int ispPosition;
     private String[] selectionArgs;
     private String[] cities;
-
     private Context context;
-
-    public static void uploadTestResult(String cdnId, String speed) {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(AppConstant.LOG_LEVEL)
-                .setEndpoint(AppConstant.API_HOST)
-                .build();
-        ClientApi.UploadResult client = restAdapter.create(ClientApi.UploadResult.class);
-        client.excute("submitTestData", DeviceUtils.getSnCode(), cdnId, speed, new Callback<Empty>() {
-            @Override
-            public void success(Empty empty, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-
-            }
-        });
-    }
-
-    public static void getBindCdn() {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint(AppConstant.API_HOST)
-                .build();
-        ClientApi.GetBindCdn client = restAdapter.create(ClientApi.GetBindCdn.class);
-        String sn;
-        if ("unknown".equals(DeviceUtils.getSnCode()))
-            sn = "other";
-        else
-            sn = DeviceUtils.getSnCode();
-        client.excute("getBindcdn", sn, new Callback<HttpDataEntity>() {
-            @Override
-            public void success(HttpDataEntity httpData, Response response) {
-                String result = Utils.getResult(response);
-                Log.d(TAG, result);
-                if ("104".equals(httpData.getRetcode())) {
-                    return;
-                } else {
-                    CacheManager.updateCheck(httpData.getSncdn().getCdnid(), true);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-
-            }
-        });
-    }
-
-    private static void bindCdn(final String cdn, final Context context) {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(AppConstant.LOG_LEVEL)
-                .setEndpoint(AppConstant.API_HOST)
-                .build();
-        ClientApi.BindCdn client = restAdapter.create(ClientApi.BindCdn.class);
-
-        String sn;
-        if ("unknown".equals(DeviceUtils.getSnCode()))
-            sn = "other";
-        else
-            sn = DeviceUtils.getSnCode();
-
-        client.excute("bindecdn", sn, cdn, new Callback<Empty>() {
-            @Override
-            public void success(Empty empty, Response response) {
-
-                Toast.makeText(context, R.string.node_bind_success, Toast.LENGTH_LONG).show();
-                getBindCdn();
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-
-            }
-        });
-    }
 
 
     @Override
@@ -155,16 +77,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_speed, container, false);
         ButterKnife.inject(this, mView);
-
-//        ispSpinner.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean b) {
-//                if (b) {
-//                    nodeList.setSelection(-1);
-//                }
-//            }
-//        });
-
         return mView;
     }
 
@@ -178,36 +90,30 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         provinceSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         provinceSpinner.setAdapter(provinceSpinnerAdapter);
 
-
         ArrayAdapter<CharSequence> operatorSpinnerAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.isps, R.layout.spinner_text);
         operatorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ispSpinner.setAdapter(operatorSpinnerAdapter);
 
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
-        if (sharedPreferences.getBoolean("areadly_fetch_net", false)) {
-            int cityCache = sharedPreferences.getInt("l_city_position", 0);
-            int ispCache = sharedPreferences.getInt("l_isp_position", 0);
-            provinceSpinner.setSelection(cityCache);
-            ispSpinner.setSelection(ispCache);
-
-        } else {
-            int cityCache = sharedPreferences.getInt("city_position", 0);
-            int ispCache = sharedPreferences.getInt("isp_position", 0);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("areadly_fetch_net", true);
-            editor.apply();
-            CacheManager.updateNodePosition(getContext(), cityCache, ispCache);
-            provinceSpinner.setSelection(cityCache);
-            ispSpinner.setSelection(ispCache);
-        }
-
         if (!((HomeActivity) getActivity()).isFirstSpeedTest) {
             speedTestBtn.setText(R.string.button_label_retest);
         }
         getLoaderManager().initLoader(0, null, this);
         getBindCdn();
+
+        /**
+         * according to preference select province and isp
+         */
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        if (sharedPreferences.getInt(CacheManager.IpLookUp.USER_PROVINCE, -1) == -1 || sharedPreferences.getInt(CacheManager.IpLookUp.USER_ISP, -1) == -1) {
+            fetchIpLookup();
+        } else {
+            provinceSpinner.setSelection(sharedPreferences.getInt(CacheManager.IpLookUp.USER_PROVINCE, 0));
+            ispSpinner.setSelection(sharedPreferences.getInt(CacheManager.IpLookUp.USER_ISP, 0));
+        }
+
     }
 
     @Override
@@ -216,16 +122,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         getBindCdn();
     }
 
-    @OnItemClick(R.id.node_list)
-    public void pickNode(AdapterView<?> parent, View view, int position, long id) {
-
-
-        if (AppConstant.DEBUG) {
-            Log.d(TAG, "item positon ---> " + position);
-            Log.d(TAG, "item tag ---> " + view.getTag() + "   " + parent.getTag());
-        }
-        initPopWindow((Integer) view.getTag());
+    @Override
+    public void onPause() {
+        super.onPause();
+        count = 0;
     }
+
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int flag, Bundle bundle) {
@@ -261,8 +163,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         }
         count = count + 1;
 
-        if (null != CacheManager.fetchCheck() && null != CacheManager.fetchCheck().nick)
-            currentNode.setText(getText(R.string.current_node) + CacheManager.fetchCheck().nick);
+        if (null != fetchCheck() && null != fetchCheck().nick)
+            currentNode.setText(getText(R.string.current_node) + fetchCheck().nick);
         else
             currentNode.setText(getText(R.string.current_node) + getString(R.string.auto_fetch));
     }
@@ -284,6 +186,17 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         notifiySourceChanged();
     }
 
+    @OnItemClick(R.id.node_list)
+    public void pickNode(AdapterView<?> parent, View view, int position, long id) {
+
+
+        if (AppConstant.DEBUG) {
+            Log.d(TAG, "item positon ---> " + position);
+            Log.d(TAG, "item tag ---> " + view.getTag() + "   " + parent.getTag());
+        }
+        initPopWindow((Integer) view.getTag());
+    }
+
     private void notifiySourceChanged() {
         if (ispPosition == 4) {
             selectionArgs = new String[]{String.valueOf(StringUtils.getAreaCodeByProvince(cities[provincesPosition])),
@@ -298,11 +211,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        count = 0;
-    }
 
     @OnClick(R.id.speed_test_btn)
     public void speedTest() {
@@ -312,7 +220,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         }
 
         testProgressPopup = initTestProgressPopWindow();
-        CacheManager.updateNodePosition(getContext(), provincesPosition, ispPosition - 1);
+        updateNodePosition(getContext(), provincesPosition, ispPosition - 1);
         downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
         downloadTask.setSpeedTestListener(this);
         downloadTask.start();
@@ -325,7 +233,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void compelte(String recordId, String cdnid, int speed) {
-        CacheManager.updateNodeCache(Integer.parseInt(recordId), Integer.parseInt(cdnid), speed);
+        updateNodeCache(Integer.parseInt(recordId), Integer.parseInt(cdnid), speed);
         uploadTestResult(cdnid, String.valueOf(speed));
     }
 
@@ -400,12 +308,114 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             @Override
             public void success(Empty empty, Response response) {
 
-                CacheManager.clearCheck();
+                clearCheck();
             }
 
             @Override
             public void failure(RetrofitError retrofitError) {
 
+            }
+        });
+    }
+
+    public static void uploadTestResult(String cdnId, String speed) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(AppConstant.API_HOST)
+                .build();
+        ClientApi.UploadResult client = restAdapter.create(ClientApi.UploadResult.class);
+        client.excute("submitTestData", DeviceUtils.getSnCode(), cdnId, speed, new Callback<Empty>() {
+            @Override
+            public void success(Empty empty, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+    public static void getBindCdn() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setEndpoint(AppConstant.API_HOST)
+                .build();
+        ClientApi.GetBindCdn client = restAdapter.create(ClientApi.GetBindCdn.class);
+        String sn;
+        if ("unknown".equals(DeviceUtils.getSnCode()))
+            sn = "other";
+        else
+            sn = DeviceUtils.getSnCode();
+        client.excute("getBindcdn", sn, new Callback<HttpDataEntity>() {
+            @Override
+            public void success(HttpDataEntity httpData, Response response) {
+                String result = Utils.getResult(response);
+                Log.d(TAG, result);
+                if ("104".equals(httpData.getRetcode())) {
+                    return;
+                } else {
+                    updateCheck(httpData.getSncdn().getCdnid(), true);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+    private static void bindCdn(final String cdn, final Context context) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(AppConstant.API_HOST)
+                .build();
+        ClientApi.BindCdn client = restAdapter.create(ClientApi.BindCdn.class);
+
+        String sn;
+        if ("unknown".equals(DeviceUtils.getSnCode()))
+            sn = "other";
+        else
+            sn = DeviceUtils.getSnCode();
+
+        client.excute("bindecdn", sn, cdn, new Callback<Empty>() {
+            @Override
+            public void success(Empty empty, Response response) {
+
+                Toast.makeText(context, R.string.node_bind_success, Toast.LENGTH_LONG).show();
+                getBindCdn();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+    private void fetchIpLookup() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(ClientApi.LILY_HOST)
+                .build();
+
+        ClientApi.IpLookUp client = restAdapter.create(ClientApi.IpLookUp.class);
+        client.execute(new Callback<IpLookUpEntity>() {
+            @Override
+            public void success(IpLookUpEntity ipLookUpEntity, Response response) {
+                CacheManager cacheManager = CacheManager.getInstance(getActivity());
+                CacheManager.IpLookUp ipLookUp = cacheManager.new IpLookUp();
+                provincesPosition = ipLookUp.getProvincePositionByName(ipLookUpEntity.getProv());
+                ispPosition = ipLookUp.getIspPositionByName(ipLookUpEntity.getIsp());
+                notifiySourceChanged();
+                ipLookUp.updateIpLookUpCache(ipLookUpEntity);
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Log.e(TAG, "fetchIpLookup failed!!!");
             }
         });
     }

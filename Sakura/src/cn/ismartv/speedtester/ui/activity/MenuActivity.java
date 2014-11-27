@@ -1,19 +1,13 @@
 package cn.ismartv.speedtester.ui.activity;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
 import butterknife.InjectViews;
 import butterknife.OnClick;
 import cn.ismartv.speedtester.R;
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
-import com.ismartv.android.vod.core.install.BootInstallTask;
 import com.ismartv.android.vod.service.HttpProxyService;
 
 import java.util.List;

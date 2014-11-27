@@ -49,6 +49,31 @@ public class StringUtils {
         return (str == null || "".equals(str));
     }
 
+    /**
+     * according to province get area
+     *
+     * @param province
+     * @return
+     */
+    public static String getAreaNameByProvince(String province) {
+        if (NORTH_CHINA_STRING.indexOf(province) != -1)
+            return NORTH_CHINA;
+        else if (EAST_CHINA_STRING.indexOf(province) != -1)
+            return EAST_CHINA;
+        else if (SOUTH_CHINA_STRING.indexOf(province) != -1)
+            return SOUTH_CHINA;
+        else if (CENTRAL_CHINA_STRING.indexOf(province) != -1)
+            return CENTRAL_CHINA;
+        else if (WS_CHINA_STRING.indexOf(province) != -1)
+            return WS_CHINA;
+        else if (WN_CHINA_STRING.indexOf(province) != -1)
+            return WN_CHINA;
+        else if (EN_CHINA_STRING.indexOf(province) != -1)
+            return EN_CHINA;
+        return "未知区域";
+    }
+
+
     public static int getAreaCodeByProvince(String province) {
         if (NORTH_CHINA_STRING.indexOf(province) != -1)
             return NORTH_CHINA_CODE;
