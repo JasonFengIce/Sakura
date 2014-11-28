@@ -20,4 +20,9 @@
         <item name="android:background">@drawable/spinner_selector</item>
         <item name="android:paddingLeft">5dip</item>
     </style>
+
+    <style name="oobe_for_s51_style" parent="android:Theme.Translucent.NoTitleBar.Fullscreen">
+        <item name="android:finishOnCloseSystemDialogs">true</item>
+    </style>
+
 </resources>

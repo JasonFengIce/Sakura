@@ -69,6 +69,16 @@ public class CacheManager {
         }
     }
 
+
+    public void updatePosition(int provincePosition, int ispPosition) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(IpLookUp.USER_PROVINCE, provincePosition);
+        editor.putInt(IpLookUp.USER_ISP, ispPosition);
+        editor.apply();
+    }
+
+
     /**
      * get
      */
@@ -80,7 +90,6 @@ public class CacheManager {
         public static final String USER_PROVINCE = "user_province";
         public static final String USER_IP = "user_ip";
         public static final String USER_ISP = "user_isp";
-
 
         public void updateIpLookUpCache(IpLookUpEntity ipLookUpEntity) {
             SharedPreferences sharedPreferences = mContext.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
@@ -220,14 +229,6 @@ public class CacheManager {
         editor.apply();
     }
 
-
-    public static void updateNodePosition(Context context, int cityPostion, int ispPosition) {
-        SharedPreferences preferences = context.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("l_city_position", cityPostion);
-        editor.putInt("l_isp_position", ispPosition);
-        editor.apply();
-    }
 
     private static void weiXinUpload(Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()

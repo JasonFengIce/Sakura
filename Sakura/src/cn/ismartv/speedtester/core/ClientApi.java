@@ -96,15 +96,6 @@ public class ClientApi {
     }
 
 
-    public interface Location {
-        @GET("/shipinkefu/getCdninfo")
-        void excute(
-                @Query("actiontype") String actiontype,
-                Callback<LocationEntity> callback
-
-        );
-    }
-
 
     public interface AppVersionInfo {
         public static final String ACTION = "getLatestAppVersion";

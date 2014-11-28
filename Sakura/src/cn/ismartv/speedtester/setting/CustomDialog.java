@@ -53,7 +53,7 @@ public class CustomDialog extends Dialog {
 		
 		public CustomDialog create(){
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			final CustomDialog dialog = new CustomDialog(mContext, R.style.Dialog);
+			final CustomDialog dialog = new CustomDialog(mContext, R.style.oobe_for_s52_style);
 			View layout = inflater.inflate(R.layout.alert_dialog, null);
 			dialog.addContentView(layout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 			if(mPositiveButtonText!=null){

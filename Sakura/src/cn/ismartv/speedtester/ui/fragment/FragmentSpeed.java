@@ -220,7 +220,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         }
 
         testProgressPopup = initTestProgressPopWindow();
-        updateNodePosition(getContext(), provincesPosition, ispPosition - 1);
+        /**
+         * update position
+         */
+        CacheManager cacheManager = CacheManager.getInstance(getActivity());
+        cacheManager.updatePosition(provincesPosition, ispPosition-1);
+
         downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
         downloadTask.setSpeedTestListener(this);
         downloadTask.start();
