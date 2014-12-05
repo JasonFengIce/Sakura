@@ -1,5 +1,6 @@
 package cn.ismartv.speedtester.ui.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -52,6 +53,8 @@ public class FragmentHelp extends Fragment {
     TextView tvTel;
     private Handler messageHandler;
 
+    private Activity mActivity;
+
     private static void qrcode(String ticket, Handler handler) {
         if (AppConstant.DEBUG)
             Log.d(TAG, "ticket ---> " + ticket);
@@ -74,6 +77,12 @@ public class FragmentHelp extends Fragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         messageHandler = new MessageHandler();
@@ -90,7 +99,7 @@ public class FragmentHelp extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getTicket(getActivity());
+        getTicket(mActivity);
         fetchTel();
 
     }

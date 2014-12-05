@@ -1,5 +1,6 @@
 package cn.ismartv.speedtester.ui.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -38,6 +39,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by huaijie on 14-10-29.
@@ -67,6 +70,14 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     private int problemText = 6;
     private Handler messageHandler;
 
+    private Activity mActivity;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.mActivity = activity;
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,15 +95,57 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         problemType = (RadioGroup) view.findViewById(R.id.problem_options);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         problemType.setOnCheckedChangeListener(this);
-        SharedPreferences preferences = getActivity().getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        SharedPreferences preferences = mActivity.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
         phone.setText(preferences.getString("feedback_phoneNumber", ""));
 
         fetchProblems();
-        fetchFeedback(DeviceUtils.getSnCode(), "5");
+        fetchFeedback(DeviceUtils.getSnCode(), "10");
         snCode.append(DeviceUtils.getSnCode());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mActivity = null;
+    }
 
     private void fetchProblems() {
         RestAdapter restAdapter = new RestAdapter.Builder()
@@ -123,7 +176,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         client.excute(sn, top, new Callback<ChatMsgEntity>() {
             @Override
             public void success(ChatMsgEntity chatMsgEntities, Response response) {
-                feedbackList.setAdapter(new FeedbackListAdapter(getActivity(), chatMsgEntities.getData()));
+                feedbackList.setAdapter(new FeedbackListAdapter(mActivity, chatMsgEntities.getData()));
             }
 
             @Override
@@ -134,22 +187,25 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     }
 
     private void createProblemsRadio(List<ProblemEntity> problemEntities) {
-        for (int i = 0; i < problemEntities.size(); i++) {
-            RadioButton radioButton = new RadioButton(getActivity());
-            radioButton.setTextSize(24);
-            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
-                    RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, 0, 15, 0);
-            radioButton.setLayoutParams(params);
-            radioButton.setText(problemEntities.get(i).getPoint_name());
-            radioButton.setId(problemEntities.get(i).getPoint_id());
-            problemType.addView(radioButton);
+        if (null != mActivity) {
+            for (int i = 0; i < problemEntities.size(); i++) {
+                RadioButton radioButton = new RadioButton(mActivity);
+                radioButton.setTextSize(24);
+                RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
+                        RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(0, 0, 15, 0);
+                radioButton.setLayoutParams(params);
+                radioButton.setText(problemEntities.get(i).getPoint_name());
+                radioButton.setId(problemEntities.get(i).getPoint_id());
+                problemType.addView(radioButton);
+            }
         }
     }
 
     private void setFeedBack() {
-        if (StringUtils.isEmpty(phone.getEditableText().toString()) || phone.getEditableText().toString().length() < 7) {
-            Toast.makeText(getActivity(), R.string.you_should_give_an_phone_number, Toast.LENGTH_LONG).show();
+        String contactNumber = phone.getEditableText().toString();
+        if (StringUtils.isEmpty(contactNumber) || (!isMobile(contactNumber) && !isPhone(contactNumber))) {
+            Toast.makeText(mActivity, R.string.you_should_give_an_phone_number, Toast.LENGTH_LONG).show();
             return;
         } else {
             FeedBackEntity feedBack = new FeedBackEntity();
@@ -159,7 +215,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
             feedBack.setCity("no data");
             feedBack.setIp("no data");
             feedBack.setIsp("no data");
-            uploadFeedback(getActivity(), feedBack, messageHandler);
+            uploadFeedback(mActivity, feedBack, messageHandler);
         }
     }
 
@@ -178,10 +234,11 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case UPLAOD_FEEDBACK_COMPLETE:
-                    Toast.makeText(getActivity(), R.string.submit_sucess, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity, R.string.submit_sucess, Toast.LENGTH_LONG).show();
+                    fetchFeedback(DeviceUtils.getSnCode(), "10");
                     break;
                 case UPLAOD_FEEDBACK_FAILED:
-                    Toast.makeText(getActivity(), R.string.submit_failed, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity, R.string.submit_failed, Toast.LENGTH_LONG).show();
                     break;
                 default:
                     break;
@@ -193,7 +250,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     public void submitFeedback(View view) {
         if (AppConstant.DEBUG)
             Log.d(TAG, "submit problem feedback");
-        CacheManager.updatFeedBack(getActivity(), phone.getText().toString());
+        CacheManager.updatFeedBack(mActivity, phone.getText().toString());
         setFeedBack();
     }
 
@@ -215,7 +272,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         }
     }
 
-    public  void uploadFeedback(Context context, FeedBackEntity feedBack, final Handler handler) {
+    public void uploadFeedback(Context context, FeedBackEntity feedBack, final Handler handler) {
         Log.d(TAG, "result is ---> " + "run");
         final String str = new Gson().toJson(feedBack);
         new Thread() {
@@ -294,5 +351,43 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
                 }
             }
         }.start();
+    }
+
+    /**
+     * 手机号验证
+     *
+     * @param str
+     * @return 验证通过返回true
+     */
+    public static boolean isMobile(String str) {
+        Pattern p = null;
+        Matcher m = null;
+        boolean b = false;
+        p = Pattern.compile("^[1][3,4,5,8][0-9]{9}$"); // 验证手机号
+        m = p.matcher(str);
+        b = m.matches();
+        return b;
+    }
+
+    /**
+     * 电话号码验证
+     *
+     * @param str
+     * @return 验证通过返回true
+     */
+    public static boolean isPhone(String str) {
+        Pattern p1 = null, p2 = null;
+        Matcher m = null;
+        boolean b = false;
+        p1 = Pattern.compile("^[0][1-9]{2,3}-[0-9]{5,10}$");  // 验证带区号的
+        p2 = Pattern.compile("^[1-9]{1}[0-9]{5,8}$");         // 验证没有区号的
+        if (str.length() > 9) {
+            m = p1.matcher(str);
+            b = m.matches();
+        } else {
+            m = p2.matcher(str);
+            b = m.matches();
+        }
+        return b;
     }
 }

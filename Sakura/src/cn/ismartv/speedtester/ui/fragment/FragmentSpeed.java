@@ -1,16 +1,18 @@
 package cn.ismartv.speedtester.ui.fragment;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.*;
 import butterknife.*;
 import cn.ismartv.speedtester.AppConstant;
@@ -21,7 +23,6 @@ import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.download.DownloadTask;
 import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.HttpDataEntity;
-import cn.ismartv.speedtester.data.IpLookUpEntity;
 import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.ui.activity.HomeActivity;
 import cn.ismartv.speedtester.ui.adapter.NodeListAdapter;
@@ -42,7 +43,7 @@ import static cn.ismartv.speedtester.core.cache.CacheManager.*;
 public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, DownloadTask.OnSpeedTestListener {
     private static final String TAG = "FragmentSpeed";
     private static int count = 0;
-    public PopupWindow testProgressPopup;
+    public Dialog testProgressPopup;
     @InjectView(R.id.node_list)
     ListView nodeList;
     @InjectView(R.id.province_spinner)
@@ -62,15 +63,27 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     private int ispPosition;
     private String[] selectionArgs;
     private String[] cities;
-    private Context context;
 
+    public static final int ALL_COMPLETE_MSG = 0x0001;
+
+    public MessageHandler messageHandler;
+
+    /**
+     * Activity
+     */
+    private Activity mActivity;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.mActivity = activity;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.context = getContext();
-        nodeListAdapter = new NodeListAdapter(getActivity(), null, true);
-        cities = getResources().getStringArray(R.array.citys);
+        messageHandler = new MessageHandler();
+
     }
 
     @Override
@@ -80,23 +93,32 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         return mView;
     }
 
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        nodeListAdapter = new NodeListAdapter(mActivity, null, true);
+        cities = getResources().getStringArray(R.array.citys);
         nodeList.setAdapter(nodeListAdapter);
 
-        ArrayAdapter<CharSequence> provinceSpinnerAdapter = ArrayAdapter.createFromResource(getActivity(),
+        ArrayAdapter<CharSequence> provinceSpinnerAdapter = ArrayAdapter.createFromResource(mActivity,
                 R.array.citys, R.layout.spinner_text);
         provinceSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         provinceSpinner.setAdapter(provinceSpinnerAdapter);
 
-        ArrayAdapter<CharSequence> operatorSpinnerAdapter = ArrayAdapter.createFromResource(getActivity(),
+        ArrayAdapter<CharSequence> operatorSpinnerAdapter = ArrayAdapter.createFromResource(mActivity,
                 R.array.isps, R.layout.spinner_text);
         operatorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ispSpinner.setAdapter(operatorSpinnerAdapter);
 
 
-        if (!((HomeActivity) getActivity()).isFirstSpeedTest) {
+        if (!((HomeActivity) mActivity).isFirstSpeedTest) {
             speedTestBtn.setText(R.string.button_label_retest);
         }
         getLoaderManager().initLoader(0, null, this);
@@ -106,9 +128,9 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
          * according to preference select province and isp
          */
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = mActivity.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
         if (sharedPreferences.getInt(CacheManager.IpLookUp.USER_PROVINCE, -1) == -1 || sharedPreferences.getInt(CacheManager.IpLookUp.USER_ISP, -1) == -1) {
-            fetchIpLookup();
+//            fetchIpLookup();
         } else {
             provinceSpinner.setSelection(sharedPreferences.getInt(CacheManager.IpLookUp.USER_PROVINCE, 0));
             ispSpinner.setSelection(sharedPreferences.getInt(CacheManager.IpLookUp.USER_ISP, 0));
@@ -133,7 +155,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int flag, Bundle bundle) {
         String selection1 = "area" + "=? and " + "isp" + "=?" + " or flag  <> ?" + " ORDER BY isp,speed DESC";
         String selection2 = "area" + "=? and " + "isp" + " in (?, ?)" + " or flag  <> ?" + " ORDER BY isp,speed DESC";
-        CacheLoader cacheLoader = new CacheLoader(getActivity(), ContentProvider.createUri(NodeCacheTable.class, null),
+        CacheLoader cacheLoader = new CacheLoader(mActivity, ContentProvider.createUri(NodeCacheTable.class, null),
                 null,
                 null, null, null);
         switch (flag) {
@@ -163,10 +185,15 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         }
         count = count + 1;
 
-        if (null != fetchCheck() && null != fetchCheck().nick)
+        if (null != fetchCheck() && null != fetchCheck().nick) {
             currentNode.setText(getText(R.string.current_node) + fetchCheck().nick);
-        else
+            unbindNode.setEnabled(true);
+            unbindNode.setBackgroundResource(R.drawable.selector_button);
+        } else {
             currentNode.setText(getText(R.string.current_node) + getString(R.string.auto_fetch));
+            unbindNode.setEnabled(false);
+            unbindNode.setBackgroundColor(Color.GRAY);
+        }
     }
 
     @Override
@@ -214,21 +241,23 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.speed_test_btn)
     public void speedTest() {
-        ((HomeActivity) getActivity()).isFirstSpeedTest = false;
-        if (!((HomeActivity) getActivity()).isFirstSpeedTest) {
+        ((HomeActivity) mActivity).isFirstSpeedTest = false;
+        if (!((HomeActivity) mActivity).isFirstSpeedTest) {
             speedTestBtn.setText(R.string.button_label_retest);
         }
-
-        testProgressPopup = initTestProgressPopWindow();
+        testProgressPopup = initTestProgressDialog();
         /**
          * update position
          */
-        CacheManager cacheManager = CacheManager.getInstance(getActivity());
-        cacheManager.updatePosition(provincesPosition, ispPosition-1);
+        CacheManager cacheManager = CacheManager.getInstance(mActivity);
+        cacheManager.updatePosition(provincesPosition, ispPosition - 1);
 
-        downloadTask = new DownloadTask(getActivity(), nodeListAdapter.getCursor());
+        downloadTask = new DownloadTask(mActivity, nodeListAdapter.getCursor());
         downloadTask.setSpeedTestListener(this);
         downloadTask.start();
+
+        speedTestBtn.setBackgroundColor(Color.GRAY);
+        speedTestBtn.setEnabled(false);
     }
 
     @Override
@@ -244,12 +273,11 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void allCompelte() {
-        if (null != testProgressPopup)
-            testProgressPopup.dismiss();
+        messageHandler.sendEmptyMessage(ALL_COMPLETE_MSG);
     }
 
     private void initPopWindow(final int cdnID) {
-        View contentView = LayoutInflater.from(getActivity())
+        View contentView = LayoutInflater.from(mActivity)
                 .inflate(R.layout.popup_confirm_node, null);
         contentView.setBackgroundResource(R.drawable.bg_popup);
         final PopupWindow popupWindow = new PopupWindow(null, 500, 150);
@@ -263,7 +291,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
-                bindCdn(String.valueOf(cdnID), context);
+                bindCdn(String.valueOf(cdnID), mActivity);
             }
         });
         cancleButton.setOnClickListener(new View.OnClickListener() {
@@ -276,21 +304,19 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     }
 
-    private Context getContext() {
-        return getActivity();
-    }
 
-    private PopupWindow initTestProgressPopWindow() {
-        View contentView = LayoutInflater.from(getActivity())
-                .inflate(R.layout.popup_test_progress, null);
-        contentView.setBackgroundColor(0x99525252);
-        final PopupWindow popupWindow = new PopupWindow(null, 400, 150);
-        popupWindow.setContentView(contentView);
-        popupWindow.setFocusable(false);
-        popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);
-        return popupWindow;
+    private Dialog initTestProgressDialog() {
+        Dialog dialog = new Dialog(mActivity, R.style.ProgressDialog);
+        Window dialogWindow = dialog.getWindow();
+        dialogWindow.setGravity(Gravity.CENTER);
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        lp.width = 400;
+        lp.height = 150;
+        View mView = LayoutInflater.from(mActivity).inflate(R.layout.popup_test_progress, null);
+        dialog.setContentView(mView, lp);
+        dialog.show();
+        return dialog;
     }
-
 
     public DownloadTask getDownloadTask() {
         return downloadTask;
@@ -400,29 +426,24 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
-    private void fetchIpLookup() {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(AppConstant.LOG_LEVEL)
-                .setEndpoint(ClientApi.LILY_HOST)
-                .build();
 
-        ClientApi.IpLookUp client = restAdapter.create(ClientApi.IpLookUp.class);
-        client.execute(new Callback<IpLookUpEntity>() {
-            @Override
-            public void success(IpLookUpEntity ipLookUpEntity, Response response) {
-                CacheManager cacheManager = CacheManager.getInstance(getActivity());
-                CacheManager.IpLookUp ipLookUp = cacheManager.new IpLookUp();
-                provincesPosition = ipLookUp.getProvincePositionByName(ipLookUpEntity.getProv());
-                ispPosition = ipLookUp.getIspPositionByName(ipLookUpEntity.getIsp());
-                notifiySourceChanged();
-                ipLookUp.updateIpLookUpCache(ipLookUpEntity);
-            }
+    class MessageHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case ALL_COMPLETE_MSG:
+                    speedTestBtn.setEnabled(true);
+                    speedTestBtn.setClickable(true);
+                    speedTestBtn.setBackgroundResource(R.drawable.selector_button);
+                    if (null != testProgressPopup && testProgressPopup.isShowing()) {
+                        testProgressPopup.dismiss();
+                    }
 
-            @Override
-            public void failure(RetrofitError retrofitError) {
-                Log.e(TAG, "fetchIpLookup failed!!!");
+                    break;
+                default:
+                    break;
             }
-        });
+        }
     }
 }
 

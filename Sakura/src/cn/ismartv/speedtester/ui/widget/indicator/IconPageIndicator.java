@@ -186,16 +186,6 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
             imageViews[i].setOnClickListener(this);
             imageViews[i].setFocusable(true);
             imageViews[i].setOnFocusChangeListener(this);
-
-//
-//
-//            ImageView view = new ImageView(getContext(), null, R.attr.vpiIconPageIndicatorStyle);
-//            view.setImageResource(iconAdapter.getIconResId(i));
-//            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(80, 80);
-//            layoutParams.setMargins(80, 0, 80, 0);
-//
-//            view.setLayoutParams(layoutParams);
-//            mIconsLayout.addView(view);
         }
         pretTab = imageViews[0];
         mIconsLayout.addView(linearLayout);
@@ -284,40 +274,5 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
     @Override
     public void onFocusChange(View view, boolean focused) {
         onClick(view);
-//        if (view.getId() == imageViews[0].getId()||view.getId() == imageViews[1].getId()||view.getId() == imageViews[2].getId()) {
-//            if (focused) {
-//                AnimationSet animationSet = new AnimationSet(true);
-//                ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2f, 1, 2f,
-//                        Animation.RELATIVE_TO_SELF, 0.5f,
-//                        Animation.RELATIVE_TO_SELF, 0.5f);
-//                scaleAnimation.setDuration(200);
-//                animationSet.addAnimation(scaleAnimation);
-//                animationSet.setFillAfter(true);
-//                view.startAnimation(animationSet);
-//                switch (view.getId()) {
-//                    case R.id.icon_node:
-//                        setCurrentItem(0);
-//                        break;
-//                    case R.id.icon_help:
-//                        setCurrentItem(1);
-//                        break;
-//                    case R.id.icon_feedback:
-//                        setCurrentItem(2);
-//                        break;
-//                    default:
-//                        break;
-//                }
-//                requestLayout();
-//            } else {
-//                AnimationSet animationSet = new AnimationSet(true);
-//                ScaleAnimation scaleAnimation = new ScaleAnimation(2, 1f, 2, 1f,
-//                        Animation.RELATIVE_TO_SELF, 0.5f,
-//                        Animation.RELATIVE_TO_SELF, 0.5f);
-//                scaleAnimation.setDuration(200);
-//                animationSet.addAnimation(scaleAnimation);
-//                animationSet.setFillAfter(true);
-//                view.startAnimation(animationSet);
-//            }
-//        }
     }
 }
