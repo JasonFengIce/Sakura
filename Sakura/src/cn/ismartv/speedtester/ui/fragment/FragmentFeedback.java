@@ -95,6 +95,8 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         problemType = (RadioGroup) view.findViewById(R.id.problem_options);
+
+
     }
 
     @Override
@@ -187,6 +189,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     }
 
     private void createProblemsRadio(List<ProblemEntity> problemEntities) {
+        RadioButton mRadioButton = null;
         if (null != mActivity) {
             for (int i = 0; i < problemEntities.size(); i++) {
                 RadioButton radioButton = new RadioButton(mActivity);
@@ -197,14 +200,21 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
                 radioButton.setLayoutParams(params);
                 radioButton.setText(problemEntities.get(i).getPoint_name());
                 radioButton.setId(problemEntities.get(i).getPoint_id());
+                if (i == 0)
+                    mRadioButton = radioButton;
                 problemType.addView(radioButton);
             }
+
+            mRadioButton.setChecked(true);
         }
     }
 
     private void setFeedBack() {
         String contactNumber = phone.getEditableText().toString();
-        if (StringUtils.isEmpty(contactNumber) || (!isMobile(contactNumber) && !isPhone(contactNumber))) {
+        if (StringUtils.isEmpty(contactNumber)) {
+            Toast.makeText(mActivity, R.string.fill_contact_number, Toast.LENGTH_LONG).show();
+            return;
+        } else if ((!isMobile(contactNumber) && !isPhone(contactNumber))) {
             Toast.makeText(mActivity, R.string.you_should_give_an_phone_number, Toast.LENGTH_LONG).show();
             return;
         } else {
@@ -275,6 +285,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     public void uploadFeedback(Context context, FeedBackEntity feedBack, final Handler handler) {
         Log.d(TAG, "result is ---> " + "run");
         final String str = new Gson().toJson(feedBack);
+        Log.d(TAG, "json is ---> " + str);
         new Thread() {
             @Override
             public void run() {
@@ -379,7 +390,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         Pattern p1 = null, p2 = null;
         Matcher m = null;
         boolean b = false;
-        p1 = Pattern.compile("^[0][1-9]{2,3}-[0-9]{5,10}$");  // 验证带区号的
+        p1 = Pattern.compile("^[0][0-9]{2,3}-[0-9]{5,10}$");  // 验证带区号的
         p2 = Pattern.compile("^[1-9]{1}[0-9]{5,8}$");         // 验证没有区号的
         if (str.length() > 9) {
             m = p1.matcher(str);

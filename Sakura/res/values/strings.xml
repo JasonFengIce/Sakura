@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">视频客服</string>
+    <string name="app_name">视云客服</string>
     <string name="prompt">推荐的视频源：如果自动监测结果有误，请手动选择您的省份与网络类型</string>
     <string name="province">所在的省份：</string>
     <string name="isp">网络类型：</string>
@@ -94,6 +94,8 @@
     <string name="can_select">建议选择</string>
 
     <string name="app_update_message">视频客服正在准备更新...</string>
+
+    <string name="fill_contact_number">请填写联系电话!</string>
 
 
 </resources>

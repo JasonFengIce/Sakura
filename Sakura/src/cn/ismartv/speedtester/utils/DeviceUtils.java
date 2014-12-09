@@ -41,13 +41,52 @@ public class DeviceUtils {
     }
 
     public static String getLocalMacAddress(Context context) {
-        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        WifiInfo info = wifi.getConnectionInfo();
-        String macAddress = info.getMacAddress();
-        if (null == macAddress)
-            macAddress = "0:0:0:0:0:0";
-        return macAddress;
+        String strMacAddr = null;
+        try {
+            InetAddress ip = getLocalInetAddress();
+
+            byte[] b = NetworkInterface.getByInetAddress(ip).getHardwareAddress();
+            StringBuffer buffer = new StringBuffer();
+            for (int i = 0; i < b.length; i++) {
+                if (i != 0) {
+                    buffer.append('-');
+                }
+                String str = Integer.toHexString(b[i] & 0xFF);
+                buffer.append(str.length() == 1 ? 0 + str : str);
+            }
+            strMacAddr = buffer.toString().toUpperCase();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return strMacAddr;
     }
+
+
+    private static InetAddress getLocalInetAddress() {
+        InetAddress ip = null;
+        try {
+            Enumeration<NetworkInterface> en_netInterface = NetworkInterface.getNetworkInterfaces();
+            while (en_netInterface.hasMoreElements()) {
+                NetworkInterface ni = (NetworkInterface) en_netInterface.nextElement();
+                Enumeration<InetAddress> en_ip = ni.getInetAddresses();
+                while (en_ip.hasMoreElements()) {
+                    ip = en_ip.nextElement();
+                    if (!ip.isLoopbackAddress() && ip.getHostAddress().indexOf(":") == -1)
+                        break;
+                    else
+                        ip = null;
+                }
+                if (ip != null) {
+                    break;
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return ip;
+    }
+
 
     public static String getModel() {
         return Build.MODEL;

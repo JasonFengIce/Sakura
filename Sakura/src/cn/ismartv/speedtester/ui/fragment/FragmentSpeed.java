@@ -3,6 +3,7 @@ package cn.ismartv.speedtester.ui.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -23,6 +24,7 @@ import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.download.DownloadTask;
 import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.HttpDataEntity;
+import cn.ismartv.speedtester.data.IpLookUpEntity;
 import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.ui.activity.HomeActivity;
 import cn.ismartv.speedtester.ui.adapter.NodeListAdapter;
@@ -72,6 +74,9 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
      * Activity
      */
     private Activity mActivity;
+
+    SharedPreferences sharedPreferences;
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -128,7 +133,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
          * according to preference select province and isp
          */
 
-        SharedPreferences sharedPreferences = mActivity.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = mActivity.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
         if (sharedPreferences.getInt(CacheManager.IpLookUp.USER_PROVINCE, -1) == -1 || sharedPreferences.getInt(CacheManager.IpLookUp.USER_ISP, -1) == -1) {
 //            fetchIpLookup();
         } else {
@@ -221,6 +226,9 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             Log.d(TAG, "item positon ---> " + position);
             Log.d(TAG, "item tag ---> " + view.getTag() + "   " + parent.getTag());
         }
+        CacheManager cacheManager = CacheManager.getInstance(mActivity);
+        cacheManager.updatePosition(provincesPosition, ispPosition - 1);
+
         initPopWindow((Integer) view.getTag());
     }
 
@@ -238,7 +246,9 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-
+    /**
+     * speed test
+     */
     @OnClick(R.id.speed_test_btn)
     public void speedTest() {
         ((HomeActivity) mActivity).isFirstSpeedTest = false;
@@ -246,18 +256,18 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             speedTestBtn.setText(R.string.button_label_retest);
         }
         testProgressPopup = initTestProgressDialog();
-        /**
-         * update position
-         */
-        CacheManager cacheManager = CacheManager.getInstance(mActivity);
-        cacheManager.updatePosition(provincesPosition, ispPosition - 1);
-
+//        /**
+//         * update position
+//         */
+//        CacheManager cacheManager = CacheManager.getInstance(mActivity);
+//        cacheManager.updatePosition(provincesPosition, ispPosition - 1);
+        speedTestBtn.setBackgroundColor(Color.GRAY);
+        speedTestBtn.setEnabled(false);
         downloadTask = new DownloadTask(mActivity, nodeListAdapter.getCursor());
         downloadTask.setSpeedTestListener(this);
         downloadTask.start();
 
-        speedTestBtn.setBackgroundColor(Color.GRAY);
-        speedTestBtn.setEnabled(false);
+
     }
 
     @Override
@@ -266,9 +276,16 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public void compelte(String recordId, String cdnid, int speed) {
-        updateNodeCache(Integer.parseInt(recordId), Integer.parseInt(cdnid), speed);
-        uploadTestResult(cdnid, String.valueOf(speed));
+    public void onCancel() {
+        messageHandler.sendEmptyMessage(ALL_COMPLETE_MSG);
+    }
+
+    @Override
+    public void compelte(final String recordId, final String cdnid, final int speed) {
+
+                updateNodeCache(Integer.parseInt(recordId), Integer.parseInt(cdnid), speed);
+                uploadTestResult(cdnid, String.valueOf(speed));
+
     }
 
     @Override
@@ -310,10 +327,19 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         Window dialogWindow = dialog.getWindow();
         dialogWindow.setGravity(Gravity.CENTER);
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+
         lp.width = 400;
         lp.height = 150;
         View mView = LayoutInflater.from(mActivity).inflate(R.layout.popup_test_progress, null);
         dialog.setContentView(mView, lp);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                downloadTask.setRunning(false);
+                messageHandler.sendEmptyMessage(ALL_COMPLETE_MSG);
+            }
+        });
         dialog.show();
         return dialog;
     }
@@ -338,8 +364,9 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         client.excute(ClientApi.UnbindNode.ACTION, sn, new Callback<Empty>() {
             @Override
             public void success(Empty empty, Response response) {
-
                 clearCheck();
+                fetchIpLookup();
+
             }
 
             @Override
@@ -432,9 +459,11 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case ALL_COMPLETE_MSG:
-                    speedTestBtn.setEnabled(true);
-                    speedTestBtn.setClickable(true);
                     speedTestBtn.setBackgroundResource(R.drawable.selector_button);
+                    speedTestBtn.setEnabled(true);
+
+                    speedTestBtn.setClickable(true);
+
                     if (null != testProgressPopup && testProgressPopup.isShowing()) {
                         testProgressPopup.dismiss();
                     }
@@ -444,6 +473,32 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
                     break;
             }
         }
+    }
+
+
+    private void fetchIpLookup() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(ClientApi.LILY_HOST)
+                .build();
+
+        ClientApi.IpLookUp client = restAdapter.create(ClientApi.IpLookUp.class);
+        client.execute(new Callback<IpLookUpEntity>() {
+            @Override
+            public void success(IpLookUpEntity ipLookUpEntity, Response response) {
+                CacheManager cacheManager = CacheManager.getInstance(mActivity);
+                CacheManager.IpLookUp ipLookUp = cacheManager.new IpLookUp();
+                ipLookUp.updateIpLookUpCache(ipLookUpEntity);
+                provinceSpinner.setSelection(sharedPreferences.getInt(CacheManager.IpLookUp.USER_PROVINCE, 0));
+                ispSpinner.setSelection(sharedPreferences.getInt(CacheManager.IpLookUp.USER_ISP, 0));
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Log.e(TAG, "fetchIpLookup failed!!!");
+            }
+        });
     }
 }
 

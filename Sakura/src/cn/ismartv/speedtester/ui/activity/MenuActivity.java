@@ -1,6 +1,8 @@
 package cn.ismartv.speedtester.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -46,7 +48,11 @@ public class MenuActivity extends BaseActivity {
         setContentView(R.layout.activity_menu);
         ButterKnife.inject(this);
 
-        fetchIpLookup();
+        SharedPreferences sharedPreferences = this.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+        if (sharedPreferences.getInt(CacheManager.IpLookUp.USER_PROVINCE, -1) == -1 || sharedPreferences.getInt(CacheManager.IpLookUp.USER_ISP, -1) == -1) {
+            fetchIpLookup();
+        }
+
         ///////////////////////////////////////////////////////////////
         //Add Showcase View
         ///////////////////////////////////////////////////////////////

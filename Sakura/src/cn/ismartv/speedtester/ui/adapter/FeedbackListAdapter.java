@@ -70,7 +70,6 @@ public class FeedbackListAdapter extends BaseAdapter {
         @InjectView(R.id.feedback_ismartv)
         TextView feedbackIsmartv;
 
-
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
         }

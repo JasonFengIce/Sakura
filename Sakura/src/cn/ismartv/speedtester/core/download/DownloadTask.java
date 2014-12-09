@@ -2,6 +2,8 @@ package cn.ismartv.speedtester.core.download;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Handler;
+import android.os.Message;
 import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 
@@ -20,12 +22,21 @@ public class DownloadTask extends Thread {
     private static final String TAG = "DownloadTask";
     private static final String SUFFIX = ".ismartv";
 
+    public static final int COMPLETE = 0x0001;
+    public static final int ALL_COMPLETE = 0x0002;
+
     private static final int TIME_OVER = 4;
 
     private Context context;
     private List<Map<String, String>> nodes;
     public volatile boolean running = false;
     private OnSpeedTestListener listener;
+
+    /**
+     * handler
+     */
+
+    private Handler messageHandler;
 
 
     public interface OnSpeedTestListener {
@@ -34,6 +45,8 @@ public class DownloadTask extends Thread {
         public void compelte(String id, String cdnId, int speed);
 
         public void allCompelte();
+
+        public void onCancel();
     }
 
     public void setSpeedTestListener(OnSpeedTestListener listener) {
@@ -41,6 +54,7 @@ public class DownloadTask extends Thread {
     }
 
     public DownloadTask(Context context, Cursor cursor) {
+        messageHandler = new MessageHandler();
         this.context = context;
         nodes = new ArrayList<Map<String, String>>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -58,6 +72,9 @@ public class DownloadTask extends Thread {
         running = true;
         for (Map<String, String> map : nodes) {
             if (running) {
+                while (running == false){
+                    listener.onCancel();
+                }
                 Timer timer = new Timer();
                 timer.start();
                 int bytesum = 0;
@@ -77,7 +94,7 @@ public class DownloadTask extends Thread {
                     conn.setConnectTimeout(5000);
                     InputStream inStream = conn.getInputStream();
                     FileOutputStream fs = new FileOutputStream(fileName);
-                    byte[] buffer = new byte[1024];
+                    byte[] buffer = new byte[100];
                     while ((byteread = inStream.read(buffer)) != -1 && timer.timer < TIME_OVER && running == true) {
                         bytesum += byteread;
                         fs.write(buffer, 0, byteread);
@@ -87,10 +104,18 @@ public class DownloadTask extends Thread {
                     //update node cache
 //                    CacheManager.updateNodeCache(context, cdnId, speed);
                     listener.compelte(recordId, cdnId, speed);
+                    /**
+                     * send message
+                     */
+//                    MessageContent messageContent = new MessageContent();
+//                    messageContent.recordId = recordId;
+//                    messageContent.cdnId = cdnId;
+//                    messageContent.speed = speed;
+//                    Message message = messageHandler.obtainMessage(COMPLETE,messageContent);
+//                    messageHandler.sendMessage(message);
+                    listener.compelte(recordId, cdnId, speed);
+
                     listener.changeStatus(recordId, cdnId, false);
-//                    CacheManager.updateRunning(context, cndId, "false");
-//
-//                    uploadTestResult(cndId, speed);
                     fs.flush();
                     fs.close();
                     inStream.close();
@@ -138,5 +163,33 @@ public class DownloadTask extends Thread {
     public boolean isRunning() {
         return running;
     }
+
+    /**
+     * Handler
+     */
+    class MessageHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case COMPLETE:
+                    MessageContent messageContent = (MessageContent)msg.obj;
+                    listener.compelte(messageContent.recordId, messageContent.cdnId, messageContent.speed);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Message Content
+     */
+    class MessageContent{
+        public String recordId;
+        public String cdnId;
+        public int speed;
+    }
+
+
 
 }
