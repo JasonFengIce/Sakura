@@ -15,12 +15,14 @@ import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.data.IpLookUpEntity;
+import com.ismartv.android.vod.core.install.BootInstallTask;
 import com.ismartv.android.vod.service.HttpProxyService;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -45,6 +47,7 @@ public class MenuActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
         this.startService(ootStartIntent);
+        deleteApk();
         setContentView(R.layout.activity_menu);
         ButterKnife.inject(this);
 
@@ -104,6 +107,30 @@ public class MenuActivity extends BaseActivity {
                 Log.e(TAG, "fetchIpLookup failed!!!");
             }
         });
+    }
+
+    /**
+     * delete sakura apk, delete vod server apk
+     */
+    private void deleteApk() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(20000);
+                    File file = new File(MenuActivity.this.getFilesDir(), BootInstallTask.SELF_APP_NAME);
+                    if (null != file)
+                        file.delete();
+                    file = new File(MenuActivity.this.getFilesDir(), BootInstallTask.VOD_APP_NAME);
+                    if(null!= file)
+                        file.delete();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+
     }
 
 }

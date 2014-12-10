@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.view.KeyEvent;
 import cn.ismartv.speedtester.AppConstant;
 import com.activeandroid.util.Log;
 import com.ismartv.android.vod.core.keyevent.EventDeliver;

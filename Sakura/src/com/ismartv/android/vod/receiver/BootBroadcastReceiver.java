@@ -20,8 +20,6 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(ACTION_BOOT)) {
             Intent ootStartIntent = new Intent(context, HttpProxyService.class);
             context.startService(ootStartIntent);
-            BootInstallTask bootInstallTask = new BootInstallTask(context);
-            bootInstallTask.execute();
         }
     }
 }

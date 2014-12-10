@@ -30,8 +30,6 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BootInstallTask bootInstallTask = new BootInstallTask(this);
-        bootInstallTask.execute();
 
         /////////////////////////////////////////////////////////////
         //Get The Position Of Page

@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.utils.DeviceUtils;
+import com.ismartv.android.vod.core.install.BootInstallTask;
 
 
 /**
@@ -29,6 +30,8 @@ public class NetWorkBroadcastReceiver extends BroadcastReceiver {
             if (NetworkInfo.State.CONNECTED == wifiState || NetworkInfo.State.CONNECTED == ethernetState) {
                 Log.d(TAG, "mobile network connect success!!!");
                 CacheManager.updatLocalIp(context, DeviceUtils.getLocalIpAddressV4());
+                BootInstallTask bootInstallTask = new BootInstallTask(context);
+                bootInstallTask.execute();
             }else{
                 Log.d(TAG, "can't connect network!!!");
             }

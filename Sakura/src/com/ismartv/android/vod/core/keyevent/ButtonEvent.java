@@ -20,7 +20,9 @@ public class ButtonEvent implements KeyEventInterface {
     @Override
     public void deliverEvent() {
         try {
+            Log.d(TAG, "button event send ...");
             service.sendMoniterKey(Integer.parseInt(params));
+
         } catch (RemoteException e) {
             Log.e(TAG, "button event send failed!!!");
         }

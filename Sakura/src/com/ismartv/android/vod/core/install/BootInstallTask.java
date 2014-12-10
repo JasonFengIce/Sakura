@@ -32,8 +32,8 @@ import java.security.MessageDigest;
  */
 public class BootInstallTask extends AsyncTask<String, Integer, String> {
     private static final String TAG = "BootInstallTask";
-    private static final String SELF_APP_NAME = "sakura.app";
-    private static final String VOD_APP_NAME = "ismartv_vod_service_sign.apk";
+    public static final String SELF_APP_NAME = "sakura.app";
+    public static final String VOD_APP_NAME = "ismartv_vod_service_sign.apk";
 
     private static final int DEFAULT_VALUE = 1;
     private static final int MAX_CHECK_TIME = 3;
@@ -107,6 +107,8 @@ public class BootInstallTask extends AsyncTask<String, Integer, String> {
             context.startActivity(intent);
         }
     }
+
+
 
     ////////////////////////////////////////////////////////////////////////
     //Parse Asset Directory, Move Vod Service Apk To data/file, Then Install
