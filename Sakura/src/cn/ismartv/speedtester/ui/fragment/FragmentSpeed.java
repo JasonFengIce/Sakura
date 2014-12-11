@@ -126,7 +126,16 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         if (!((HomeActivity) mActivity).isFirstSpeedTest) {
             speedTestBtn.setText(R.string.button_label_retest);
         }
-        getLoaderManager().initLoader(0, null, this);
+        switch (ispPosition){
+            case 4:
+                getLoaderManager().initLoader(1, null, this);
+                break;
+            default:
+                getLoaderManager().initLoader(0, null, this);
+                break;
+
+        }
+
         getBindCdn();
 
         /**

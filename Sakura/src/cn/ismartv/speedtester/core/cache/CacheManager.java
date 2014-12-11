@@ -90,6 +90,40 @@ public class CacheManager {
         public static final String USER_PROVINCE = "user_province";
         public static final String USER_IP = "user_ip";
         public static final String USER_ISP = "user_isp";
+        public static final String USER_CITY = "user_city";
+
+
+        public String getUserProvince() {
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+            String[] array = mContext.getResources().getStringArray(R.array.citys);
+            int position = sharedPreferences.getInt(USER_PROVINCE, 0);
+
+            if (position == -1)
+                position = 0;
+
+            return array[position];
+        }
+
+        public String getUserIp() {
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+
+            return sharedPreferences.getString(USER_IP, "0.0.0.0");
+        }
+
+        public String getUserIsp() {
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+            String[] array = mContext.getResources().getStringArray(R.array.isps);
+            int position = sharedPreferences.getInt(USER_ISP, 0);
+
+            if (position == -1)
+                position = 0;
+            return array[position];
+        }
+
+        public String getUserCity() {
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
+            return sharedPreferences.getString(USER_CITY, "");
+        }
 
         public void updateIpLookUpCache(IpLookUpEntity ipLookUpEntity) {
             SharedPreferences sharedPreferences = mContext.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
@@ -102,7 +136,7 @@ public class CacheManager {
             if (AppConstant.DEBUG) {
                 Log.d(TAG, "ipAddress is --->  " + ipAddress);
             }
-
+            editor.putString(USER_CITY, ipLookUpEntity.getCity());
             editor.putInt(USER_PROVINCE, provincePosition);
             editor.putInt(USER_ISP, ispPosition);
             editor.putString(USER_IP, ipAddress);

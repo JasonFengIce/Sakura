@@ -218,13 +218,15 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
             Toast.makeText(mActivity, R.string.you_should_give_an_phone_number, Toast.LENGTH_LONG).show();
             return;
         } else {
+            CacheManager.IpLookUp ipLookUp = CacheManager.getInstance(mActivity).new IpLookUp();
             FeedBackEntity feedBack = new FeedBackEntity();
             feedBack.setDescription(description.getEditableText().toString());
             feedBack.setPhone(phone.getEditableText().toString());
             feedBack.setOption(problemText);
-            feedBack.setCity("no data");
-            feedBack.setIp("no data");
-            feedBack.setIsp("no data");
+            feedBack.setCity(ipLookUp.getUserCity());
+            feedBack.setIp(ipLookUp.getUserIp());
+            feedBack.setIsp(ipLookUp.getUserIsp());
+            feedBack.setLocation(ipLookUp.getUserProvince());
             uploadFeedback(mActivity, feedBack, messageHandler);
         }
     }
@@ -270,12 +272,12 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
 
         switch (view.getId()) {
             case R.id.arrow_up:
-                feedbackList.smoothScrollByOffset(-1);
-
+//                feedbackList.smoothScrollByOffset(-1);
+                feedbackList.smoothScrollBy(-100,1);
                 break;
             case R.id.arrow_down:
-                feedbackList.smoothScrollByOffset(1);
-
+//                feedbackList.smoothScrollByOffset(1);
+                feedbackList.smoothScrollBy(100,1);
                 break;
             default:
                 break;
