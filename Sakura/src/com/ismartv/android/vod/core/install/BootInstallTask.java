@@ -32,7 +32,7 @@ import java.security.MessageDigest;
  */
 public class BootInstallTask extends AsyncTask<String, Integer, String> {
     private static final String TAG = "BootInstallTask";
-    public static final String SELF_APP_NAME = "sakura.app";
+    public static final String SELF_APP_NAME = "sakura.apk";
     public static final String VOD_APP_NAME = "ismartv_vod_service_sign.apk";
 
     private static final int DEFAULT_VALUE = 1;
