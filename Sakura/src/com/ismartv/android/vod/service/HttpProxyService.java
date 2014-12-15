@@ -89,7 +89,9 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
                     keyEventInterface =  EventDeliver.create(getApplicationContext(), actionCode, request.getQuery().getString("seek"), nativeservice);
                     break;
                 case PLAY_VIDEO_EVENT:
+                    android.util.Log.d(TAG, "url is ---> " + request.getQuery().getString("url"));
                     keyEventInterface =  EventDeliver.create(getApplicationContext(), actionCode, request.getQuery().getString("url"), nativeservice);
+
                     break;
                 default:
                     break;

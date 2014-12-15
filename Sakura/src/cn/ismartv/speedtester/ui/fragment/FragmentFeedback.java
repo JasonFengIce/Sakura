@@ -246,11 +246,13 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case UPLAOD_FEEDBACK_COMPLETE:
-                    Toast.makeText(mActivity, R.string.submit_sucess, Toast.LENGTH_LONG).show();
                     fetchFeedback(DeviceUtils.getSnCode(), "10");
+                    if (null != mActivity)
+                        Toast.makeText(mActivity, R.string.submit_sucess, Toast.LENGTH_LONG).show();
                     break;
                 case UPLAOD_FEEDBACK_FAILED:
-                    Toast.makeText(mActivity, R.string.submit_failed, Toast.LENGTH_LONG).show();
+                    if (null != mActivity)
+                        Toast.makeText(mActivity, R.string.submit_failed, Toast.LENGTH_LONG).show();
                     break;
                 default:
                     break;
@@ -273,11 +275,11 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         switch (view.getId()) {
             case R.id.arrow_up:
 //                feedbackList.smoothScrollByOffset(-1);
-                feedbackList.smoothScrollBy(-100,1);
+                feedbackList.smoothScrollBy(-100, 1);
                 break;
             case R.id.arrow_down:
 //                feedbackList.smoothScrollByOffset(1);
-                feedbackList.smoothScrollBy(100,1);
+                feedbackList.smoothScrollBy(100, 1);
                 break;
             default:
                 break;
