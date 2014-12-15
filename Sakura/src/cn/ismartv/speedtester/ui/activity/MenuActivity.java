@@ -47,7 +47,6 @@ public class MenuActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
         this.startService(ootStartIntent);
-        deleteApk();
         setContentView(R.layout.activity_menu);
         ButterKnife.inject(this);
 
@@ -112,25 +111,6 @@ public class MenuActivity extends BaseActivity {
     /**
      * delete sakura apk, delete vod server apk
      */
-    private void deleteApk() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(20000);
-                    File file = new File(MenuActivity.this.getFilesDir(), BootInstallTask.SELF_APP_NAME);
-                    if (null != file)
-                        file.delete();
-                    file = new File(MenuActivity.this.getFilesDir(), BootInstallTask.VOD_APP_NAME);
-                    if(null!= file)
-                        file.delete();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
 
-
-    }
 
 }

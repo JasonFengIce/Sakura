@@ -109,7 +109,6 @@ public class BootInstallTask extends AsyncTask<String, Integer, String> {
     }
 
 
-
     ////////////////////////////////////////////////////////////////////////
     //Parse Asset Directory, Move Vod Service Apk To data/file, Then Install
     ////////////////////////////////////////////////////////////////////////
@@ -172,6 +171,8 @@ public class BootInstallTask extends AsyncTask<String, Integer, String> {
                     //If Local Version Less
                     ////////////////////////////////////////////////////////////////////////////////////
                     downloadAPK(context, versionInfo.getDownloadurl(), versionInfo.getMd5(), DEFAULT_VALUE);
+                }else {
+                    deleteApk(context);
                 }
             }
 
@@ -264,5 +265,26 @@ public class BootInstallTask extends AsyncTask<String, Integer, String> {
             }
         }
         return value;
+    }
+
+    private void deleteApk(final Context context) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(20000);
+                    File file = new File(context.getFilesDir(), BootInstallTask.SELF_APP_NAME);
+                    if (null != file)
+                        file.delete();
+                    file = new File(context.getFilesDir(), BootInstallTask.VOD_APP_NAME);
+                    if (null != file)
+                        file.delete();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+
     }
 }
