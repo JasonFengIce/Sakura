@@ -23,6 +23,9 @@ public class NodeCacheTable extends Model {
     @Column(name = "cdn_id", uniqueGroups = {"group1"}, onUniqueConflicts = {Column.ConflictAction.IGNORE})
     public long cdnID = 0;
 
+    @Column(name = "set_run")
+    public boolean setRun = false;
+
     @Column(name = "node_name")
     public String nodeName = "";
 

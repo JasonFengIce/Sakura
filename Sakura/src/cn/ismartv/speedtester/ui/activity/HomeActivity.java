@@ -74,7 +74,8 @@ public class HomeActivity extends BaseActivity {
         } else {
             if (null != fragmentSpeed.testProgressPopup && fragmentSpeed.testProgressPopup.isShowing())
                 fragmentSpeed.testProgressPopup.dismiss();
-            super.onBackPressed();
+            Intent intent = new Intent(this, MenuActivity.class);
+            startActivity(intent);
         }
     }
 }

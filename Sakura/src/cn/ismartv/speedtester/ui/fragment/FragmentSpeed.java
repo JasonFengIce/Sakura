@@ -118,12 +118,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
         ArrayAdapter<CharSequence> provinceSpinnerAdapter = ArrayAdapter.createFromResource(mActivity,
                 R.array.citys, R.layout.spinner_text);
-        provinceSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        provinceSpinnerAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         provinceSpinner.setAdapter(provinceSpinnerAdapter);
 
         ArrayAdapter<CharSequence> operatorSpinnerAdapter = ArrayAdapter.createFromResource(mActivity,
                 R.array.isps, R.layout.spinner_text);
-        operatorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        operatorSpinnerAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         ispSpinner.setAdapter(operatorSpinnerAdapter);
 
 
@@ -223,20 +223,20 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @OnItemSelected(R.id.province_spinner)
     public void pickProvince(AdapterView<?> parent, View view, int position, long id) {
-        if (null!= view) {
-            TextView textView = (TextView) view;
-            textView.setTextSize(30);
-        }
+//        if (null!= view) {
+//            TextView textView = (TextView) view;
+//            textView.setTextSize(30);
+//        }
         provincesPosition = position;
         notifiySourceChanged();
     }
 
     @OnItemSelected(R.id.isp_spinner)
     public void pickIsp(AdapterView<?> parent, View view, int position, long id) {
-        if (null!= view) {
-            TextView textView = (TextView) view;
-            textView.setTextSize(30);
-        }
+//        if (null!= view) {
+//            TextView textView = (TextView) view;
+//            textView.setTextSize(30);
+//        }
         ispPosition = position + 1;
         notifiySourceChanged();
     }

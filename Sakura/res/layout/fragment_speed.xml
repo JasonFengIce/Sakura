@@ -64,6 +64,7 @@
                     android:layout_height="wrap_content"
                     />
             <Spinner
+                    style="@style/spinner_style"
                     android:focusable="true"
                     android:id="@+id/province_spinner"
                     android:layout_width="160dp"
@@ -82,6 +83,7 @@
                     android:layout_height="wrap_content"
                     />
             <Spinner
+                    style="@style/spinner_style"
                     android:focusable="true"
                     android:id="@+id/isp_spinner"
                     android:layout_width="160dp"
