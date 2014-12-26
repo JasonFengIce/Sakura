@@ -16,7 +16,6 @@ public class SakuraProgressBar extends View {
 
     public SakuraProgressBar(Context context) {
         super(context);
-
     }
 
     public SakuraProgressBar(Context context, AttributeSet attrs) {
@@ -30,8 +29,7 @@ public class SakuraProgressBar extends View {
 
     @Override
     protected synchronized void onDraw(Canvas canvas) {
-        int[] colors = {getColor(R.color.color_1), getColor(R.color.color_2), getColor(R.color.color_3),
-                getColor(R.color.color_4), getColor(R.color.color_5)};
+        int[] colors = {getColor(R.color.sakura_progress),getColor(R.color.sakura_progress)};
         float[] positioins = {getWidth() / 5, getWidth() * 2 / 5, getWidth() * 3 / 5, getWidth() * 4 / 5, getWidth()};
 
 

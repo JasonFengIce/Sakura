@@ -39,7 +39,7 @@
             android:layout_toRightOf="@id/title"
             android:id="@+id/node_name"
             android:textColor="#8f8f8f"
-            android:textSize="24sp"
+            android:textSize="@dimen/font_size_four"
             android:clickable="false"
             android:focusable="false"
             android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
             android:layout_alignParentRight="true"
             android:id="@+id/select_prompt"
             android:textColor="#8f8f8f"
-            android:textSize="24sp"
+            android:textSize="@dimen/font_size_five"
             android:layout_width="150dp"
             android:layout_height="wrap_content"/>
 

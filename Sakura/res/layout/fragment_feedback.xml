@@ -11,7 +11,7 @@
             android:layout_marginLeft="40dp"
             android:layout_marginTop="40dp"
             android:text="@string/sn_text"
-            android:textSize="24sp"
+            android:textSize="@dimen/font_size_four"
             android:textColor="#FFFFFF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -38,14 +38,14 @@
                   android:layout_height="wrap_content">
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:textSize="24sp"
+                  android:textSize="@dimen/font_size_four"
                   android:text="@string/contact_phone_number"
                 />
 
         <EditText
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:textSize="24sp"
+                android:textSize="@dimen/font_size_four"
                 android:gravity="center"
                 android:id="@+id/phone_number_edit"
                 android:inputType="phone"
@@ -66,14 +66,14 @@
             android:layout_height="wrap_content">
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:textSize="24sp"
+                  android:textSize="@dimen/font_size_four"
                   android:text="@string/add_description"
                 />
 
         <EditText
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:textSize="24sp"
+                android:textSize="@dimen/font_size_four"
                 android:gravity="center"
                 android:id="@+id/description_edit"
                 android:background="@drawable/edit_drawable"
@@ -83,6 +83,7 @@
     <Button
             android:id="@+id/submit_btn"
             android:layout_marginTop="20dp"
+            android:textSize="@dimen/font_size_four"
             android:layout_gravity="center"
             android:background="@drawable/selector_submit"
             android:layout_width="wrap_content"

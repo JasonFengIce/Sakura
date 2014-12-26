@@ -6,6 +6,8 @@
     <color name="color_4">#FFFF00</color>
     <color name="color_5">#00CC00</color>
 
+    <color name="sakura_progress">#128FFF</color>
+
     <color name="node_item_focus">#2235b5e5</color>
     <color name="help_fragment_bg">#00000000</color>
 

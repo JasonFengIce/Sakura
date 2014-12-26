@@ -75,14 +75,14 @@
 
     <string name="StartTesting">开始测速</string>
 
-    <string name="net_speedtester">网络测速</string>
+    <string name="net_speedtester">切换视频源</string>
 
     <string name="current_node">当前视频源:</string>
     <string name="feedback_problem">问题反馈</string>
     <string name="service_help">客服帮助</string>
 
     <string name="net_speed_test">测速</string>
-    <string name="unbind_node">取消绑定</string>
+    <string name="unbind_node">自动获取</string>
 
     <string name="cancle">取消</string>
 
@@ -96,6 +96,12 @@
     <string name="app_update_message">视频客服正在准备更新...</string>
 
     <string name="fill_contact_number">请填写联系电话!</string>
+
+    <string name="test_complete_text">测速完成,请选择覆盖点</string>
+
+
+    <string name="switch_to_auto">切换为自动获取</string>
+    <string name="already_to_auto">已自动获取</string>
 
 
 </resources>

@@ -25,6 +25,8 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.pager)
     ViewPager pager;
     private TabAdapter tabAdapter;
+
+
     private int position;
 
     @Override
@@ -61,10 +63,14 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        FragmentSpeed.can = true;
         FragmentSpeed fragmentSpeed = ((FragmentSpeed) tabAdapter.getSpeedFragment());
         DownloadTask downloadTask = fragmentSpeed.getDownloadTask();
         if (null != downloadTask && downloadTask.isRunning()) {
+
+
             downloadTask.setRunning(false);
+
         } else {
             if (null != fragmentSpeed.testProgressPopup && fragmentSpeed.testProgressPopup.isShowing())
                 fragmentSpeed.testProgressPopup.dismiss();

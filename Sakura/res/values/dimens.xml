@@ -1,3 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <dimen name="font_size_one">50sp</dimen>
+    <dimen name="font_size_two">38sp</dimen>
+    <dimen name="font_size_three">28sp</dimen>
+    <dimen name="font_size_four">30sp</dimen>
+    <dimen name="font_size_five">26sp</dimen>
 </resources>

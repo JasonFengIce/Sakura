@@ -199,6 +199,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
                 params.setMargins(0, 0, 15, 0);
                 radioButton.setLayoutParams(params);
                 radioButton.setText(problemEntities.get(i).getPoint_name());
+                radioButton.setTextSize(30);
                 radioButton.setId(problemEntities.get(i).getPoint_id());
                 if (i == 0)
                     mRadioButton = radioButton;

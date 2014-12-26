@@ -67,8 +67,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     private String[] cities;
 
     public static final int ALL_COMPLETE_MSG = 0x0001;
+    public static final int ALL_COMPLETE = 0x0002;
 
-    public MessageHandler messageHandler;
+
+    public static Handler messageHandler;
+
+    public static boolean can = false;
 
     /**
      * Activity
@@ -126,7 +130,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         if (!((HomeActivity) mActivity).isFirstSpeedTest) {
             speedTestBtn.setText(R.string.button_label_retest);
         }
-        switch (ispPosition){
+        switch (ispPosition) {
             case 4:
                 getLoaderManager().initLoader(1, null, this);
                 break;
@@ -201,9 +205,11 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
         if (null != fetchCheck() && null != fetchCheck().nick) {
             currentNode.setText(getText(R.string.current_node) + fetchCheck().nick);
+            unbindNode.setText(R.string.switch_to_auto);
             unbindNode.setEnabled(true);
             unbindNode.setBackgroundResource(R.drawable.selector_button);
         } else {
+            unbindNode.setText(R.string.already_to_auto);
             currentNode.setText(getText(R.string.current_node) + getString(R.string.auto_fetch));
             unbindNode.setEnabled(false);
             unbindNode.setBackgroundColor(Color.GRAY);
@@ -217,12 +223,20 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @OnItemSelected(R.id.province_spinner)
     public void pickProvince(AdapterView<?> parent, View view, int position, long id) {
+        if (null!= view) {
+            TextView textView = (TextView) view;
+            textView.setTextSize(30);
+        }
         provincesPosition = position;
         notifiySourceChanged();
     }
 
     @OnItemSelected(R.id.isp_spinner)
     public void pickIsp(AdapterView<?> parent, View view, int position, long id) {
+        if (null!= view) {
+            TextView textView = (TextView) view;
+            textView.setTextSize(30);
+        }
         ispPosition = position + 1;
         notifiySourceChanged();
     }
@@ -286,14 +300,14 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onCancel() {
-        messageHandler.sendEmptyMessage(ALL_COMPLETE_MSG);
+        messageHandler.sendEmptyMessage(ALL_COMPLETE);
     }
 
     @Override
     public void compelte(final String recordId, final String cdnid, final int speed) {
 
-                updateNodeCache(Integer.parseInt(recordId), Integer.parseInt(cdnid), speed);
-                uploadTestResult(cdnid, String.valueOf(speed));
+        updateNodeCache(Integer.parseInt(recordId), Integer.parseInt(cdnid), speed);
+        uploadTestResult(cdnid, String.valueOf(speed));
 
     }
 
@@ -468,17 +482,35 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case ALL_COMPLETE_MSG:
-                    speedTestBtn.setBackgroundResource(R.drawable.selector_button);
-                    speedTestBtn.setEnabled(true);
 
-                    speedTestBtn.setClickable(true);
 
-                    if (null != testProgressPopup && testProgressPopup.isShowing()) {
-                        testProgressPopup.dismiss();
+                        speedTestBtn.setBackgroundResource(R.drawable.selector_button);
+                        speedTestBtn.setEnabled(true);
+
+                        speedTestBtn.setClickable(true);
+
+                        if (null != testProgressPopup && testProgressPopup.isShowing()) {
+                            testProgressPopup.dismiss();
+                        }
+                    if (!can) {
+                        initPopWindow2();
                     }
+                    break;
+                case ALL_COMPLETE:
+                    if (can) {
+                        speedTestBtn.setBackgroundResource(R.drawable.selector_button);
+                        speedTestBtn.setEnabled(true);
 
+                        speedTestBtn.setClickable(true);
+
+                        if (null != testProgressPopup && testProgressPopup.isShowing()) {
+                            testProgressPopup.dismiss();
+                        }
+                    }
                     break;
                 default:
+
+
                     break;
             }
         }
@@ -509,6 +541,27 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             }
         });
     }
+
+    private void initPopWindow2() {
+        View contentView = LayoutInflater.from(mActivity)
+                .inflate(R.layout.popup_test_complete, null);
+        contentView.setBackgroundResource(R.drawable.bg_popup);
+        final PopupWindow popupWindow = new PopupWindow(null, 500, 150);
+        popupWindow.setContentView(contentView);
+        popupWindow.setFocusable(true);
+        popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);
+
+        TextView cancleButton = (TextView) contentView.findViewById(R.id.test_c_confirm_btn);
+        cancleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupWindow.dismiss();
+            }
+        });
+
+
+    }
+
 }
 
 

@@ -9,7 +9,7 @@
     <TextView
             android:layout_marginLeft="40dp"
             android:layout_marginTop="40dp"
-            android:textSize="24sp"
+            android:textSize="@dimen/font_size_four"
             android:textColor="#FFFFFF"
             android:id="@+id/prompt "
             android:text="@string/prompt"
@@ -21,7 +21,7 @@
         <TextView
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="20dp"
-                android:textSize="24sp"
+                android:textSize="@dimen/font_size_four"
                 android:textColor="#FFFFFF"
                 android:id="@+id/current_node_text"
                 android:layout_width="wrap_content"
@@ -29,12 +29,13 @@
 
         <Button
                 android:id="@+id/unbind_node"
-                android:text="@string/unbind_node"
+                android:singleLine="true"
                 android:gravity="center"
+                android:textSize="@dimen/font_size_five"
                 android:background="@drawable/selector_button"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="20dp"
-                android:layout_width="100dp"
+                android:layout_width="250dp"
                 android:layout_height="40dp"/>
     </LinearLayout>
 
@@ -57,7 +58,7 @@
 
             <TextView
                     android:text="@string/province"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/font_size_four"
                     android:textColor="#FFFFFF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -66,7 +67,7 @@
                     android:focusable="true"
                     android:id="@+id/province_spinner"
                     android:layout_width="160dp"
-                    android:layout_height="40dp">
+                    android:layout_height="50dp">
             </Spinner>
         </LinearLayout>
         <LinearLayout
@@ -75,7 +76,7 @@
                 android:layout_height="wrap_content">
             <TextView
                     android:text="@string/isp"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/font_size_four"
                     android:textColor="#FFFFFF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -84,7 +85,7 @@
                     android:focusable="true"
                     android:id="@+id/isp_spinner"
                     android:layout_width="160dp"
-                    android:layout_height="40dp"
+                    android:layout_height="50dp"
                     >
             </Spinner>
 
@@ -94,7 +95,7 @@
                 android:background="@drawable/selector_button"
                 android:layout_weight="1"
                 android:textColor="#ffffff"
-                android:textSize="42sp"
+                android:textSize="@dimen/font_size_one"
                 android:focusable="true"
                 android:clickable="true"
                 android:text="@string/net_speed_test"
@@ -114,6 +115,7 @@
             android:layout_height="wrap_content">
 
         <LinearLayout
+
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="40dp"
@@ -126,7 +128,7 @@
                     android:layout_weight="1"
                     android:text="@string/net_type"
                     android:textColor="#8f8f8f"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/font_size_four"
                     android:gravity="center"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
@@ -135,11 +137,12 @@
                     android:layout_weight="1"
                     android:text="@string/status"
                     android:textColor="#8f8f8f"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/font_size_four"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
 
             <LinearLayout
+                    android:visibility="invisible"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:orientation="horizontal"

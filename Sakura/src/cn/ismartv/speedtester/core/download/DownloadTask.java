@@ -32,6 +32,8 @@ public class DownloadTask extends Thread {
     public volatile boolean running = false;
     private OnSpeedTestListener listener;
 
+    public static boolean isCancel = false;
+
     /**
      * handler
      */
@@ -72,7 +74,7 @@ public class DownloadTask extends Thread {
         running = true;
         for (Map<String, String> map : nodes) {
             if (running) {
-                while (running == false){
+                while (running == false) {
                     listener.onCancel();
                 }
                 Timer timer = new Timer();
@@ -160,6 +162,10 @@ public class DownloadTask extends Thread {
         this.running = running;
     }
 
+    public void setCancel() {
+        isCancel = true;
+    }
+
     public boolean isRunning() {
         return running;
     }
@@ -172,7 +178,7 @@ public class DownloadTask extends Thread {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case COMPLETE:
-                    MessageContent messageContent = (MessageContent)msg.obj;
+                    MessageContent messageContent = (MessageContent) msg.obj;
                     listener.compelte(messageContent.recordId, messageContent.cdnId, messageContent.speed);
                     break;
                 default:
@@ -184,12 +190,11 @@ public class DownloadTask extends Thread {
     /**
      * Message Content
      */
-    class MessageContent{
+    class MessageContent {
         public String recordId;
         public String cdnId;
         public int speed;
     }
-
 
 
 }
