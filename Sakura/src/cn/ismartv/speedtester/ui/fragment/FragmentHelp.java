@@ -2,6 +2,7 @@ package cn.ismartv.speedtester.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.TeleEntity;
 import cn.ismartv.speedtester.data.TicketEntity;
+import cn.ismartv.speedtester.ui.activity.HomeActivity;
+import cn.ismartv.speedtester.ui.activity.MenuActivity;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import org.w3c.dom.Text;
 import retrofit.Callback;
@@ -38,7 +41,7 @@ import java.util.List;
 /**
  * Created by huaijie on 14-10-29.
  */
-public class FragmentHelp extends Fragment {
+public class FragmentHelp extends Fragment implements HomeActivity.OnBackPressListener {
     public static final int QR_CODE = 0x0001;
     private static final String TAG = "FragmentHelp";
     @InjectView(R.id.weixin_image)
@@ -155,6 +158,12 @@ public class FragmentHelp extends Fragment {
                     }
                 }
         );
+    }
+
+    @Override
+    public void onBackPress() {
+        Intent intent = new Intent(mActivity, MenuActivity.class);
+        startActivity(intent);
     }
 
 

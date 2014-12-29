@@ -180,7 +180,7 @@ public class CacheManager {
             checkedItem.checked = false;
             checkedItem.save();
         }
-        NodeCacheTable nodeCacheTable = NodeCacheTable.loadByCdnId(NodeCacheTable.class, Long.parseLong(cdnId));
+        NodeCacheTable nodeCacheTable = NodeCacheTable.loadByCdnId(NodeCacheTable.class, Integer.parseInt(cdnId));
 
         if (null != nodeCacheTable) {
             nodeCacheTable.checked = checked;

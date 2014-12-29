@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by huaijie on 12/26/14.
  */
-public class HttpDownloadTask extends AsyncTask<List<NodeCacheTable>, String, Long> {
+public class HttpDownloadTask extends AsyncTask<List<Integer>, String, Long> {
     private static final String TAG = HttpDownloadTask.class.getSimpleName();
 
     /**
@@ -34,16 +34,20 @@ public class HttpDownloadTask extends AsyncTask<List<NodeCacheTable>, String, Lo
     private final File defaultCacheFile;
     private final Context mContext;
 
+    private OnCompleteListener completeListener;
+
     public interface OnCompleteListener {
         /**
          * 单个节点测速完成
          */
-        public void onSingleComplete();
+        public void onSingleComplete(String cndId, String speed);
 
         /**
          * 所有节点测速完成
          */
         public void onAllComplete();
+
+        public void onCancel();
     }
 
 
@@ -53,18 +57,27 @@ public class HttpDownloadTask extends AsyncTask<List<NodeCacheTable>, String, Lo
     }
 
     @Override
-    protected Long doInBackground(List<NodeCacheTable>... params) {
+    protected Long doInBackground(List<Integer>... params) {
+        List<Integer> cdnIDCollection = params[0];
 
+        Log.d(TAG, "node cache size is ---> " + cdnIDCollection.size());
+        for (Integer cdnID : cdnIDCollection) {
 
-        for (NodeCacheTable cacheTable : params[0]) {
+            /**
+             * 获取数据库信息
+             */
+            NodeCacheTable cacheTable = NodeCacheTable.loadByCdnId(NodeCacheTable.class, cdnID);
+
             /**
              * 测速下载
              */
-            if (cacheTable.setRun) {
+            if (!isCancelled()) {
                 try {
                     /**
                      * 开始测速时间
                      */
+                    Timer timer = new Timer();
+                    timer.start();
                     long startTime = System.currentTimeMillis();
 
                     URL url = new URL(cacheTable.url);
@@ -83,7 +96,7 @@ public class HttpDownloadTask extends AsyncTask<List<NodeCacheTable>, String, Lo
                     byte[] buffer = new byte[100];
                     int byteRead = 0;
                     int byteSum = 0;
-                    while ((byteRead = inputStream.read(buffer)) != -1) {
+                    while ((byteRead = inputStream.read(buffer)) != -1 && timer.timer < Timer.TIME_OVER && !isCancelled()) {
                         byteSum += byteRead;
                         fileOutputStream.write(buffer, 0, byteRead);
                     }
@@ -92,7 +105,23 @@ public class HttpDownloadTask extends AsyncTask<List<NodeCacheTable>, String, Lo
                      * 结束测速时间
                      */
                     long stopTime = System.currentTimeMillis();
+                    /**
+                     * 计算测试速度
+                     */
+                    int speed = calculateSpeed(byteSum, startTime, stopTime);
 
+
+                    /**
+                     * 保存测速信息
+                     */
+                    cacheTable.speed = speed;
+                    cacheTable.save();
+
+
+                    publishProgress(String.valueOf(cacheTable.cdnID), String.valueOf(speed));
+
+                    if (AppConstant.DEBUG)
+                        Log.d(TAG, cacheTable.nick + " speed is ---> " + speed);
 
                     fileOutputStream.flush();
                     fileOutputStream.close();
@@ -124,22 +153,40 @@ public class HttpDownloadTask extends AsyncTask<List<NodeCacheTable>, String, Lo
 
     @Override
     protected void onPostExecute(Long aLong) {
-        super.onPostExecute(aLong);
+        /**
+         * 所有节点测速完成
+         */
+        try {
+            completeListener.onAllComplete();
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Please set HttpDownload Listener!!!");
+        }
+
+
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
-        super.onProgressUpdate(values);
+        /**
+         * 单个节点测速完成回调
+         */
+
+        try {
+            completeListener.onSingleComplete(values[0], values[1]);
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Please set HttpDownload Listener!!!");
+        }
+
     }
 
     @Override
     protected void onCancelled(Long aLong) {
-        super.onCancelled(aLong);
+        completeListener.onCancel();
     }
 
     @Override
     protected void onCancelled() {
-        super.onCancelled();
+        completeListener.onCancel();
     }
 
     /**
@@ -154,26 +201,9 @@ public class HttpDownloadTask extends AsyncTask<List<NodeCacheTable>, String, Lo
         return (int) (((float) dataByte) / ((float) (stopTime - startTime)) * (1024f / 1000f));
     }
 
-    /**
-     * 计时器
-     */
-    private class Timer extends Thread {
-        private static final int TIME_OVER = 4;
-        private long timer = 0;
-
-        @Override
-        public void run() {
-            while (timer <= TIME_OVER) {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    if (AppConstant.DEBUG)
-                        e.printStackTrace();
-                    else
-                        Log.e(TAG, e.getMessage());
-                }
-                timer += 1;
-            }
-        }
+    public void setCompleteListener(OnCompleteListener listener) {
+        this.completeListener = listener;
     }
+
+
 }

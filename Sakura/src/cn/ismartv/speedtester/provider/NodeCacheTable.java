@@ -19,17 +19,15 @@ public class NodeCacheTable extends Model {
     public static final String SPEED = "speed";
     public static final String CHECKED = "checked";
     public static final String ISP = "isp";
+    public static final String NICK = "nick";
 
     @Column(name = "cdn_id", uniqueGroups = {"group1"}, onUniqueConflicts = {Column.ConflictAction.IGNORE})
     public long cdnID = 0;
 
-    @Column(name = "set_run")
-    public boolean setRun = false;
-
     @Column(name = "node_name")
     public String nodeName = "";
 
-    @Column(name = "nick")
+    @Column(name = NICK)
     public String nick = "";
 
     @Column(name = "flag")
@@ -62,7 +60,7 @@ public class NodeCacheTable extends Model {
     @Column(name = "running")
     public String running = "";
 
-    public static <T extends Model> T loadByCdnId(Class<T> type, long cdnId) {
+    public static <T extends Model> T loadByCdnId(Class<T> type, int cdnId) {
         TableInfo tableInfo = Cache.getTableInfo(type);
         return (T) new Select().from(type).where(CDN_ID + "=?", cdnId).executeSingle();
     }

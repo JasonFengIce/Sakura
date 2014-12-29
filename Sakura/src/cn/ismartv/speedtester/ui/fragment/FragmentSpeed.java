@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -22,76 +23,109 @@ import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheLoader;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.download.DownloadTask;
+import cn.ismartv.speedtester.core.download.HttpDownloadTask;
 import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.HttpDataEntity;
 import cn.ismartv.speedtester.data.IpLookUpEntity;
 import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.ui.activity.HomeActivity;
+import cn.ismartv.speedtester.ui.activity.MenuActivity;
 import cn.ismartv.speedtester.ui.adapter.NodeListAdapter;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
 import com.activeandroid.content.ContentProvider;
 import com.ismartv.android.vod.core.Utils;
+import org.w3c.dom.Text;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static cn.ismartv.speedtester.core.cache.CacheManager.*;
 
 /**
  * Created by huaijie on 14-10-29.
  */
-public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, DownloadTask.OnSpeedTestListener {
+public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        HttpDownloadTask.OnCompleteListener, HomeActivity.OnBackPressListener {
     private static final String TAG = "FragmentSpeed";
     private static int count = 0;
-    public Dialog testProgressPopup;
+
     @InjectView(R.id.node_list)
     ListView nodeList;
     @InjectView(R.id.province_spinner)
     Spinner provinceSpinner;
     @InjectView(R.id.isp_spinner)
     Spinner ispSpinner;
+
+    /**
+     * 测试按钮
+     */
     @InjectView(R.id.speed_test_btn)
     TextView speedTestBtn;
     @InjectView(R.id.current_node_text)
     TextView currentNode;
     @InjectView(R.id.unbind_node)
     Button unbindNode;
+
+    /**
+     * 正在测速弹出框
+     */
+    public Dialog speedTestProgressPopup;
+
+    /**
+     * 测速完成弹出框
+     */
+
+    public PopupWindow selectedCompletePopupWindow;
+
+    public PopupWindow testCompletePopupWindow;
+
+
     boolean running = false;
-    DownloadTask downloadTask;
     private NodeListAdapter nodeListAdapter;
     private int provincesPosition;
     private int ispPosition;
     private String[] selectionArgs;
     private String[] cities;
 
+    /**
+     * 传入下载中的 CDN 节点 ID
+     */
+    private List<Integer> cdnCollections;
+
     public static final int ALL_COMPLETE_MSG = 0x0001;
     public static final int ALL_COMPLETE = 0x0002;
 
-
-    public static Handler messageHandler;
 
     public static boolean can = false;
 
     /**
      * Activity
      */
-    private Activity mActivity;
+    private HomeActivity mActivity;
 
     SharedPreferences sharedPreferences;
+
+    /**
+     * 测速线程
+     */
+    HttpDownloadTask httpDownloadTask;
 
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.mActivity = activity;
+        this.mActivity = (HomeActivity) activity;
+        mActivity.setBackPressListener(this);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        messageHandler = new MessageHandler();
 
     }
 
@@ -106,6 +140,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initSpeedTestProgressDialog();
+
 
     }
 
@@ -156,6 +192,24 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     }
 
+    /**
+     * 返回事件
+     */
+    @Override
+    public void onBackPress() {
+        if (null == speedTestProgressPopup || null == selectedCompletePopupWindow || null == testCompletePopupWindow) {
+            Intent intent = new Intent(mActivity, MenuActivity.class);
+            startActivity(intent);
+        } else if (speedTestProgressPopup.isShowing() || selectedCompletePopupWindow.isShowing() || testCompletePopupWindow.isShowing()) {
+            mActivity.parentBackPress();
+        }else {
+            Intent intent = new Intent(mActivity, MenuActivity.class);
+            startActivity(intent);
+        }
+
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -195,6 +249,10 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> cursorLoader, Cursor cursor) {
         if (AppConstant.DEBUG)
             Log.d(TAG, "onLoadFinished");
+        /**
+         *给 cdnCollections 赋值
+         */
+        cdnCollections = cursorToList(cursor);
         nodeListAdapter.swapCursor(cursor);
 
         if (count == 1 && cursor.getCount() != 0) {
@@ -255,6 +313,22 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         initPopWindow((Integer) view.getTag());
     }
 
+    @Override
+    public void onSingleComplete(String cdnID, String speed) {
+        uploadTestResult(cdnID, speed);
+    }
+
+    @Override
+    public void onAllComplete() {
+        speedTestProgressPopup.dismiss();
+        initCompletedPopWindow(R.string.test_complete_text);
+    }
+
+    @Override
+    public void onCancel() {
+        initCompletedPopWindow(R.string.test_interupt);
+    }
+
     private void notifiySourceChanged() {
         if (ispPosition == 4) {
             selectionArgs = new String[]{String.valueOf(StringUtils.getAreaCodeByProvince(cities[provincesPosition])),
@@ -270,15 +344,14 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
     /**
-     * speed test
+     * 点击测速按钮,开始测速
      */
     @OnClick(R.id.speed_test_btn)
     public void speedTest() {
-        ((HomeActivity) mActivity).isFirstSpeedTest = false;
+        mActivity.isFirstSpeedTest = false;
         if (!((HomeActivity) mActivity).isFirstSpeedTest) {
             speedTestBtn.setText(R.string.button_label_retest);
         }
-        testProgressPopup = initTestProgressDialog();
 //        /**
 //         * update position
 //         */
@@ -286,35 +359,16 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 //        cacheManager.updatePosition(provincesPosition, ispPosition - 1);
         speedTestBtn.setBackgroundColor(Color.GRAY);
         speedTestBtn.setEnabled(false);
-        downloadTask = new DownloadTask(mActivity, nodeListAdapter.getCursor());
-        downloadTask.setSpeedTestListener(this);
-        downloadTask.start();
+
+        speedTestProgressPopup.show();
+
+//        downloadTask = new DownloadTask(mActivity, nodeListAdapter.getCursor());
+//        downloadTask.setSpeedTestListener(this);
+//        downloadTask.start();
 
 
     }
 
-    @Override
-    public void changeStatus(String recordId, String cdnId, boolean status) {
-
-    }
-
-    @Override
-    public void onCancel() {
-        messageHandler.sendEmptyMessage(ALL_COMPLETE);
-    }
-
-    @Override
-    public void compelte(final String recordId, final String cdnid, final int speed) {
-
-        updateNodeCache(Integer.parseInt(recordId), Integer.parseInt(cdnid), speed);
-        uploadTestResult(cdnid, String.valueOf(speed));
-
-    }
-
-    @Override
-    public void allCompelte() {
-        messageHandler.sendEmptyMessage(ALL_COMPLETE_MSG);
-    }
 
     private void initPopWindow(final int cdnID) {
         View contentView = LayoutInflater.from(mActivity)
@@ -334,6 +388,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
                 bindCdn(String.valueOf(cdnID), mActivity);
             }
         });
+        selectedCompletePopupWindow = popupWindow;
         cancleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -345,7 +400,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
 
-    private Dialog initTestProgressDialog() {
+    private Dialog initSpeedTestProgressDialog() {
         Dialog dialog = new Dialog(mActivity, R.style.ProgressDialog);
         Window dialogWindow = dialog.getWindow();
         dialogWindow.setGravity(Gravity.CENTER);
@@ -356,20 +411,34 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         View mView = LayoutInflater.from(mActivity).inflate(R.layout.popup_test_progress, null);
         dialog.setContentView(mView, lp);
         dialog.setCanceledOnTouchOutside(false);
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                /**
+                 * 开始测速
+                 */
+                httpDownloadTask = new HttpDownloadTask(mActivity);
+                httpDownloadTask.setCompleteListener(FragmentSpeed.this);
+                httpDownloadTask.execute(cdnCollections);
+            }
+        });
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                downloadTask.setRunning(false);
-                messageHandler.sendEmptyMessage(ALL_COMPLETE_MSG);
+                /**
+                 * 恢复 测速 按钮 颜色
+                 */
+                speedTestBtn.setBackgroundResource(R.drawable.selector_button);
+                speedTestBtn.setEnabled(true);
+                httpDownloadTask.cancel(true);
+                httpDownloadTask = null;
             }
         });
-        dialog.show();
+        speedTestProgressPopup = dialog;
         return dialog;
     }
 
-    public DownloadTask getDownloadTask() {
-        return downloadTask;
-    }
 
     @OnClick(R.id.unbind_node)
     public void unbindNode() {
@@ -477,44 +546,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
 
-    class MessageHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case ALL_COMPLETE_MSG:
-
-
-                        speedTestBtn.setBackgroundResource(R.drawable.selector_button);
-                        speedTestBtn.setEnabled(true);
-
-                        speedTestBtn.setClickable(true);
-
-                        if (null != testProgressPopup && testProgressPopup.isShowing()) {
-                            testProgressPopup.dismiss();
-                        }
-                    if (!can) {
-                        initPopWindow2();
-                    }
-                    break;
-                case ALL_COMPLETE:
-                    if (can) {
-                        speedTestBtn.setBackgroundResource(R.drawable.selector_button);
-                        speedTestBtn.setEnabled(true);
-
-                        speedTestBtn.setClickable(true);
-
-                        if (null != testProgressPopup && testProgressPopup.isShowing()) {
-                            testProgressPopup.dismiss();
-                        }
-                    }
-                    break;
-                default:
-
-
-                    break;
-            }
-        }
-    }
+//
 
 
     private void fetchIpLookup() {
@@ -542,9 +574,14 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
-    private void initPopWindow2() {
+    private PopupWindow initCompletedPopWindow(int titleRes) {
         View contentView = LayoutInflater.from(mActivity)
                 .inflate(R.layout.popup_test_complete, null);
+        /**
+         * 标题
+         */
+        TextView title = (TextView) contentView.findViewById(R.id.complete_title);
+        title.setText(titleRes);
         contentView.setBackgroundResource(R.drawable.bg_popup);
         final PopupWindow popupWindow = new PopupWindow(null, 500, 150);
         popupWindow.setContentView(contentView);
@@ -558,9 +595,21 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
                 popupWindow.dismiss();
             }
         });
-
-
+        testCompletePopupWindow = popupWindow;
+        return popupWindow;
     }
+
+    /**
+     * 将 cursor 转为 list, 因为 在使用 cursor 的时候,可能已经关闭了
+     */
+    public static List<Integer> cursorToList(Cursor cursor) {
+        List<Integer> cdnCollections = new ArrayList<Integer>();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            cdnCollections.add(cursor.getInt(cursor.getColumnIndex(NodeCacheTable.CDN_ID)));
+        }
+        return cdnCollections;
+    }
+
 
 }
 

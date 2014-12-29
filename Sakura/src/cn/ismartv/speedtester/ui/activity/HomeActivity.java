@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.download.DownloadTask;
@@ -26,8 +28,16 @@ public class HomeActivity extends BaseActivity {
     ViewPager pager;
     private TabAdapter tabAdapter;
 
-
     private int position;
+
+    /**
+     * 返回键 监听
+     */
+    private OnBackPressListener backPressListener;
+
+    public interface OnBackPressListener {
+        void onBackPress();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,20 +73,25 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        FragmentSpeed.can = true;
-        FragmentSpeed fragmentSpeed = ((FragmentSpeed) tabAdapter.getSpeedFragment());
-        DownloadTask downloadTask = fragmentSpeed.getDownloadTask();
-        if (null != downloadTask && downloadTask.isRunning()) {
+        try {
 
-
-            downloadTask.setRunning(false);
-
-        } else {
-            if (null != fragmentSpeed.testProgressPopup && fragmentSpeed.testProgressPopup.isShowing())
-                fragmentSpeed.testProgressPopup.dismiss();
-            Intent intent = new Intent(this, MenuActivity.class);
-            startActivity(intent);
+            backPressListener.onBackPress();
+        } catch (NullPointerException e) {
+            if (AppConstant.DEBUG)
+                e.printStackTrace();
+            else
+                Log.e(TAG, "Please Set HomeActivity OnBackPressListener !!!");
         }
     }
+
+
+    public void setBackPressListener(OnBackPressListener listener) {
+        this.backPressListener = listener;
+    }
+
+    public void parentBackPress() {
+        super.onBackPressed();
+    }
+
 }
 

@@ -2,6 +2,7 @@ package cn.ismartv.speedtester.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,8 @@ import cn.ismartv.speedtester.core.logger.Logger;
 import cn.ismartv.speedtester.data.ChatMsgEntity;
 import cn.ismartv.speedtester.data.FeedBackEntity;
 import cn.ismartv.speedtester.data.ProblemEntity;
+import cn.ismartv.speedtester.ui.activity.HomeActivity;
+import cn.ismartv.speedtester.ui.activity.MenuActivity;
 import cn.ismartv.speedtester.ui.adapter.FeedbackListAdapter;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
@@ -45,7 +48,7 @@ import java.util.regex.Pattern;
 /**
  * Created by huaijie on 14-10-29.
  */
-public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedChangeListener {
+public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedChangeListener, HomeActivity.OnBackPressListener {
 
     private static final String TAG = "FragmentFeedback";
 
@@ -239,6 +242,12 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         problemText = i;
 
 
+    }
+
+    @Override
+    public void onBackPress() {
+        Intent intent = new Intent(mActivity, MenuActivity.class);
+        startActivity(intent);
     }
 
 

@@ -103,5 +103,7 @@
     <string name="switch_to_auto">切换为自动获取</string>
     <string name="already_to_auto">已自动获取</string>
 
+    <string name="test_interupt">测速已终止</string>
+
 
 </resources>
