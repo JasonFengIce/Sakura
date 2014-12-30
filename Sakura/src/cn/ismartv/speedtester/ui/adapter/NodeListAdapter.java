@@ -35,25 +35,6 @@ public class NodeListAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
         View mView = LayoutInflater.from(context).inflate(R.layout.item_node_list, null);
-        //////////////////////////////////////////////////////
-        //Set OnHover Listener
-        //////////////////////////////////////////////////////
-//        mView.setOnHoverListener(new View.OnHoverListener() {
-//            @Override
-//            public boolean onHover(View view, MotionEvent motionEvent) {
-//
-//                switch (motionEvent.getAction()) {
-//                    case ACTION_HOVER_MOVE:
-//                        view.setBackgroundResource(R.drawable.list_selector);
-//                        break;
-//                    default:
-//                        view.setBackgroundColor(0x00000000);
-//                        break;
-//                }
-//                return false;
-//            }
-//        });
-
 
         return mView;
     }

@@ -142,8 +142,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initSpeedTestProgressDialog();
-
-
     }
 
     @Override
@@ -238,6 +236,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
          */
         cdnCollections = cursorToList(cursor);
         nodeListAdapter.swapCursor(cursor);
+        nodeList.setSelection(1);
+
 
         if (count == 1 && cursor.getCount() != 0) {
 //            firstSpeedTest(cursor);
@@ -307,14 +307,15 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         if (!isFragmentDestroy) {
             speedTestProgressPopup.dismiss();
             initCompletedPopWindow(R.string.test_complete_text);
+            nodeList.setSelection(0);
         }
 
     }
 
     @Override
     public void onCancel() {
-        if (!isFragmentDestroy)
-            initCompletedPopWindow(R.string.test_interupt);
+//        if (!isFragmentDestroy)
+//            initCompletedPopWindow(R.string.test_interupt);
     }
 
     private void notifiySourceChanged() {
@@ -403,9 +404,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                switch (keyCode){
+                switch (keyCode) {
                     case KeyEvent.KEYCODE_BACK:
-                        break;
+                    case KeyEvent.KEYCODE_ESCAPE:
+                        dialog.dismiss();
+                        initCompletedPopWindow(R.string.test_interupt);
+                        return true;
                 }
                 return false;
             }
