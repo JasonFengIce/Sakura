@@ -50,7 +50,7 @@ import static cn.ismartv.speedtester.core.cache.CacheManager.*;
  * Created by huaijie on 14-10-29.
  */
 public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        HttpDownloadTask.OnCompleteListener, HomeActivity.OnBackPressListener {
+        HttpDownloadTask.OnCompleteListener {
     private static final String TAG = "FragmentSpeed";
     private static int count = 0;
 
@@ -115,12 +115,17 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
      */
     HttpDownloadTask httpDownloadTask;
 
+    /**
+     *
+     */
+
+    private boolean isFragmentDestroy = false;
+
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.mActivity = (HomeActivity) activity;
-        mActivity.setBackPressListener(this);
     }
 
     @Override
@@ -133,6 +138,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_speed, container, false);
         ButterKnife.inject(this, mView);
+        isFragmentDestroy = false;
         return mView;
     }
 
@@ -188,23 +194,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         } else {
             provinceSpinner.setSelection(sharedPreferences.getInt(CacheManager.IpLookUp.USER_PROVINCE, 0));
             ispSpinner.setSelection(sharedPreferences.getInt(CacheManager.IpLookUp.USER_ISP, 0));
-        }
-
-    }
-
-    /**
-     * 返回事件
-     */
-    @Override
-    public void onBackPress() {
-        if (null == speedTestProgressPopup || null == selectedCompletePopupWindow || null == testCompletePopupWindow) {
-            Intent intent = new Intent(mActivity, MenuActivity.class);
-            startActivity(intent);
-        } else if (speedTestProgressPopup.isShowing() || selectedCompletePopupWindow.isShowing() || testCompletePopupWindow.isShowing()) {
-            mActivity.parentBackPress();
-        }else {
-            Intent intent = new Intent(mActivity, MenuActivity.class);
-            startActivity(intent);
         }
 
     }
@@ -320,8 +309,11 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onAllComplete() {
-        speedTestProgressPopup.dismiss();
-        initCompletedPopWindow(R.string.test_complete_text);
+        if (!isFragmentDestroy) {
+            speedTestProgressPopup.dismiss();
+            initCompletedPopWindow(R.string.test_complete_text);
+        }
+
     }
 
     @Override
@@ -610,7 +602,29 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         return cdnCollections;
     }
 
+    public boolean getTaskStatusIsCancelled() {
+        if (null == httpDownloadTask)
+            return true;
+        return httpDownloadTask.isCancelled();
+    }
 
+    @Override
+    public void onDestroy() {
+
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+
+
+        super.onDestroyView();
+        isFragmentDestroy = true;
+        if (AppConstant.DEBUG)
+            Log.d(TAG, "onDestroyView");
+
+
+    }
 }
 
 

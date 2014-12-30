@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
 /**
  * Created by huaijie on 14-10-29.
  */
-public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedChangeListener, HomeActivity.OnBackPressListener {
+public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedChangeListener {
 
     private static final String TAG = "FragmentFeedback";
 
@@ -73,12 +73,12 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     private int problemText = 6;
     private Handler messageHandler;
 
-    private Activity mActivity;
+    private HomeActivity mActivity;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.mActivity = activity;
+        this.mActivity = (HomeActivity) activity;
 
     }
 
@@ -243,13 +243,6 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
 
 
     }
-
-    @Override
-    public void onBackPress() {
-        Intent intent = new Intent(mActivity, MenuActivity.class);
-        startActivity(intent);
-    }
-
 
     class MessageHandler extends Handler {
         @Override

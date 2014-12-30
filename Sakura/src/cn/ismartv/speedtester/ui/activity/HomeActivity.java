@@ -30,14 +30,6 @@ public class HomeActivity extends BaseActivity {
 
     private int position;
 
-    /**
-     * 返回键 监听
-     */
-    private OnBackPressListener backPressListener;
-
-    public interface OnBackPressListener {
-        void onBackPress();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,25 +65,22 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        try {
-
-            backPressListener.onBackPress();
-        } catch (NullPointerException e) {
-            if (AppConstant.DEBUG)
-                e.printStackTrace();
-            else
-                Log.e(TAG, "Please Set HomeActivity OnBackPressListener !!!");
+        FragmentSpeed fragmentSpeed = (FragmentSpeed) tabAdapter.getSpeedFragment();
+        if (null != fragmentSpeed) {
+            if (!fragmentSpeed.getTaskStatusIsCancelled()) {
+                super.onBackPressed();
+            }else {
+                Intent intent = new Intent(this, MenuActivity.class);
+                startActivity(intent);
+            }
+        } else {
+            Intent intent = new Intent(this, MenuActivity.class);
+            startActivity(intent);
         }
-    }
 
 
-    public void setBackPressListener(OnBackPressListener listener) {
-        this.backPressListener = listener;
     }
 
-    public void parentBackPress() {
-        super.onBackPressed();
-    }
 
 }
 

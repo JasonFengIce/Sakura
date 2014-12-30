@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * Created by huaijie on 14-10-29.
  */
-public class FragmentHelp extends Fragment implements HomeActivity.OnBackPressListener {
+public class FragmentHelp extends Fragment {
     public static final int QR_CODE = 0x0001;
     private static final String TAG = "FragmentHelp";
     @InjectView(R.id.weixin_image)
@@ -56,7 +56,7 @@ public class FragmentHelp extends Fragment implements HomeActivity.OnBackPressLi
     TextView tvTel;
     private Handler messageHandler;
 
-    private Activity mActivity;
+    private HomeActivity mActivity;
 
     private static void qrcode(String ticket, Handler handler) {
         if (AppConstant.DEBUG)
@@ -82,7 +82,8 @@ public class FragmentHelp extends Fragment implements HomeActivity.OnBackPressLi
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mActivity = activity;
+        mActivity = (HomeActivity) activity;
+
     }
 
     @Override
@@ -160,11 +161,6 @@ public class FragmentHelp extends Fragment implements HomeActivity.OnBackPressLi
         );
     }
 
-    @Override
-    public void onBackPress() {
-        Intent intent = new Intent(mActivity, MenuActivity.class);
-        startActivity(intent);
-    }
 
 
     class MessageHandler extends Handler {
