@@ -65,22 +65,44 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        FragmentSpeed fragmentSpeed = (FragmentSpeed) tabAdapter.getSpeedFragment();
-        if (null != fragmentSpeed) {
-            if (!fragmentSpeed.getTaskStatusIsCancelled()) {
-                super.onBackPressed();
-            }else {
-                Intent intent = new Intent(this, MenuActivity.class);
-                startActivity(intent);
-            }
-        } else {
-            Intent intent = new Intent(this, MenuActivity.class);
-            startActivity(intent);
-        }
 
+        Intent intent = new Intent(this, MenuActivity.class);
+        startActivity(intent);
+//        FragmentSpeed fragmentSpeed = (FragmentSpeed) tabAdapter.getSpeedFragment();
+//        if (null != fragmentSpeed) {
+//            if (!fragmentSpeed.getTaskStatusIsCancelled()) {
+//                try {
+//                    backPressListener.backPress();
+//                } catch (NullPointerException e) {
+//                    if (AppConstant.DEBUG)
+//                        e.printStackTrace();
+//                    else
+//                        Log.e(TAG, e.getMessage());
+//                }
+//                super.onBackPressed();
+//            } else {
+//                Intent intent = new Intent(this, MenuActivity.class);
+//                startActivity(intent);
+//            }
+//        } else {
+//            Intent intent = new Intent(this, MenuActivity.class);
+//            startActivity(intent);
+//        }
 
     }
 
+    /**
+     * 返回键 监听器
+     */
+    private OnBackPressListener backPressListener;
+
+    public interface OnBackPressListener {
+        public void backPress();
+    }
+
+    public void setBackPressListener(OnBackPressListener listener) {
+        this.backPressListener = listener;
+    }
 
 }
 

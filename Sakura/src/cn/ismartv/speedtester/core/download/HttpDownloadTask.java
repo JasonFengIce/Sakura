@@ -201,6 +201,7 @@ public class HttpDownloadTask extends AsyncTask<List<Integer>, String, Long> {
         return (int) (((float) dataByte) / ((float) (stopTime - startTime)) * (1024f / 1000f));
     }
 
+
     public void setCompleteListener(OnCompleteListener listener) {
         this.completeListener = listener;
     }

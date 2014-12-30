@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.util.Log;
@@ -22,20 +19,17 @@ import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheLoader;
 import cn.ismartv.speedtester.core.cache.CacheManager;
-import cn.ismartv.speedtester.core.download.DownloadTask;
 import cn.ismartv.speedtester.core.download.HttpDownloadTask;
 import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.HttpDataEntity;
 import cn.ismartv.speedtester.data.IpLookUpEntity;
 import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.ui.activity.HomeActivity;
-import cn.ismartv.speedtester.ui.activity.MenuActivity;
 import cn.ismartv.speedtester.ui.adapter.NodeListAdapter;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
 import com.activeandroid.content.ContentProvider;
 import com.ismartv.android.vod.core.Utils;
-import org.w3c.dom.Text;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -50,7 +44,7 @@ import static cn.ismartv.speedtester.core.cache.CacheManager.*;
  * Created by huaijie on 14-10-29.
  */
 public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        HttpDownloadTask.OnCompleteListener {
+        HttpDownloadTask.OnCompleteListener, HomeActivity.OnBackPressListener {
     private static final String TAG = "FragmentSpeed";
     private static int count = 0;
 
@@ -126,6 +120,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.mActivity = (HomeActivity) activity;
+        mActivity.setBackPressListener(this);
     }
 
     @Override
@@ -318,7 +313,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onCancel() {
-        initCompletedPopWindow(R.string.test_interupt);
+        if (!isFragmentDestroy)
+            initCompletedPopWindow(R.string.test_interupt);
     }
 
     private void notifiySourceChanged() {
@@ -403,6 +399,17 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         View mView = LayoutInflater.from(mActivity).inflate(R.layout.popup_test_progress, null);
         dialog.setContentView(mView, lp);
         dialog.setCanceledOnTouchOutside(false);
+
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                switch (keyCode){
+                    case KeyEvent.KEYCODE_BACK:
+                        break;
+                }
+                return false;
+            }
+        });
 
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
@@ -616,13 +623,17 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onDestroyView() {
-
-
         super.onDestroyView();
         isFragmentDestroy = true;
+        if (null != httpDownloadTask && !httpDownloadTask.isCancelled()) {
+            httpDownloadTask.cancel(true);
+        }
         if (AppConstant.DEBUG)
             Log.d(TAG, "onDestroyView");
+    }
 
+    @Override
+    public void backPress() {
 
     }
 }
