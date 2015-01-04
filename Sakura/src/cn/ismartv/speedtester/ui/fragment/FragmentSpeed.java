@@ -236,11 +236,10 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
          */
         cdnCollections = cursorToList(cursor);
         nodeListAdapter.swapCursor(cursor);
-        nodeList.setSelection(1);
-
+        //nodeList.setSelection(1);
 
         if (count == 1 && cursor.getCount() != 0) {
-//            firstSpeedTest(cursor);
+            //firstSpeedTest(cursor);
 
         }
         count = count + 1;
@@ -307,7 +306,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         if (!isFragmentDestroy) {
             speedTestProgressPopup.dismiss();
             initCompletedPopWindow(R.string.test_complete_text);
+            nodeList.getChildAt(0).setFocusable(true);
+            nodeList.getChildAt(0).setFocusableInTouchMode(true);
+            nodeList.getChildAt(0).requestFocus();
             nodeList.setSelection(0);
+            //nodeList.setSelector(R.drawable.list_selector);
+
         }
 
     }
@@ -338,6 +342,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @OnClick(R.id.speed_test_btn)
     public void speedTest() {
         mActivity.isFirstSpeedTest = false;
+       // nodeList.setSelector(R.drawable.list_selector);
         if (!((HomeActivity) mActivity).isFirstSpeedTest) {
             speedTestBtn.setText(R.string.button_label_retest);
         }

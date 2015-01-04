@@ -2,17 +2,16 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:clickable="true"
                 android:focusable="true"
+                android:clickable="true"
                 android:minHeight="?android:attr/listPreferredItemHeight"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+        android:background="@drawable/listview_selector_bg">
 
     <FrameLayout
             android:layout_marginLeft="20dp"
             android:layout_centerVertical="true"
             android:id="@+id/title"
-            android:clickable="false"
-            android:focusable="false"
             android:layout_width="40dp"
             android:layout_height="40dp">
 
@@ -23,8 +22,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         <TextView
-                android:clickable="false"
-                android:focusable="false"
                 android:id="@+id/title_number"
                 android:layout_width="match_parent"
                 android:textSize="24sp"
@@ -40,14 +37,11 @@
             android:id="@+id/node_name"
             android:textColor="#8f8f8f"
             android:textSize="@dimen/font_size_four"
-            android:clickable="false"
-            android:focusable="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
     <cn.ismartv.speedtester.ui.widget.progressbar.SakuraProgressBar
-            android:clickable="false"
-            android:focusable="false"
+
              android:layout_alignParentRight="true"
             android:id="@+id/speed_progress"
             android:layout_marginRight="200dp"
@@ -60,8 +54,6 @@
             />
 
     <TextView
-            android:clickable="false"
-            android:focusable="false"
             android:layout_centerVertical="true"
             android:layout_marginRight="0dp"
             android:layout_alignParentRight="true"
