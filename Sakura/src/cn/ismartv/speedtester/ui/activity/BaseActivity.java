@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.RemoteController;
 import android.support.v4.app.FragmentActivity;
 import cn.ismartv.speedtester.utils.DeviceUtils;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by huaijie on 11/27/14.
@@ -54,6 +55,8 @@ public class BaseActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.setAutoLocation(true);
+        MobclickAgent.onResume(this);
         if (DeviceUtils.getModel().equals(S51) || DeviceUtils.getModel().equals(S61) || DeviceUtils.getModel().equals(K82))
             hideCursor(true);
 
@@ -62,6 +65,8 @@ public class BaseActivity extends FragmentActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        MobclickAgent.onPause(this);
+
         finish();
     }
 

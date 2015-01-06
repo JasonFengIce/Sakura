@@ -2,20 +2,13 @@ package cn.ismartv.speedtester.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.cache.CacheManager;
-import cn.ismartv.speedtester.core.download.DownloadTask;
 import cn.ismartv.speedtester.ui.TabAdapter;
-import cn.ismartv.speedtester.ui.fragment.FragmentSpeed;
 import cn.ismartv.speedtester.ui.widget.indicator.IconPageIndicator;
-import com.ismartv.android.vod.core.install.BootInstallTask;
-import com.ismartv.android.vod.service.HttpProxyService;
 
 
 public class HomeActivity extends BaseActivity {
@@ -49,6 +42,7 @@ public class HomeActivity extends BaseActivity {
         //Init Page Position
         /////////////////////////////////////////////////////////////
         pager.setCurrentItem(position);
+
     }
 
     @Override

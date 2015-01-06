@@ -130,7 +130,11 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        try {
+            Thread.sleep(1000000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -330,18 +334,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             speedTestProgressPopup.dismiss();
             initCompletedPopWindow(R.string.test_complete_text);
 
-
-//            nodeList.getChildAt(0).setBackgroundColor(Color.RED);
-//            nodeList.getChildAt(0).setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//                @Override
-//                public void onFocusChange(View v, boolean hasFocus) {
-//                    if (!hasFocus) {
-//                        nodeList.getChildAt(0).setBackgroundColor(0x00000000);
-//                    } else {
-//                        nodeList.getChildAt(0).setBackgroundColor(Color.RED);
-//                    }
-//                }
-//            });
         }
 
     }
@@ -372,26 +364,17 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
      */
     @OnClick(R.id.speed_test_btn)
     public void speedTest() {
-        nodeList.setSelector(R.drawable.selector_list_item);
+        nodeList.setSelector(R.drawable.listview_selector_bg);
         isPressSpeedButton = true;
         mActivity.isFirstSpeedTest = false;
         // nodeList.setSelector(R.drawable.list_selector);
         if (!((HomeActivity) mActivity).isFirstSpeedTest) {
             speedTestBtn.setText(R.string.button_label_retest);
         }
-//        /**
-//         * update position
-//         */
-//        CacheManager cacheManager = CacheManager.getInstance(mActivity);
-//        cacheManager.updatePosition(provincesPosition, ispPosition - 1);
         speedTestBtn.setBackgroundColor(Color.GRAY);
         speedTestBtn.setEnabled(false);
 
         speedTestProgressPopup.show();
-
-//        downloadTask = new DownloadTask(mActivity, nodeListAdapter.getCursor());
-//        downloadTask.setSpeedTestListener(this);
-//        downloadTask.start();
 
 
     }
