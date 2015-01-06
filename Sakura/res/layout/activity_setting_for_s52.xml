@@ -91,7 +91,7 @@
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/net_speedtester"
+                    android:text="@string/node_speed_test"
                     android:textSize="29sp"
                     android:textColor="#FFFFFFFF"
                     android:alpha="0.6"/>

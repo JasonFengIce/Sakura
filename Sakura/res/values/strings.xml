@@ -106,4 +106,7 @@
     <string name="test_interupt">测速已终止</string>
 
 
+    <string name="node_speed_test">网络测速</string>
+
+
 </resources>

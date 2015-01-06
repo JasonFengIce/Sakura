@@ -55,7 +55,6 @@ public class BaseActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.setAutoLocation(true);
         MobclickAgent.onResume(this);
         if (DeviceUtils.getModel().equals(S51) || DeviceUtils.getModel().equals(S61) || DeviceUtils.getModel().equals(K82))
             hideCursor(true);
@@ -80,16 +79,6 @@ public class BaseActivity extends FragmentActivity {
     public enum TVModel {
         S51, S52
     }
-
-
-//    private BroadcastReceiver mCloseReceiver = new BroadcastReceiver() {
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            Log.d(TAG, "onReceive ---> " + intent.getAction());
-//            BaseActivity.this.finish();
-//        }
-//    };
 
 
 }

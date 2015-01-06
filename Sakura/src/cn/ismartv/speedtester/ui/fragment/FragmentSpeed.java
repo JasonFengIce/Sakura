@@ -130,11 +130,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            Thread.sleep(1000000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -364,7 +359,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
      */
     @OnClick(R.id.speed_test_btn)
     public void speedTest() {
-        nodeList.setSelector(R.drawable.listview_selector_bg);
+        nodeList.setSelector(R.drawable.list_selector);
         isPressSpeedButton = true;
         mActivity.isFirstSpeedTest = false;
         // nodeList.setSelector(R.drawable.list_selector);
