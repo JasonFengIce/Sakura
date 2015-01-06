@@ -7,6 +7,6 @@
           android:drawable="@drawable/list_selector"/>
     <item android:state_hovered="true"
           android:drawable="@drawable/list_selector"/>
-    <!--<item android:drawable="@drawable/button_normal"/>-->
+    <item android:drawable="@drawable/button_normal"/>
 
 </selector>

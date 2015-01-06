@@ -2,13 +2,15 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:focusable="true"
-                android:clickable="true"
+                android:focusable="false"
+                android:clickable="false"
                 android:minHeight="?android:attr/listPreferredItemHeight"
                 android:layout_height="match_parent"
-        android:background="@drawable/listview_selector_bg">
+        >
 
     <FrameLayout
+            android:focusable="false"
+            android:clickable="false"
             android:layout_marginLeft="20dp"
             android:layout_centerVertical="true"
             android:id="@+id/title"
@@ -16,12 +18,15 @@
             android:layout_height="40dp">
 
         <ImageView
+
                 android:clickable="false"
                 android:focusable="false"
                 android:src="@drawable/title_icon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         <TextView
+                android:clickable="false"
+                android:focusable="false"
                 android:id="@+id/title_number"
                 android:layout_width="match_parent"
                 android:textSize="24sp"
@@ -31,6 +36,8 @@
     </FrameLayout>
 
     <TextView
+            android:clickable="false"
+            android:focusable="false"
             android:layout_marginLeft="60dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/title"
@@ -41,8 +48,9 @@
             android:layout_height="wrap_content"/>
 
     <cn.ismartv.speedtester.ui.widget.progressbar.SakuraProgressBar
-
-             android:layout_alignParentRight="true"
+            android:clickable="false"
+            android:focusable="false"
+            android:layout_alignParentRight="true"
             android:id="@+id/speed_progress"
             android:layout_marginRight="200dp"
             android:layout_centerVertical="true"
@@ -54,6 +62,8 @@
             />
 
     <TextView
+            android:clickable="false"
+            android:focusable="false"
             android:layout_centerVertical="true"
             android:layout_marginRight="0dp"
             android:layout_alignParentRight="true"
