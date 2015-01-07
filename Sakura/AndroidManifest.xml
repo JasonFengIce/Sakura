@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="cn.ismartv.speedtester"
           android:installLocation="internalOnly"
-          android:versionCode="203"
-          android:versionName="2.03">
+          android:versionCode="205"
+          android:versionName="2.05">
     <uses-sdk android:minSdkVersion="14"/>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -32,10 +32,6 @@
         <uses-library android:name="android.test.runner"/>
         <meta-data android:name="AA_DB_NAME" android:value="sakura.db"/>
         <meta-data android:name="AA_DB_VERSION" android:value="2"/>
-
-        <!-- 友盟配置-->
-        <meta-data android:value="54ab5d2cfd98c53141001725" android:name="UMENG_APPKEY"></meta-data>
-        <meta-data android:value="IsmarTV" android:name="UMENG_CHANNEL"/>
 
 
         <!--test activity-->
@@ -101,6 +97,12 @@
         <provider android:authorities="cn.ismartv.speedtester"
                   android:exported="false"
                   android:name="com.activeandroid.content.ContentProvider"/>
+
+
+        <!-- 友盟配置-->
+        <meta-data android:value="54ab5d2cfd98c53141001725" android:name="UMENG_APPKEY"></meta-data>
+        <meta-data android:value="IsmarTV" android:name="UMENG_CHANNEL"/>
+
     </application>
 
 

@@ -54,8 +54,8 @@ public class BaseActivity extends FragmentActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         MobclickAgent.onResume(this);
+        super.onResume();
         if (DeviceUtils.getModel().equals(S51) || DeviceUtils.getModel().equals(S61) || DeviceUtils.getModel().equals(K82))
             hideCursor(true);
 
@@ -63,15 +63,14 @@ public class BaseActivity extends FragmentActivity {
 
     @Override
     protected void onPause() {
-        super.onPause();
         MobclickAgent.onPause(this);
+        super.onPause();
 
         finish();
     }
 
     @Override
     protected void onDestroy() {
-//        unregisterReceiver(mCloseReceiver);
         super.onDestroy();
 
     }
@@ -79,6 +78,4 @@ public class BaseActivity extends FragmentActivity {
     public enum TVModel {
         S51, S52
     }
-
-
 }

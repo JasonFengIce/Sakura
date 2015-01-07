@@ -219,7 +219,7 @@
         <Button
                 android:layout_width="247dip"
                 android:layout_height="68dip"
-                android:background="@drawable/setting_button_drawable"
+                android:background="@drawable/selector_button"
                 android:id="@+id/oobe_action_btn"
                 android:text="@string/StartTesting"
                 android:textColor="@drawable/setting_button_text_color"

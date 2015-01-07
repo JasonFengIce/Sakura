@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
@@ -15,20 +16,18 @@ import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.data.IpLookUpEntity;
-import com.ismartv.android.vod.core.install.BootInstallTask;
 import com.ismartv.android.vod.service.HttpProxyService;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import java.io.File;
 import java.util.List;
 
 /**
  * Created by huaijie on 14-11-12.
  */
-public class MenuActivity extends BaseActivity {
+public class MenuActivity extends BaseActivity implements View.OnHoverListener {
     private static final String TAG = "MenuActivity";
 
     public static final String TAB_FLAG = "TAB_FLAG";
@@ -50,19 +49,14 @@ public class MenuActivity extends BaseActivity {
         setContentView(R.layout.activity_menu);
         ButterKnife.inject(this);
 
+
+        for (ImageView tab : tabs)
+            tab.setOnHoverListener(this);
+
         SharedPreferences sharedPreferences = this.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
         if (sharedPreferences.getInt(CacheManager.IpLookUp.USER_PROVINCE, -1) == -1 || sharedPreferences.getInt(CacheManager.IpLookUp.USER_ISP, -1) == -1) {
             fetchIpLookup();
         }
-
-        ///////////////////////////////////////////////////////////////
-        //Add Showcase View
-        ///////////////////////////////////////////////////////////////
-//        showcaseView = new ShowcaseView.Builder(this)
-//                .setTarget(new ViewTarget(findViewById(R.id.tab_speed)))
-//                .setOnClickListener(this)
-//                .build();
-//        showcaseView.setButtonText(getString(R.string.next));
     }
 
 
@@ -106,6 +100,23 @@ public class MenuActivity extends BaseActivity {
                 Log.e(TAG, "fetchIpLookup failed!!!");
             }
         });
+    }
+
+    @Override
+    public boolean onHover(View view, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+                view.setFocusable(true);
+                view.setFocusableInTouchMode(true);
+                view.requestFocus();
+                view.requestFocusFromTouch();
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     /**

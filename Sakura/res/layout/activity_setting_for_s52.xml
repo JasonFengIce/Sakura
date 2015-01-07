@@ -217,22 +217,10 @@
                 android:textColor="#FFF0F0F0"
                 android:visibility="visible"/>
     </LinearLayout>
-    <!-- <Button
-        android:layout_width="195dip"
-        android:layout_height="86dip"
-        android:background="@drawable/nav_button_drawable"
-        android:id="@+id/oobe_back_btn"
-        android:text="@string/back"
-        android:textColor="#FFFFFFFF"
-        android:textSize="35sp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="93dip"
-        android:layout_marginBottom="18dip"/> -->
     <Button
             android:layout_width="400dip"
             android:layout_height="55dip"
-            android:background="@drawable/setting_button_drawable"
+            android:background="@drawable/selector_button"
             android:id="@+id/oobe_action_btn"
             android:text="@string/StartTesting"
             android:textColor="#ffffffff"

@@ -23,6 +23,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -38,7 +39,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * This widget implements the dynamic action bar tab behavior that can change
  * across different configurations or circumstances.
  */
-public class IconPageIndicator extends HorizontalScrollView implements PageIndicator, View.OnClickListener, View.OnFocusChangeListener {
+public class IconPageIndicator extends HorizontalScrollView implements PageIndicator, View.OnClickListener, View.OnFocusChangeListener, View.OnHoverListener {
     private final IcsLinearLayout mIconsLayout;
 
     private ViewPager mViewPager;
@@ -186,6 +187,7 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
             imageViews[i].setOnClickListener(this);
             imageViews[i].setFocusable(true);
             imageViews[i].setOnFocusChangeListener(this);
+            imageViews[i].setOnHoverListener(this);
         }
         pretTab = imageViews[0];
         mIconsLayout.addView(linearLayout);
@@ -274,5 +276,43 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
     @Override
     public void onFocusChange(View view, boolean focused) {
         onClick(view);
+    }
+
+
+    //    (R.id.icon_node);
+//    imageViews[1] = (ImageView) linearLayout.findViewById(R.id.icon_help);
+//    imageViews[2] = (ImageView) linearLayout.findViewById(R.id.icon_feedback);
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        ImageView imageView = (ImageView) v;
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+                switch (v.getId()) {
+                    case R.id.icon_node:
+                        imageView.setImageResource(R.drawable.speed_indicator_focus);
+                        break;
+                    case R.id.icon_help:
+                        imageView.setImageResource(R.drawable.feedback_indicator_focus);
+                        break;
+                    case R.id.icon_feedback:
+                        imageView.setImageResource(R.drawable.help_indicator_focus);
+                        break;
+                }
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                switch (v.getId()) {
+                    case R.id.icon_node:
+                        imageView.setImageResource(R.drawable.speed_indicator);
+                        break;
+                    case R.id.icon_help:
+                        imageView.setImageResource(R.drawable.feedback_indicator);
+                        break;
+                    case R.id.icon_feedback:
+                        imageView.setImageResource(R.drawable.help_indicator);
+                        break;
+                }
+                break;
+        }
+        return true;
     }
 }

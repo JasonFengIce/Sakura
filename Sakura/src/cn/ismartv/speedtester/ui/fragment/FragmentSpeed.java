@@ -44,7 +44,7 @@ import static cn.ismartv.speedtester.core.cache.CacheManager.*;
  * Created by huaijie on 14-10-29.
  */
 public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        HttpDownloadTask.OnCompleteListener, HomeActivity.OnBackPressListener {
+        HttpDownloadTask.OnCompleteListener, HomeActivity.OnBackPressListener, View.OnHoverListener {
     private static final String TAG = "FragmentSpeed";
     private static int count = 0;
 
@@ -137,6 +137,9 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         View mView = inflater.inflate(R.layout.fragment_speed, container, false);
         ButterKnife.inject(this, mView);
         isFragmentDestroy = false;
+
+        nodeList.setNextFocusDownId(R.id.node_list);
+
         return mView;
     }
 
@@ -144,6 +147,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //set onHover Listener
+        provinceSpinner.setOnHoverListener(this);
+        ispSpinner.setOnHoverListener(this);
+
+
         initSpeedTestProgressDialog();
     }
 
@@ -655,6 +664,23 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void backPress() {
 
+    }
+
+    @Override
+    public boolean onHover(View view, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+                view.setFocusable(true);
+                view.setFocusableInTouchMode(true);
+                view.requestFocus();
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                view.clearFocus();
+            default:
+                break;
+        }
+
+        return true;
     }
 }
 

@@ -3,11 +3,15 @@ package cn.ismartv.speedtester.ui;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.widget.ImageView;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.ui.fragment.FragmentFeedback;
 import cn.ismartv.speedtester.ui.fragment.FragmentHelp;
 import cn.ismartv.speedtester.ui.fragment.FragmentSpeed;
 import cn.ismartv.speedtester.ui.widget.indicator.IconPagerAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by huaijie on 14-10-29.
@@ -28,6 +32,10 @@ public class TabAdapter extends FragmentPagerAdapter implements IconPagerAdapter
 
     public TabAdapter(FragmentManager fm) {
         super(fm);
+
+
+
+
         fragmentSpeed = new FragmentSpeed();
         FRAGMENTS[0] = fragmentSpeed;
         FRAGMENTS[1] = new FragmentFeedback();

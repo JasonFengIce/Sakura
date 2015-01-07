@@ -10,7 +10,9 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
 import android.widget.*;
 import butterknife.ButterKnife;
@@ -48,7 +50,7 @@ import java.util.regex.Pattern;
 /**
  * Created by huaijie on 14-10-29.
  */
-public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedChangeListener {
+public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedChangeListener, OnHoverListener {
 
     private static final String TAG = "FragmentFeedback";
 
@@ -97,6 +99,9 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        phone.setOnHoverListener(this);
+        description.setOnHoverListener(this);
+
         problemType = (RadioGroup) view.findViewById(R.id.problem_options);
 
 
@@ -204,6 +209,9 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
                 radioButton.setText(problemEntities.get(i).getPoint_name());
                 radioButton.setTextSize(30);
                 radioButton.setId(problemEntities.get(i).getPoint_id());
+                radioButton.setOnHoverListener(this);
+
+
                 if (i == 0)
                     mRadioButton = radioButton;
                 problemType.addView(radioButton);
@@ -242,6 +250,23 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         problemText = i;
 
 
+    }
+
+    @Override
+    public boolean onHover(View view, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+                view.setFocusable(true);
+                view.setFocusableInTouchMode(true);
+                view.requestFocus();
+                view.requestFocusFromTouch();
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                view.clearFocus();
+                break;
+        }
+
+        return true;
     }
 
     class MessageHandler extends Handler {

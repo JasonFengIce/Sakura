@@ -11,6 +11,8 @@
 
 
     <ImageView android:layout_width="80dp"
+               android:focusable="true"
+               android:clickable="true"
                android:layout_marginLeft="100dp"
                android:layout_marginRight="100dp"
                android:id="@+id/icon_node"

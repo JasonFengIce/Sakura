@@ -97,7 +97,7 @@
 
     <string name="fill_contact_number">请填写联系电话!</string>
 
-    <string name="test_complete_text">测速完成,请选择覆盖点</string>
+    <string name="test_complete_text">测速完成,请选择视频源</string>
 
 
     <string name="switch_to_auto">切换为自动获取</string>
@@ -107,6 +107,7 @@
 
 
     <string name="node_speed_test">网络测速</string>
+    <string name="submit_text">提交</string>
 
 
 </resources>
