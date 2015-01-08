@@ -25,6 +25,7 @@ import cn.ismartv.speedtester.data.HttpDataEntity;
 import cn.ismartv.speedtester.data.IpLookUpEntity;
 import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.ui.activity.HomeActivity;
+import cn.ismartv.speedtester.ui.activity.HomeActivity.OnKeyEventListener;
 import cn.ismartv.speedtester.ui.adapter.NodeListAdapter;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
@@ -44,9 +45,10 @@ import static cn.ismartv.speedtester.core.cache.CacheManager.*;
  * Created by huaijie on 14-10-29.
  */
 public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        HttpDownloadTask.OnCompleteListener, HomeActivity.OnBackPressListener, View.OnHoverListener {
+        HttpDownloadTask.OnCompleteListener, HomeActivity.OnBackPressListener, View.OnHoverListener, OnKeyEventListener {
     private static final String TAG = "FragmentSpeed";
     private static int count = 0;
+
 
     @InjectView(R.id.node_list)
     ListView nodeList;
@@ -125,6 +127,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         super.onAttach(activity);
         this.mActivity = (HomeActivity) activity;
         mActivity.setBackPressListener(this);
+        mActivity.setOnKeyEventListener(this);
     }
 
     @Override
@@ -148,11 +151,11 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //set onHover Listener
+//        //set onHover Listener
         provinceSpinner.setOnHoverListener(this);
         ispSpinner.setOnHoverListener(this);
-
-
+        speedTestBtn.setOnHoverListener(this);
+        unbindNode.setOnHoverListener(this);
         initSpeedTestProgressDialog();
     }
 
@@ -303,7 +306,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @OnItemClick(R.id.node_list)
     public void pickNode(AdapterView<?> parent, View view, int position, long id) {
 
-
+        nodeList.setSelector(R.drawable.list_selector);
         if (AppConstant.DEBUG) {
             Log.d(TAG, "item positon ---> " + position);
             Log.d(TAG, "item tag ---> " + view.getTag() + "   " + parent.getTag());
@@ -311,7 +314,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         CacheManager cacheManager = CacheManager.getInstance(mActivity);
         cacheManager.updatePosition(provincesPosition, ispPosition - 1);
 
-        initPopWindow((Integer) view.getTag());
+        initPopWindow((Integer) view.getTag(), position);
     }
 
     @OnItemSelected(R.id.node_list)
@@ -384,7 +387,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
 
-    private void initPopWindow(final int cdnID) {
+    private void initPopWindow(final int cdnID, final int position) {
         View contentView = LayoutInflater.from(mActivity)
                 .inflate(R.layout.popup_confirm_node, null);
         contentView.setBackgroundResource(R.drawable.bg_popup);
@@ -614,6 +617,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         final PopupWindow popupWindow = new PopupWindow(null, 500, 150);
         popupWindow.setContentView(contentView);
         popupWindow.setFocusable(true);
+
         popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);
 
         TextView cancleButton = (TextView) contentView.findViewById(R.id.test_c_confirm_btn);
@@ -624,6 +628,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             }
         });
         testCompletePopupWindow = popupWindow;
+
+
         return popupWindow;
     }
 
@@ -670,15 +676,54 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public boolean onHover(View view, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                view.setFocusable(true);
-                view.setFocusableInTouchMode(true);
-                view.requestFocus();
+
+                currentNode.requestFocus();
+                currentNode.requestFocusFromTouch();
+
+
+                switch (view.getId()) {
+                    case R.id.province_spinner:
+                    case R.id.isp_spinner:
+                        view.setBackgroundResource(R.drawable.spinner_ab_focused_holo_dark_am);
+                        break;
+                    case R.id.unbind_node:
+                    case R.id.speed_test_btn:
+                        view.setBackgroundResource(R.drawable.button_focus);
+                        break;
+                }
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 view.clearFocus();
+                switch (view.getId()) {
+                    case R.id.province_spinner:
+                    case R.id.isp_spinner:
+                        view.setBackgroundResource(R.drawable.selector_spinner);
+                        break;
+                    case R.id.unbind_node:
+                    case R.id.speed_test_btn:
+                        view.setBackgroundResource(R.drawable.selector_button);
+                        break;
+                    default:
+                        break;
+                }
             default:
                 break;
         }
+
+        return true;
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                if (null != testCompletePopupWindow && testCompletePopupWindow.isShowing())
+                    testCompletePopupWindow.dismiss();
+
+                break;
+        }
+
 
         return true;
     }

@@ -99,8 +99,11 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        phone.setOnHoverListener(this);
-        description.setOnHoverListener(this);
+//        phone.setOnHoverListener(this);
+//        description.setOnHoverListener(this);
+
+        arrows.get(0).setNextFocusDownId(R.id.arrow_up);
+        arrows.get(1).setNextFocusDownId(R.id.arrow_up);
 
         problemType = (RadioGroup) view.findViewById(R.id.problem_options);
 
@@ -209,7 +212,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
                 radioButton.setText(problemEntities.get(i).getPoint_name());
                 radioButton.setTextSize(30);
                 radioButton.setId(problemEntities.get(i).getPoint_id());
-                radioButton.setOnHoverListener(this);
+//                radioButton.setOnHoverListener(this);
 
 
                 if (i == 0)

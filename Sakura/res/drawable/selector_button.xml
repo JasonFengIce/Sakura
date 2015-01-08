@@ -8,4 +8,5 @@
     <item android:state_hovered="true"
           android:drawable="@drawable/button_focus"/>
     <item android:drawable="@drawable/button_normal"/>
+
 </selector>

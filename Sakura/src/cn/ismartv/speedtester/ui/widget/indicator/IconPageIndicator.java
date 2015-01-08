@@ -187,7 +187,7 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
             imageViews[i].setOnClickListener(this);
             imageViews[i].setFocusable(true);
             imageViews[i].setOnFocusChangeListener(this);
-            imageViews[i].setOnHoverListener(this);
+//            imageViews[i].setOnHoverListener(this);
         }
         pretTab = imageViews[0];
         mIconsLayout.addView(linearLayout);

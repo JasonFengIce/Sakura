@@ -3,6 +3,7 @@ package cn.ismartv.speedtester.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.ismartv.speedtester.R;
@@ -76,5 +77,25 @@ public class HomeActivity extends BaseActivity {
         this.backPressListener = listener;
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                return onKeyEventListener.onKeyDown(keyCode, event);
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public interface OnKeyEventListener {
+        public boolean onKeyDown(int keyCode, KeyEvent event);
+    }
+
+    private OnKeyEventListener onKeyEventListener;
+
+    public void setOnKeyEventListener(OnKeyEventListener listener) {
+        this.onKeyEventListener = listener;
+    }
 }
 
