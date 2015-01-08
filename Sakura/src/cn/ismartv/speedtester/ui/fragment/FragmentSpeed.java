@@ -1,5 +1,16 @@
 package cn.ismartv.speedtester.ui.fragment;
 
+import static cn.ismartv.speedtester.core.cache.CacheManager.clearCheck;
+import static cn.ismartv.speedtester.core.cache.CacheManager.fetchCheck;
+import static cn.ismartv.speedtester.core.cache.CacheManager.updateCheck;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -11,9 +22,27 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.util.Log;
-import android.view.*;
-import android.widget.*;
-import butterknife.*;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
+import butterknife.OnItemSelected;
 import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
@@ -29,17 +58,9 @@ import cn.ismartv.speedtester.ui.activity.HomeActivity.OnKeyEventListener;
 import cn.ismartv.speedtester.ui.adapter.NodeListAdapter;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
+
 import com.activeandroid.content.ContentProvider;
 import com.ismartv.android.vod.core.Utils;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static cn.ismartv.speedtester.core.cache.CacheManager.*;
 
 /**
  * Created by huaijie on 14-10-29.
@@ -87,7 +108,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     private int ispPosition;
     private String[] selectionArgs;
     private String[] cities;
-
+    private View temp;
     /**
      * 传入下载中的 CDN 节点 ID
      */
@@ -156,6 +177,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         ispSpinner.setOnHoverListener(this);
         speedTestBtn.setOnHoverListener(this);
         unbindNode.setOnHoverListener(this);
+        nodeList.setOnHoverListener(this);
         initSpeedTestProgressDialog();
     }
 
@@ -306,7 +328,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @OnItemClick(R.id.node_list)
     public void pickNode(AdapterView<?> parent, View view, int position, long id) {
 
-        nodeList.setSelector(R.drawable.list_selector);
+//        nodeList.setSelector(R.drawable.list_selector);
         if (AppConstant.DEBUG) {
             Log.d(TAG, "item positon ---> " + position);
             Log.d(TAG, "item tag ---> " + view.getTag() + "   " + parent.getTag());
@@ -320,6 +342,15 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @OnItemSelected(R.id.node_list)
     public void selectNode(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "select position is " + position);
+//        nodeList.setSelector(R.drawable.list_selector);
+		if (temp == null) {
+			view.setBackgroundResource(android.R.drawable.list_selector_background);
+			temp = view;
+		}else{
+			temp.setBackgroundResource(android.R.drawable.list_selector_background);
+			view.setBackgroundResource(R.drawable.list_selector);
+			temp = view;
+		}
 //        if (position == 0 && selectedOne == 0) {
 //            selectedOne += 1;
 //            nodeList.getChildAt(0).setBackgroundColor(0xffffff);
@@ -674,41 +705,53 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public boolean onHover(View view, MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_HOVER_ENTER:
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_HOVER_ENTER:
 
-                currentNode.requestFocus();
-                currentNode.requestFocusFromTouch();
+			currentNode.requestFocus();
+			currentNode.requestFocusFromTouch();
 
+			switch (view.getId()) {
 
-                switch (view.getId()) {
-                    case R.id.province_spinner:
-                    case R.id.isp_spinner:
-                        view.setBackgroundResource(R.drawable.spinner_ab_focused_holo_dark_am);
-                        break;
-                    case R.id.unbind_node:
-                    case R.id.speed_test_btn:
-                        view.setBackgroundResource(R.drawable.button_focus);
-                        break;
-                }
-                break;
-            case MotionEvent.ACTION_HOVER_EXIT:
-                view.clearFocus();
-                switch (view.getId()) {
-                    case R.id.province_spinner:
-                    case R.id.isp_spinner:
-                        view.setBackgroundResource(R.drawable.selector_spinner);
-                        break;
-                    case R.id.unbind_node:
-                    case R.id.speed_test_btn:
-                        view.setBackgroundResource(R.drawable.selector_button);
-                        break;
-                    default:
-                        break;
-                }
-            default:
-                break;
-        }
+			case R.id.province_spinner:
+			case R.id.isp_spinner:
+				view.setBackgroundResource(R.drawable.spinner_ab_focused_holo_dark_am);
+				if (temp != null)
+					temp.setBackgroundResource(android.R.drawable.list_selector_background);
+				break;
+			case R.id.unbind_node:
+			case R.id.speed_test_btn:
+				view.setBackgroundResource(R.drawable.button_focus);
+				if (temp != null)
+					temp.setBackgroundResource(android.R.drawable.list_selector_background);
+				break;
+			case R.id.node_list:
+				if (temp != null)
+					temp.setBackgroundResource(R.drawable.list_selector);
+				break;
+			}
+			break;
+		case MotionEvent.ACTION_HOVER_EXIT:
+			view.clearFocus();
+			switch (view.getId()) {
+			case R.id.province_spinner:
+			case R.id.isp_spinner:
+				view.setBackgroundResource(R.drawable.selector_spinner);
+				break;
+			case R.id.unbind_node:
+			case R.id.speed_test_btn:
+				view.setBackgroundResource(R.drawable.selector_button);
+				break;
+			case R.id.node_list:
+				if (temp != null)
+					temp.setBackgroundResource(android.R.drawable.list_selector_background);
+				break;
+			default:
+				break;
+			}
+		default:
+			break;
+		}
 
         return true;
     }
