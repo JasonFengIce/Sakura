@@ -330,14 +330,17 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void pickNode(AdapterView<?> parent, View view, int position, long id) {
 
 //        nodeList.setSelector(R.drawable.list_selector);
-        if (null == temp) {
-            temp.setBackgroundColor(00000000);
-            temp = view;
-        } else {
-            temp.setBackgroundColor(00000000);
-            view.setBackgroundResource(R.drawable.list_selector);
-            temp = view;
-        }
+		try {
+			if (null == temp) {
+				temp.setBackgroundColor(00000000);
+				temp = view;
+			} else {
+				temp.setBackgroundColor(00000000);
+				view.setBackgroundResource(R.drawable.list_selector);
+				temp = view;
+			}
+		} catch (java.lang.NullPointerException e) {
+		}
         if (AppConstant.DEBUG) {
             Log.d(TAG, "item positon ---> " + position);
             Log.d(TAG, "item tag ---> " + view.getTag() + "   " + parent.getTag());
