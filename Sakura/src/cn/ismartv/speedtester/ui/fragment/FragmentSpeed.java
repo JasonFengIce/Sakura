@@ -726,8 +726,10 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 					temp.setBackgroundResource(android.R.drawable.list_selector_background);
 				break;
 			case R.id.node_list:
-				if (temp != null)
+				if (temp != null){
 					temp.setBackgroundResource(R.drawable.list_selector);
+					nodeList.requestFocus();
+				}
 				break;
 			}
 			break;
