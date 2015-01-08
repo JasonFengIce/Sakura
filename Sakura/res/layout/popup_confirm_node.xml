@@ -13,6 +13,7 @@
             android:textSize="24sp"
             android:textColor="#ff6b6b6b"
             android:gravity="center"
+            android:focusable="true"
             android:text="@string/select_success"
             />
     <LinearLayout
