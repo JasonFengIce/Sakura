@@ -7,6 +7,7 @@ import static cn.ismartv.speedtester.core.cache.CacheManager.updateCheck;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Text;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -329,7 +330,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void pickNode(AdapterView<?> parent, View view, int position, long id) {
 
 //        nodeList.setSelector(R.drawable.list_selector);
-        if (temp == null) {
+        if (null == temp) {
             temp.setBackgroundColor(00000000);
             temp = view;
         } else {
@@ -435,6 +436,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         popupWindow.setFocusable(true);
         popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);
 
+        final TextView title = (TextView) contentView.findViewById(R.id.title);
+
         TextView confirmButton = (TextView) contentView.findViewById(R.id.confirm_btn);
         TextView cancleButton = (TextView) contentView.findViewById(R.id.cancle_btn);
 
@@ -444,21 +447,18 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
                 switch (event.getAction()) {
 
                     case MotionEvent.ACTION_HOVER_ENTER:
-                        v.setFocusableInTouchMode(true);
-                        v.setFocusable(true);
-                        v.requestFocus();
-                        v.requestFocusFromTouch();
+                        title.requestFocusFromTouch();
+                        title.requestFocus();
                         v.setBackgroundResource(R.drawable.button_focus);
 
                         break;
                     case MotionEvent.ACTION_HOVER_EXIT:
                         v.clearFocus();
-
                         v.setBackgroundResource(R.drawable.selector_button);
                         break;
                 }
 
-                return true;
+                return false;
             }
 
 
@@ -469,12 +469,11 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             public boolean onHover(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_HOVER_ENTER:
-                        v.setFocusableInTouchMode(true);
-                        v.setFocusable(true);
-                        v.requestFocus();
-                        v.requestFocusFromTouch();
+                        title.requestFocusFromTouch();
+                        title.requestFocus();
                         v.setBackgroundResource(R.drawable.button_focus);
                         break;
+                    
                     case MotionEvent.ACTION_HOVER_EXIT:
                         v.clearFocus();
                         v.setBackgroundResource(R.drawable.selector_button);
