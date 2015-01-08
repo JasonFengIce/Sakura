@@ -2,13 +2,13 @@ package cn.ismartv.speedtester.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.ui.TabAdapter;
+import cn.ismartv.speedtester.ui.widget.SakuraViewPager;
 import cn.ismartv.speedtester.ui.widget.indicator.IconPageIndicator;
 
 
@@ -19,7 +19,7 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.indicator)
     IconPageIndicator indicator;
     @InjectView(R.id.pager)
-    ViewPager pager;
+    SakuraViewPager pager;
     private TabAdapter tabAdapter;
 
     private int position;
