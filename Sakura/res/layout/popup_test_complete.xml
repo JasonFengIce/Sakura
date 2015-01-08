@@ -14,20 +14,21 @@
             android:textSize="24sp"
             android:textColor="#ff6b6b6b"
             android:gravity="center"
+            android:focusable="true"
             android:text="@string/test_complete_text"
             />
 
-        <TextView
-                android:id="@+id/test_c_confirm_btn"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/button_label_OK"
-                android:textSize="22sp"
-                android:gravity="center"
-                android:textColor="#ffffffff"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/selector_button"
-                android:layout_width="120dp"
-                android:layout_height="60dp"/>
+    <TextView
+            android:id="@+id/test_c_confirm_btn"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/button_label_OK"
+            android:textSize="22sp"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/selector_button"
+            android:layout_width="120dp"
+            android:layout_height="60dp"/>
 
 </LinearLayout>
