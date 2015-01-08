@@ -329,6 +329,14 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void pickNode(AdapterView<?> parent, View view, int position, long id) {
 
 //        nodeList.setSelector(R.drawable.list_selector);
+		if (temp == null) {
+			view.setBackgroundResource(android.R.drawable.list_selector_background);
+			temp = view;
+		}else{
+			temp.setBackgroundResource(android.R.drawable.list_selector_background);
+			view.setBackgroundResource(R.drawable.list_selector);
+			temp = view;
+		}
         if (AppConstant.DEBUG) {
             Log.d(TAG, "item positon ---> " + position);
             Log.d(TAG, "item tag ---> " + view.getTag() + "   " + parent.getTag());
@@ -659,7 +667,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             }
         });
         testCompletePopupWindow = popupWindow;
-
 
         return popupWindow;
     }
