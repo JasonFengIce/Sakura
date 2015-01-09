@@ -173,6 +173,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        provinceSpinner.setNextFocusUpId(R.id.unbind_node);
+
 //        //set onHover Listener
         provinceSpinner.setOnHoverListener(this);
         ispSpinner.setOnHoverListener(this);
@@ -180,6 +182,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         unbindNode.setOnHoverListener(this);
         nodeList.setOnHoverListener(this);
         initSpeedTestProgressDialog();
+
+
     }
 
     @Override
@@ -330,17 +334,17 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void pickNode(AdapterView<?> parent, View view, int position, long id) {
 
 //        nodeList.setSelector(R.drawable.list_selector);
-		try {
-			if (null == temp) {
-				temp.setBackgroundColor(00000000);
-				temp = view;
-			} else {
-				temp.setBackgroundColor(00000000);
-				view.setBackgroundResource(R.drawable.list_selector);
-				temp = view;
-			}
-		} catch (java.lang.NullPointerException e) {
-		}
+        try {
+            if (null == temp) {
+                temp.setBackgroundColor(00000000);
+                temp = view;
+            } else {
+                temp.setBackgroundColor(00000000);
+                view.setBackgroundResource(R.drawable.list_selector);
+                temp = view;
+            }
+        } catch (java.lang.NullPointerException e) {
+        }
         if (AppConstant.DEBUG) {
             Log.d(TAG, "item positon ---> " + position);
             Log.d(TAG, "item tag ---> " + view.getTag() + "   " + parent.getTag());
@@ -476,7 +480,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
                         title.requestFocus();
                         v.setBackgroundResource(R.drawable.button_focus);
                         break;
-                    
+
                     case MotionEvent.ACTION_HOVER_EXIT:
                         v.clearFocus();
                         v.setBackgroundResource(R.drawable.selector_button);
