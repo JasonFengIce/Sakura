@@ -2,7 +2,11 @@ package cn.ismartv.speedtester.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.ismartv.speedtester.R;
@@ -12,7 +16,7 @@ import cn.ismartv.speedtester.ui.widget.SakuraViewPager;
 import cn.ismartv.speedtester.ui.widget.indicator.IconPageIndicator;
 
 
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends BaseActivity implements View.OnHoverListener {
 
     private static final String TAG = "HomeActivity";
     public boolean isFirstSpeedTest = true;
@@ -25,6 +29,9 @@ public class HomeActivity extends BaseActivity {
     private int position;
 
 
+    private View mView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,8 +41,12 @@ public class HomeActivity extends BaseActivity {
         /////////////////////////////////////////////////////////////
         Intent intent = getIntent();
         position = intent.getIntExtra(MenuActivity.TAB_FLAG, 0);
-        setContentView(R.layout.main);
+
+        mView = LayoutInflater.from(this).inflate(R.layout.main, null);
+        mView.setOnHoverListener(this);
+        setContentView(mView);
         ButterKnife.inject(this);
+
         tabAdapter = new TabAdapter(getSupportFragmentManager());
         pager.setAdapter(tabAdapter);
         indicator.setViewPager(pager);
@@ -68,6 +79,23 @@ public class HomeActivity extends BaseActivity {
      * 返回键 监听器
      */
     private OnBackPressListener backPressListener;
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        activityHoverListener.onHover(v, event);
+        Log.d("test", "adsff");
+        return false;
+    }
+
+    public interface OnActivityHoverListener {
+        public void onHover(View view, MotionEvent event);
+    }
+
+    private OnActivityHoverListener activityHoverListener;
+
+    public void setActivityHoverListener(OnActivityHoverListener listener) {
+        this.activityHoverListener = listener;
+    }
 
     public interface OnBackPressListener {
         public void backPress();

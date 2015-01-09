@@ -18,7 +18,7 @@
             android:text="@string/test_complete_text"
             />
 
-    <TextView
+    <cn.ismartv.speedtester.ui.widget.SakuraButton
             android:id="@+id/test_c_confirm_btn"
             android:clickable="true"
             android:focusable="true"

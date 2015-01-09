@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-        <Button
+        <cn.ismartv.speedtester.ui.widget.SakuraButton
                 android:id="@+id/unbind_node"
                 android:singleLine="true"
                 android:gravity="center"
@@ -65,13 +65,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     />
-            <Spinner
+            <cn.ismartv.speedtester.ui.widget.SakuraSpinner
                     style="@style/spinner_style"
                     android:focusable="true"
                     android:id="@+id/province_spinner"
                     android:layout_width="160dp"
-                    android:layout_height="50dp">
-            </Spinner>
+                    android:layout_height="50dp"/>
         </LinearLayout>
         <LinearLayout
                 android:layout_weight="1"
@@ -84,17 +83,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     />
-            <Spinner
+            <cn.ismartv.speedtester.ui.widget.SakuraSpinner
                     style="@style/spinner_style"
                     android:focusable="true"
                     android:id="@+id/isp_spinner"
                     android:layout_width="160dp"
                     android:layout_height="50dp"
-                    >
-            </Spinner>
+                    />
 
         </LinearLayout>
-        <TextView
+        <cn.ismartv.speedtester.ui.widget.SakuraButton
                 android:id="@+id/speed_test_btn"
                 android:background="@drawable/selector_button"
                 android:layout_weight="1"
@@ -170,7 +168,9 @@
             </LinearLayout>
         </LinearLayout>
 
-        <ListView
+        <cn.ismartv.speedtester.ui.widget.SakuraListView
+                android:fastScrollEnabled="false"
+                android:smoothScrollbar="false"
                 android:scrollbars="none"
                 android:id="@+id/node_list"
                 android:layout_marginLeft="40dp"
@@ -179,10 +179,8 @@
                 android:layout_width="match_parent"
                 android:layout_marginBottom="10dp"
                 android:layout_height="match_parent"
-                android:descendantFocusability="blocksDescendants"
-                >
+                />
 
-        </ListView>
 
     </LinearLayout>
 

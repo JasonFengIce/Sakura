@@ -56,5 +56,7 @@
         <attr name="numberProgressBarStyle" format="reference"/>
     </declare-styleable>
 
-
+    <declare-styleable name="SakuraListView"></declare-styleable>
+    <declare-styleable name="SakuraButton"></declare-styleable>
+    <declare-styleable name="SakuraTextView"></declare-styleable>
 </resources>

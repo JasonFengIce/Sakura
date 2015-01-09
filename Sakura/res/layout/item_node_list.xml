@@ -5,6 +5,7 @@
                 android:focusable="false"
                 android:clickable="false"
                 android:minHeight="90dp"
+                android:background="@drawable/selector_node_list"
                 android:layout_height="match_parent"
         >
 

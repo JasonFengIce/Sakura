@@ -1,17 +1,5 @@
 package cn.ismartv.speedtester.ui.fragment;
 
-import static cn.ismartv.speedtester.core.cache.CacheManager.clearCheck;
-import static cn.ismartv.speedtester.core.cache.CacheManager.fetchCheck;
-import static cn.ismartv.speedtester.core.cache.CacheManager.updateCheck;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.w3c.dom.Text;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -23,27 +11,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
-import butterknife.OnItemSelected;
+import android.view.*;
+import android.widget.*;
+import butterknife.*;
 import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
@@ -57,23 +27,34 @@ import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.ui.activity.HomeActivity;
 import cn.ismartv.speedtester.ui.activity.HomeActivity.OnKeyEventListener;
 import cn.ismartv.speedtester.ui.adapter.NodeListAdapter;
+import cn.ismartv.speedtester.ui.widget.SakuraButton;
+import cn.ismartv.speedtester.ui.widget.SakuraListView;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
-
 import com.activeandroid.content.ContentProvider;
 import com.ismartv.android.vod.core.Utils;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static cn.ismartv.speedtester.core.cache.CacheManager.*;
 
 /**
  * Created by huaijie on 14-10-29.
  */
 public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        HttpDownloadTask.OnCompleteListener, HomeActivity.OnBackPressListener, View.OnHoverListener, OnKeyEventListener {
+        HttpDownloadTask.OnCompleteListener, HomeActivity.OnBackPressListener, OnKeyEventListener,
+        HomeActivity.OnActivityHoverListener {
     private static final String TAG = "FragmentSpeed";
     private static int count = 0;
 
 
     @InjectView(R.id.node_list)
-    ListView nodeList;
+    SakuraListView nodeList;
     @InjectView(R.id.province_spinner)
     Spinner provinceSpinner;
     @InjectView(R.id.isp_spinner)
@@ -83,11 +64,11 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
      * 测试按钮
      */
     @InjectView(R.id.speed_test_btn)
-    TextView speedTestBtn;
+    SakuraButton speedTestBtn;
     @InjectView(R.id.current_node_text)
     TextView currentNode;
     @InjectView(R.id.unbind_node)
-    Button unbindNode;
+    SakuraButton unbindNode;
 
     /**
      * 正在测速弹出框
@@ -161,6 +142,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_speed, container, false);
         ButterKnife.inject(this, mView);
+        mActivity.setActivityHoverListener(this);
+
         isFragmentDestroy = false;
 
         nodeList.setNextFocusDownId(R.id.node_list);
@@ -174,13 +157,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         super.onViewCreated(view, savedInstanceState);
 
         provinceSpinner.setNextFocusUpId(R.id.unbind_node);
-
-//        //set onHover Listener
-        provinceSpinner.setOnHoverListener(this);
-        ispSpinner.setOnHoverListener(this);
-        speedTestBtn.setOnHoverListener(this);
-        unbindNode.setOnHoverListener(this);
-        nodeList.setOnHoverListener(this);
         initSpeedTestProgressDialog();
 
 
@@ -312,20 +288,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @OnItemSelected(R.id.province_spinner)
     public void pickProvince(AdapterView<?> parent, View view, int position, long id) {
-//        if (null!= view) {
-//            TextView textView = (TextView) view;
-//            textView.setTextSize(30);
-//        }
         provincesPosition = position;
         notifiySourceChanged();
     }
 
     @OnItemSelected(R.id.isp_spinner)
     public void pickIsp(AdapterView<?> parent, View view, int position, long id) {
-//        if (null!= view) {
-//            TextView textView = (TextView) view;
-//            textView.setTextSize(30);
-//        }
         ispPosition = position + 1;
         notifiySourceChanged();
     }
@@ -333,18 +301,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @OnItemClick(R.id.node_list)
     public void pickNode(AdapterView<?> parent, View view, int position, long id) {
 
-//        nodeList.setSelector(R.drawable.list_selector);
-        try {
-            if (null == temp) {
-                temp.setBackgroundColor(00000000);
-                temp = view;
-            } else {
-                temp.setBackgroundColor(00000000);
-                view.setBackgroundResource(R.drawable.list_selector);
-                temp = view;
-            }
-        } catch (java.lang.NullPointerException e) {
-        }
         if (AppConstant.DEBUG) {
             Log.d(TAG, "item positon ---> " + position);
             Log.d(TAG, "item tag ---> " + view.getTag() + "   " + parent.getTag());
@@ -357,22 +313,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @OnItemSelected(R.id.node_list)
     public void selectNode(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "select position is " + position);
-//        nodeList.setSelector(R.drawable.list_selector);
-        if (temp == null) {
-            view.setBackgroundColor(00000000);
-            temp = view;
-        } else {
-            temp.setBackgroundColor(00000000);
-            view.setBackgroundResource(R.drawable.list_selector);
-            temp = view;
-        }
-//        if (position == 0 && selectedOne == 0) {
-//            selectedOne += 1;
-//            nodeList.getChildAt(0).setBackgroundColor(0xffffff);
-//        }else if (position==0&&selectedOne!=0){
-//            nodeList.getChildAt(0).setBackgroundResource(R.drawable.list_selector);
-//        }
 
     }
 
@@ -395,8 +335,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onCancel() {
-//        if (!isFragmentDestroy)
-//            initCompletedPopWindow(R.string.test_interupt);
     }
 
     private void notifiySourceChanged() {
@@ -418,7 +356,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
      */
     @OnClick(R.id.speed_test_btn)
     public void speedTest() {
-        nodeList.setSelector(R.drawable.list_selector);
+//        nodeList.setSelector(R.drawable.list_selector);
         isPressSpeedButton = true;
         mActivity.isFirstSpeedTest = false;
         // nodeList.setSelector(R.drawable.list_selector);
@@ -445,50 +383,9 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
         final TextView title = (TextView) contentView.findViewById(R.id.title);
 
-        TextView confirmButton = (TextView) contentView.findViewById(R.id.confirm_btn);
-        TextView cancleButton = (TextView) contentView.findViewById(R.id.cancle_btn);
+        SakuraButton confirmButton = (SakuraButton) contentView.findViewById(R.id.confirm_btn);
+        SakuraButton cancleButton = (SakuraButton) contentView.findViewById(R.id.cancle_btn);
 
-        confirmButton.setOnHoverListener(new View.OnHoverListener() {
-            @Override
-            public boolean onHover(View v, MotionEvent event) {
-                switch (event.getAction()) {
-
-                    case MotionEvent.ACTION_HOVER_ENTER:
-                        title.requestFocusFromTouch();
-                        title.requestFocus();
-                        v.setBackgroundResource(R.drawable.button_focus);
-
-                        break;
-                    case MotionEvent.ACTION_HOVER_EXIT:
-                        v.clearFocus();
-                        v.setBackgroundResource(R.drawable.selector_button);
-                        break;
-                }
-
-                return false;
-            }
-
-
-        });
-
-        cancleButton.setOnHoverListener(new View.OnHoverListener() {
-            @Override
-            public boolean onHover(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_HOVER_ENTER:
-                        title.requestFocusFromTouch();
-                        title.requestFocus();
-                        v.setBackgroundResource(R.drawable.button_focus);
-                        break;
-
-                    case MotionEvent.ACTION_HOVER_EXIT:
-                        v.clearFocus();
-                        v.setBackgroundResource(R.drawable.selector_button);
-                        break;
-                }
-                return true;
-            }
-        });
 
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -713,7 +610,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
         popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);
 
-        TextView cancleButton = (TextView) contentView.findViewById(R.id.test_c_confirm_btn);
+        SakuraButton cancleButton = (SakuraButton) contentView.findViewById(R.id.test_c_confirm_btn);
         cancleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -764,60 +661,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     }
 
-    @Override
-    public boolean onHover(View view, MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_HOVER_ENTER:
-
-                currentNode.requestFocus();
-                currentNode.requestFocusFromTouch();
-
-                switch (view.getId()) {
-
-                    case R.id.province_spinner:
-                    case R.id.isp_spinner:
-                        view.setBackgroundResource(R.drawable.spinner_ab_focused_holo_dark_am);
-                        if (temp != null)
-                            temp.setBackgroundColor(00000000);
-                        break;
-                    case R.id.unbind_node:
-                    case R.id.speed_test_btn:
-                        view.setBackgroundResource(R.drawable.button_focus);
-                        if (temp != null)
-                            temp.setBackgroundColor(00000000);
-                        break;
-                    case R.id.node_list:
-                        if (temp != null) {
-                            temp.setBackgroundResource(R.drawable.list_selector);
-                            nodeList.requestFocus();
-                        }
-                        break;
-                }
-                break;
-            case MotionEvent.ACTION_HOVER_EXIT:
-                view.clearFocus();
-                switch (view.getId()) {
-                    case R.id.province_spinner:
-                    case R.id.isp_spinner:
-                        view.setBackgroundResource(R.drawable.selector_spinner);
-                        break;
-                    case R.id.unbind_node:
-                    case R.id.speed_test_btn:
-                        view.setBackgroundResource(R.drawable.selector_button);
-                        break;
-                    case R.id.node_list:
-                        if (temp != null)
-                            temp.setBackgroundColor(00000000);
-                        break;
-                    default:
-                        break;
-                }
-            default:
-                break;
-        }
-
-        return true;
-    }
 
 
     @Override
@@ -829,9 +672,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
                 break;
         }
-
-
         return true;
+    }
+
+    @Override
+    public void onHover(View view, MotionEvent event) {
+        nodeList.dispatchHoverEvent(event, true);
     }
 }
 
