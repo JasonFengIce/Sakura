@@ -1,34 +1,44 @@
 package cn.ismartv.speedtester.ui.widget;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ListView;
 import cn.ismartv.speedtester.AppConstant;
+import cn.ismartv.speedtester.ui.activity.HomeActivity;
 
 /**
  * Created by huaijie on 1/8/15.
  */
 public class SakuraListView extends ListView {
     private static final String TAG = "SakuraListView";
+    private int tempPositioin = -1;
+    private HomeActivityHoverBroadCastReceiver hoverBroadCastReceiver;
 
     public SakuraListView(Context context) {
         super(context);
+        registerBroadCastReceiver(context);
     }
 
     public SakuraListView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        registerBroadCastReceiver(context);
     }
 
     public SakuraListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        registerBroadCastReceiver(context);
     }
 
 
     @Override
     public boolean dispatchHoverEvent(MotionEvent event) {
         int position = pointToPosition((int) event.getX(), (int) event.getY());
+
         if (AppConstant.DEBUG) {
 
             Log.d(TAG, "list position is --->" + position);
@@ -40,23 +50,53 @@ public class SakuraListView extends ListView {
             setFocusable(true);
             requestFocusFromTouch();
             requestFocus();
+
             setSelection(position);
+//            if (position == 0) {
+//                setSelection(0);
+//            } else if (tempPositioin != position) {
+//                if (position > tempPositioin)
+//                    dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_DOWN));
+//                else if (position < tempPositioin)
+//                    dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_UP));
+//
+//                tempPositioin = position;
+//                Log.d(TAG, "temp position ---> " + tempPositioin);
+//            }
+
         } else {
             clearFocus();
+
         }
         return true;
     }
 
-    public void dispatchHoverEvent(MotionEvent event, boolean clearFocus) {
-        if (clearFocus) {
-            clearFocus();
-        } else {
-            dispatchHoverEvent(event);
+
+    public void setSelectionOne() {
+        setFocusableInTouchMode(true);
+        setFocusable(true);
+        requestFocusFromTouch();
+        requestFocus();
+        setSelection(0);
+    }
+
+    private void registerBroadCastReceiver(Context context) {
+        hoverBroadCastReceiver = new HomeActivityHoverBroadCastReceiver();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(HomeActivity.HOME_ACTIVITY_HOVER_ACTION);
+
+        context.registerReceiver(hoverBroadCastReceiver, intentFilter);
+    }
+
+    class HomeActivityHoverBroadCastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(HomeActivity.HOME_ACTIVITY_HOVER_ACTION)) {
+                clearFocus();
+            }
         }
     }
 
-    @Override
-    public boolean onInterceptHoverEvent(MotionEvent event) {
-        return super.onInterceptHoverEvent(event);
-    }
 }

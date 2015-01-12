@@ -40,6 +40,7 @@ public class SakuraButton extends Button {
         return false;
     }
 
+
     public void dispatchHoverEvent(MotionEvent event, boolean clearFocus) {
 
         if (clearFocus) {

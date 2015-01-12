@@ -1,8 +1,10 @@
 package cn.ismartv.speedtester.ui.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,19 +20,27 @@ import cn.ismartv.speedtester.ui.widget.indicator.IconPageIndicator;
 
 public class HomeActivity extends BaseActivity implements View.OnHoverListener {
 
+    public static final String KEYCODE_DPAD_LEFT = "KEYCODE_DPAD_LEFT";
+    public static final String KEYCODE_DPAD_RIGHT = "KEYCODE_DPAD_RIGHT";
+    public static final String HOME_ACTIVITY_HOVER_ACTION = "HOME_ACTIVITY_HOVER_ACTION";
     private static final String TAG = "HomeActivity";
     public boolean isFirstSpeedTest = true;
     @InjectView(R.id.indicator)
     IconPageIndicator indicator;
     @InjectView(R.id.pager)
     SakuraViewPager pager;
+    private KeyCodeBroadCastReceiver keyCodeBroadCastReceiver;
     private TabAdapter tabAdapter;
 
     private int position;
 
 
     private View mView;
-
+    /**
+     * 返回键 监听器
+     */
+    private OnBackPressListener backPressListener;
+    private OnKeyEventListener onKeyEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +70,20 @@ public class HomeActivity extends BaseActivity implements View.OnHoverListener {
     @Override
     protected void onResume() {
         super.onResume();
+        keyCodeBroadCastReceiver = new KeyCodeBroadCastReceiver();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(KEYCODE_DPAD_LEFT);
+        intentFilter.addAction(KEYCODE_DPAD_RIGHT);
+
+        registerReceiver(keyCodeBroadCastReceiver, intentFilter);
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(keyCodeBroadCastReceiver);
     }
 
     @Override
@@ -75,34 +99,13 @@ public class HomeActivity extends BaseActivity implements View.OnHoverListener {
         startActivity(intent);
     }
 
-    /**
-     * 返回键 监听器
-     */
-    private OnBackPressListener backPressListener;
-
     @Override
     public boolean onHover(View v, MotionEvent event) {
-        try {
-            activityHoverListener.onHover(v, event);
-        } catch (NullPointerException e) {
-            Log.e(TAG, "this is a null pointer exception");
-        }
-        Log.d(TAG, "home activity hover");
+        Intent intent = new Intent();
+        intent.setAction(HOME_ACTIVITY_HOVER_ACTION);
+        sendBroadcast(intent);
+
         return false;
-    }
-
-    public interface OnActivityHoverListener {
-        public void onHover(View view, MotionEvent event);
-    }
-
-    private OnActivityHoverListener activityHoverListener;
-
-    public void setActivityHoverListener(OnActivityHoverListener listener) {
-        this.activityHoverListener = listener;
-    }
-
-    public interface OnBackPressListener {
-        public void backPress();
     }
 
     public void setBackPressListener(OnBackPressListener listener) {
@@ -120,14 +123,27 @@ public class HomeActivity extends BaseActivity implements View.OnHoverListener {
         return super.onKeyDown(keyCode, event);
     }
 
+    public void setOnKeyEventListener(OnKeyEventListener listener) {
+        this.onKeyEventListener = listener;
+    }
+
+    public interface OnBackPressListener {
+        public void backPress();
+    }
+
     public interface OnKeyEventListener {
         public boolean onKeyDown(int keyCode, KeyEvent event);
     }
 
-    private OnKeyEventListener onKeyEventListener;
+    class KeyCodeBroadCastReceiver extends BroadcastReceiver {
 
-    public void setOnKeyEventListener(OnKeyEventListener listener) {
-        this.onKeyEventListener = listener;
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(KEYCODE_DPAD_LEFT))
+                pager.setCurrentItem(0);
+            else if (intent.getAction().equals(KEYCODE_DPAD_RIGHT))
+                pager.setCurrentItem(2);
+        }
     }
 }
 

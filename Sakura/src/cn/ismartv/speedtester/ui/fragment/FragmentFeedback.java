@@ -2,7 +2,6 @@ package cn.ismartv.speedtester.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,8 +27,10 @@ import cn.ismartv.speedtester.data.ChatMsgEntity;
 import cn.ismartv.speedtester.data.FeedBackEntity;
 import cn.ismartv.speedtester.data.ProblemEntity;
 import cn.ismartv.speedtester.ui.activity.HomeActivity;
-import cn.ismartv.speedtester.ui.activity.MenuActivity;
 import cn.ismartv.speedtester.ui.adapter.FeedbackListAdapter;
+import cn.ismartv.speedtester.ui.widget.MessageSubmitButton;
+import cn.ismartv.speedtester.ui.widget.SakuraEditText;
+import cn.ismartv.speedtester.ui.widget.SakuraListView;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
 import com.google.gson.Gson;
@@ -52,22 +53,20 @@ import java.util.regex.Pattern;
  */
 public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedChangeListener, OnHoverListener {
 
-    private static final String TAG = "FragmentFeedback";
-
     public static final int UPLAOD_FEEDBACK_COMPLETE = 0x0001;
     public static final int UPLAOD_FEEDBACK_FAILED = 0x0002;
-
+    private static final String TAG = "FragmentFeedback";
     @InjectView(R.id.sn_code)
     TextView snCode;
     RadioGroup problemType;
     @InjectView(R.id.feedback_list)
-    ListView feedbackList;
+    SakuraListView feedbackList;
     @InjectView(R.id.phone_number_edit)
-    EditText phone;
+    SakuraEditText phone;
     @InjectView(R.id.description_edit)
-    EditText description;
+    SakuraEditText description;
     @InjectView(R.id.submit_btn)
-    Button submitBtn;
+    MessageSubmitButton submitBtn;
 
     @InjectViews({R.id.arrow_up, R.id.arrow_down})
     List<ImageView> arrows;
@@ -76,6 +75,44 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     private Handler messageHandler;
 
     private HomeActivity mActivity;
+
+    /**
+     * 手机号验证
+     *
+     * @param str
+     * @return 验证通过返回true
+     */
+    public static boolean isMobile(String str) {
+        Pattern p = null;
+        Matcher m = null;
+        boolean b = false;
+        p = Pattern.compile("^[1][3,4,5,8][0-9]{9}$"); // 验证手机号
+        m = p.matcher(str);
+        b = m.matches();
+        return b;
+    }
+
+    /**
+     * 电话号码验证
+     *
+     * @param str
+     * @return 验证通过返回true
+     */
+    public static boolean isPhone(String str) {
+        Pattern p1 = null, p2 = null;
+        Matcher m = null;
+        boolean b = false;
+        p1 = Pattern.compile("^[0][0-9]{2,3}-[0-9]{5,10}$");  // 验证带区号的
+        p2 = Pattern.compile("^[1-9]{1}[0-9]{5,8}$");         // 验证没有区号的
+        if (str.length() > 9) {
+            m = p1.matcher(str);
+            b = m.matches();
+        } else {
+            m = p2.matcher(str);
+            b = m.matches();
+        }
+        return b;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -101,6 +138,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     public void onViewCreated(View view, Bundle savedInstanceState) {
 //        phone.setOnHoverListener(this);
 //        description.setOnHoverListener(this);
+
 
         arrows.get(0).setNextFocusDownId(R.id.arrow_up);
         arrows.get(1).setNextFocusDownId(R.id.arrow_up);
@@ -137,7 +175,6 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         super.onPause();
     }
 
-
     @Override
     public void onStop() {
         super.onStop();
@@ -147,7 +184,6 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     public void onDestroyView() {
         super.onDestroyView();
     }
-
 
     @Override
     public void onDestroy() {
@@ -178,7 +214,6 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
             }
         });
     }
-
 
     private void fetchFeedback(String sn, String top) {
         RestAdapter restAdapter = new RestAdapter.Builder()
@@ -272,25 +307,6 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         return true;
     }
 
-    class MessageHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case UPLAOD_FEEDBACK_COMPLETE:
-                    fetchFeedback(DeviceUtils.getSnCode(), "10");
-                    if (null != mActivity)
-                        Toast.makeText(mActivity, R.string.submit_sucess, Toast.LENGTH_LONG).show();
-                    break;
-                case UPLAOD_FEEDBACK_FAILED:
-                    if (null != mActivity)
-                        Toast.makeText(mActivity, R.string.submit_failed, Toast.LENGTH_LONG).show();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
     @OnClick(R.id.submit_btn)
     public void submitFeedback(View view) {
         if (AppConstant.DEBUG)
@@ -298,7 +314,6 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         CacheManager.updatFeedBack(mActivity, phone.getText().toString());
         setFeedBack();
     }
-
 
     @OnClick({R.id.arrow_up, R.id.arrow_down})
     public void scrollList(View view) {
@@ -399,41 +414,22 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         }.start();
     }
 
-    /**
-     * 手机号验证
-     *
-     * @param str
-     * @return 验证通过返回true
-     */
-    public static boolean isMobile(String str) {
-        Pattern p = null;
-        Matcher m = null;
-        boolean b = false;
-        p = Pattern.compile("^[1][3,4,5,8][0-9]{9}$"); // 验证手机号
-        m = p.matcher(str);
-        b = m.matches();
-        return b;
-    }
-
-    /**
-     * 电话号码验证
-     *
-     * @param str
-     * @return 验证通过返回true
-     */
-    public static boolean isPhone(String str) {
-        Pattern p1 = null, p2 = null;
-        Matcher m = null;
-        boolean b = false;
-        p1 = Pattern.compile("^[0][0-9]{2,3}-[0-9]{5,10}$");  // 验证带区号的
-        p2 = Pattern.compile("^[1-9]{1}[0-9]{5,8}$");         // 验证没有区号的
-        if (str.length() > 9) {
-            m = p1.matcher(str);
-            b = m.matches();
-        } else {
-            m = p2.matcher(str);
-            b = m.matches();
+    class MessageHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case UPLAOD_FEEDBACK_COMPLETE:
+                    fetchFeedback(DeviceUtils.getSnCode(), "10");
+                    if (null != mActivity)
+                        Toast.makeText(mActivity, R.string.submit_sucess, Toast.LENGTH_LONG).show();
+                    break;
+                case UPLAOD_FEEDBACK_FAILED:
+                    if (null != mActivity)
+                        Toast.makeText(mActivity, R.string.submit_failed, Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    break;
+            }
         }
-        return b;
     }
 }

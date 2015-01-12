@@ -8,6 +8,7 @@
 
     <TextView
             android:id="@+id/sn_code"
+            android:focusable="true"
             android:layout_marginLeft="40dp"
             android:layout_marginTop="40dp"
             android:text="@string/sn_text"
@@ -42,7 +43,7 @@
                   android:text="@string/contact_phone_number"
                 />
 
-        <EditText
+        <cn.ismartv.speedtester.ui.widget.SakuraEditText
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:textSize="@dimen/font_size_four"
@@ -70,7 +71,7 @@
                   android:text="@string/add_description"
                 />
 
-        <EditText
+        <cn.ismartv.speedtester.ui.widget.SakuraEditText
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:textSize="@dimen/font_size_four"
@@ -80,7 +81,7 @@
                 android:inputType="textMultiLine"
                 />
     </LinearLayout>
-    <Button
+    <cn.ismartv.speedtester.ui.widget.MessageSubmitButton
             android:id="@+id/submit_btn"
             android:layout_marginTop="20dp"
             android:textSize="@dimen/font_size_four"
@@ -90,21 +91,27 @@
             android:layout_width="180dp"
             android:layout_height="60dp"/>
 
-    <ListView
-            android:id="@+id/feedback_list"
-            android:layout_marginTop="40dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:divider="#00000000"
-            android:descendantFocusability="beforeDescendants"
-            android:listSelector="@drawable/list_selector"
-            android:scrollbars="none"
-            android:dividerHeight="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="230dp">
+    <LinearLayout android:layout_width="match_parent"
+                  android:background="@drawable/bg_result"
+                  android:layout_marginTop="20dp"
+                  android:layout_marginLeft="40dp"
+
+                  android:layout_marginRight="40dp"
+                  android:layout_height="230dp">
+        <cn.ismartv.speedtester.ui.widget.SakuraListView
+                android:id="@+id/feedback_list"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+
+                android:layout_marginRight="20dp"
+                android:divider="@drawable/divider"
+                android:scrollbars="none"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"/>
+
+    </LinearLayout>
 
 
-    </ListView>
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

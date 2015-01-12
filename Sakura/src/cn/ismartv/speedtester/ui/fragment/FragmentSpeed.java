@@ -47,19 +47,28 @@ import static cn.ismartv.speedtester.core.cache.CacheManager.*;
  * Created by huaijie on 14-10-29.
  */
 public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        HttpDownloadTask.OnCompleteListener, HomeActivity.OnBackPressListener, OnKeyEventListener,
-        HomeActivity.OnActivityHoverListener {
+        HttpDownloadTask.OnCompleteListener, HomeActivity.OnBackPressListener, OnKeyEventListener {
+    public static final int ALL_COMPLETE_MSG = 0x0001;
+    public static final int ALL_COMPLETE = 0x0002;
     private static final String TAG = "FragmentSpeed";
+    public static boolean can = false;
     private static int count = 0;
+    /**
+     * 正在测速弹出框
+     */
+    public Dialog speedTestProgressPopup;
+    /**
+     * 测速完成弹出框
+     */
 
-
+    public PopupWindow selectedCompletePopupWindow;
+    public PopupWindow testCompletePopupWindow;
     @InjectView(R.id.node_list)
     SakuraListView nodeList;
     @InjectView(R.id.province_spinner)
     Spinner provinceSpinner;
     @InjectView(R.id.isp_spinner)
     Spinner ispSpinner;
-
     /**
      * 测试按钮
      */
@@ -69,22 +78,12 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     TextView currentNode;
     @InjectView(R.id.unbind_node)
     SakuraButton unbindNode;
-
-    /**
-     * 正在测速弹出框
-     */
-    public Dialog speedTestProgressPopup;
-
-    /**
-     * 测速完成弹出框
-     */
-
-    public PopupWindow selectedCompletePopupWindow;
-
-    public PopupWindow testCompletePopupWindow;
-
-
     boolean running = false;
+    SharedPreferences sharedPreferences;
+    /**
+     * 测速线程
+     */
+    HttpDownloadTask httpDownloadTask;
     private NodeListAdapter nodeListAdapter;
     private int provincesPosition;
     private int ispPosition;
@@ -95,25 +94,10 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
      * 传入下载中的 CDN 节点 ID
      */
     private List<Integer> cdnCollections;
-
-    public static final int ALL_COMPLETE_MSG = 0x0001;
-    public static final int ALL_COMPLETE = 0x0002;
-
-
-    public static boolean can = false;
-
     /**
      * Activity
      */
     private HomeActivity mActivity;
-
-    SharedPreferences sharedPreferences;
-
-    /**
-     * 测速线程
-     */
-    HttpDownloadTask httpDownloadTask;
-
     /**
      *
      */
@@ -124,6 +108,93 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     private int selectedOne = 0;
 
+    public static void uploadTestResult(String cdnId, String speed) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(AppConstant.API_HOST)
+                .build();
+        ClientApi.UploadResult client = restAdapter.create(ClientApi.UploadResult.class);
+        client.excute("submitTestData", DeviceUtils.getSnCode(), cdnId, speed, new Callback<Empty>() {
+            @Override
+            public void success(Empty empty, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+    public static void getBindCdn() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setEndpoint(AppConstant.API_HOST)
+                .build();
+        ClientApi.GetBindCdn client = restAdapter.create(ClientApi.GetBindCdn.class);
+        String sn;
+        if ("unknown".equals(DeviceUtils.getSnCode()))
+            sn = "other";
+        else
+            sn = DeviceUtils.getSnCode();
+        client.excute("getBindcdn", sn, new Callback<HttpDataEntity>() {
+            @Override
+            public void success(HttpDataEntity httpData, Response response) {
+                String result = Utils.getResult(response);
+                Log.d(TAG, result);
+                if ("104".equals(httpData.getRetcode())) {
+                    return;
+                } else {
+                    updateCheck(httpData.getSncdn().getCdnid(), true);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+    private static void bindCdn(final String cdn, final Context context) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(AppConstant.API_HOST)
+                .build();
+        ClientApi.BindCdn client = restAdapter.create(ClientApi.BindCdn.class);
+
+        String sn;
+        if ("unknown".equals(DeviceUtils.getSnCode()))
+            sn = "other";
+        else
+            sn = DeviceUtils.getSnCode();
+
+        client.excute("bindecdn", sn, cdn, new Callback<Empty>() {
+            @Override
+            public void success(Empty empty, Response response) {
+
+                Toast.makeText(context, R.string.node_bind_success, Toast.LENGTH_LONG).show();
+                getBindCdn();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+    /**
+     * 将 cursor 转为 list, 因为 在使用 cursor 的时候,可能已经关闭了
+     */
+    public static List<Integer> cursorToList(Cursor cursor) {
+        List<Integer> cdnCollections = new ArrayList<Integer>();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            cdnCollections.add(cursor.getInt(cursor.getColumnIndex(NodeCacheTable.CDN_ID)));
+        }
+        return cdnCollections;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -142,7 +213,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_speed, container, false);
         ButterKnife.inject(this, mView);
-        mActivity.setActivityHoverListener(this);
 
         isFragmentDestroy = false;
 
@@ -150,7 +220,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
         return mView;
     }
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -180,7 +249,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         ispSpinner.setAdapter(operatorSpinnerAdapter);
 
 
-        if (!((HomeActivity) mActivity).isFirstSpeedTest) {
+        if (!mActivity.isFirstSpeedTest) {
             speedTestBtn.setText(R.string.button_label_retest);
         }
         switch (ispPosition) {
@@ -209,7 +278,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -221,7 +289,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         super.onPause();
         count = 0;
     }
-
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int flag, Bundle bundle) {
@@ -335,7 +402,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     }
 
-
     @Override
     public void onSingleComplete(String cdnID, String speed) {
         uploadTestResult(cdnID, speed);
@@ -345,12 +411,10 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     public void onAllComplete() {
         if (!isFragmentDestroy) {
             speedTestProgressPopup.dismiss();
-            initCompletedPopWindow(R.string.test_complete_text);
-
+            initCompletedPopWindow(Status.COMPLETE);
         }
 
     }
-
 
     @Override
     public void onCancel() {
@@ -379,7 +443,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         isPressSpeedButton = true;
         mActivity.isFirstSpeedTest = false;
         // nodeList.setSelector(R.drawable.list_selector);
-        if (!((HomeActivity) mActivity).isFirstSpeedTest) {
+        if (!mActivity.isFirstSpeedTest) {
             speedTestBtn.setText(R.string.button_label_retest);
         }
         speedTestBtn.setBackgroundColor(Color.GRAY);
@@ -389,7 +453,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
 
     }
-
 
     private void initPopWindow(final int cdnID, final int position) {
         View contentView = LayoutInflater.from(mActivity)
@@ -427,7 +490,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     }
 
-
     private Dialog initSpeedTestProgressDialog() {
         Dialog dialog = new Dialog(mActivity, R.style.ProgressDialog);
         Window dialogWindow = dialog.getWindow();
@@ -447,7 +509,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
                     case KeyEvent.KEYCODE_BACK:
                     case KeyEvent.KEYCODE_ESCAPE:
                         dialog.dismiss();
-                        initCompletedPopWindow(R.string.test_interupt);
+                        initCompletedPopWindow(Status.CANCEL);
                         return true;
                 }
                 return false;
@@ -482,6 +544,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
 
+//
+
     @OnClick(R.id.unbind_node)
     public void unbindNode() {
         RestAdapter restAdapter = new RestAdapter.Builder()
@@ -510,87 +574,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
-    public static void uploadTestResult(String cdnId, String speed) {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(AppConstant.LOG_LEVEL)
-                .setEndpoint(AppConstant.API_HOST)
-                .build();
-        ClientApi.UploadResult client = restAdapter.create(ClientApi.UploadResult.class);
-        client.excute("submitTestData", DeviceUtils.getSnCode(), cdnId, speed, new Callback<Empty>() {
-            @Override
-            public void success(Empty empty, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-
-            }
-        });
-    }
-
-    public static void getBindCdn() {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint(AppConstant.API_HOST)
-                .build();
-        ClientApi.GetBindCdn client = restAdapter.create(ClientApi.GetBindCdn.class);
-        String sn;
-        if ("unknown".equals(DeviceUtils.getSnCode()))
-            sn = "other";
-        else
-            sn = DeviceUtils.getSnCode();
-        client.excute("getBindcdn", sn, new Callback<HttpDataEntity>() {
-            @Override
-            public void success(HttpDataEntity httpData, Response response) {
-                String result = Utils.getResult(response);
-                Log.d(TAG, result);
-                if ("104".equals(httpData.getRetcode())) {
-                    return;
-                } else {
-                    updateCheck(httpData.getSncdn().getCdnid(), true);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-
-            }
-        });
-    }
-
-    private static void bindCdn(final String cdn, final Context context) {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(AppConstant.LOG_LEVEL)
-                .setEndpoint(AppConstant.API_HOST)
-                .build();
-        ClientApi.BindCdn client = restAdapter.create(ClientApi.BindCdn.class);
-
-        String sn;
-        if ("unknown".equals(DeviceUtils.getSnCode()))
-            sn = "other";
-        else
-            sn = DeviceUtils.getSnCode();
-
-        client.excute("bindecdn", sn, cdn, new Callback<Empty>() {
-            @Override
-            public void success(Empty empty, Response response) {
-
-                Toast.makeText(context, R.string.node_bind_success, Toast.LENGTH_LONG).show();
-                getBindCdn();
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-
-            }
-        });
-    }
-
-
-//
-
-
     private void fetchIpLookup() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(AppConstant.LOG_LEVEL)
@@ -616,7 +599,20 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
-    private PopupWindow initCompletedPopWindow(int titleRes) {
+    private PopupWindow initCompletedPopWindow(final Status status) {
+        int titleRes;
+        switch (status) {
+            case COMPLETE:
+                titleRes = R.string.test_complete_text;
+                break;
+            case CANCEL:
+                titleRes = R.string.test_interupt;
+                break;
+            default:
+                titleRes = R.string.test_complete_text;
+                break;
+        }
+
 
         currentNode.requestFocusFromTouch();
         currentNode.requestFocus();
@@ -644,22 +640,21 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
+                switch (status) {
+                    case CANCEL:
+                        speedTestBtn.requestFocus();
+                        speedTestBtn.requestFocusFromTouch();
+                        break;
+                    case COMPLETE:
+                        nodeList.setSelectionOne();
+                        break;
+                }
+
             }
         });
         testCompletePopupWindow = popupWindow;
 
         return popupWindow;
-    }
-
-    /**
-     * 将 cursor 转为 list, 因为 在使用 cursor 的时候,可能已经关闭了
-     */
-    public static List<Integer> cursorToList(Cursor cursor) {
-        List<Integer> cdnCollections = new ArrayList<Integer>();
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            cdnCollections.add(cursor.getInt(cursor.getColumnIndex(NodeCacheTable.CDN_ID)));
-        }
-        return cdnCollections;
     }
 
     public boolean getTaskStatusIsCancelled() {
@@ -703,10 +698,10 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         return true;
     }
 
-    @Override
-    public void onHover(View view, MotionEvent event) {
-        nodeList.dispatchHoverEvent(event, true);
 
+    enum Status {
+        CANCEL,
+        COMPLETE
     }
 }
 

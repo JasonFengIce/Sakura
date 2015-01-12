@@ -59,4 +59,6 @@
     <declare-styleable name="SakuraListView"></declare-styleable>
     <declare-styleable name="SakuraButton"></declare-styleable>
     <declare-styleable name="SakuraTextView"></declare-styleable>
+    <declare-styleable name="MessageSubmitButton"></declare-styleable>
+    <declare-styleable name="SakuraEditText"></declare-styleable>
 </resources>
