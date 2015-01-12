@@ -162,7 +162,6 @@ public class FragmentHelp extends Fragment {
     }
 
 
-
     class MessageHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {

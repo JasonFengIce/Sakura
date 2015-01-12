@@ -82,8 +82,12 @@ public class HomeActivity extends BaseActivity implements View.OnHoverListener {
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
-        activityHoverListener.onHover(v, event);
-        Log.d("test", "adsff");
+        try {
+            activityHoverListener.onHover(v, event);
+        } catch (NullPointerException e) {
+            Log.e(TAG, "this is a null pointer exception");
+        }
+        Log.d(TAG, "home activity hover");
         return false;
     }
 

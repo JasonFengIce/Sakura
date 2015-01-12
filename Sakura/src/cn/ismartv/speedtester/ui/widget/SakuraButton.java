@@ -26,6 +26,7 @@ public class SakuraButton extends Button {
 
     @Override
     public boolean dispatchHoverEvent(MotionEvent event) {
+        Log.d(TAG, "sakura button hover");
         if ((event.getAction() == MotionEvent.ACTION_HOVER_ENTER || event.getAction() == MotionEvent.ACTION_HOVER_MOVE)) {
             setClickable(true);
             setFocusableInTouchMode(true);
@@ -37,6 +38,15 @@ public class SakuraButton extends Button {
             clearFocus();
         }
         return false;
+    }
+
+    public void dispatchHoverEvent(MotionEvent event, boolean clearFocus) {
+
+        if (clearFocus) {
+            clearFocus();
+        } else {
+            dispatchHoverEvent(event);
+        }
     }
 
     @Override

@@ -11,7 +11,13 @@
                   android:layout_marginLeft="40dp"
                   android:layout_height="wrap_content">
         <TextView
+                android:focusable="true"
                 android:id="@+id/ismartv_title"
+                android:nextFocusDown="@id/ismartv_title"
+                android:nextFocusForward="@id/ismartv_title"
+                android:nextFocusRight="@id/ismartv_title"
+                android:nextFocusLeft="@id/ismartv_title"
+                android:nextFocusUp="@id/ismartv_title"
                 android:layout_gravity="center"
                 android:textSize="24sp"
                 android:textColor="#FFFFFF"

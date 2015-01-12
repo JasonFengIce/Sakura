@@ -262,16 +262,35 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         }
         count = count + 1;
 
+
         if (null != fetchCheck() && null != fetchCheck().nick) {
             currentNode.setText(getText(R.string.current_node) + fetchCheck().nick);
             unbindNode.setText(R.string.switch_to_auto);
             unbindNode.setEnabled(true);
             unbindNode.setBackgroundResource(R.drawable.selector_button);
+            if (speedTestBtn.getText().equals(getString(R.string.net_speed_test))) {
+                unbindNode.requestFocus();
+                unbindNode.requestFocusFromTouch();
+            } else {
+                currentNode.requestFocusFromTouch();
+                currentNode.requestFocus();
+            }
+
+
         } else {
             unbindNode.setText(R.string.already_to_auto);
             currentNode.setText(getText(R.string.current_node) + getString(R.string.auto_fetch));
             unbindNode.setEnabled(false);
             unbindNode.setBackgroundColor(Color.GRAY);
+
+            if (speedTestBtn.getText().equals(getString(R.string.net_speed_test))) {
+                speedTestBtn.requestFocusFromTouch();
+                speedTestBtn.requestFocus();
+            } else {
+                currentNode.requestFocusFromTouch();
+                currentNode.requestFocus();
+            }
+
         }
 
         if (isPressSpeedButton) {
@@ -386,6 +405,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         SakuraButton confirmButton = (SakuraButton) contentView.findViewById(R.id.confirm_btn);
         SakuraButton cancleButton = (SakuraButton) contentView.findViewById(R.id.cancle_btn);
 
+        confirmButton.requestFocusFromTouch();
+        confirmButton.requestFocus();
 
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -596,6 +617,10 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private PopupWindow initCompletedPopWindow(int titleRes) {
+
+        currentNode.requestFocusFromTouch();
+        currentNode.requestFocus();
+
         View contentView = LayoutInflater.from(mActivity)
                 .inflate(R.layout.popup_test_complete, null);
         /**
@@ -611,6 +636,10 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);
 
         SakuraButton cancleButton = (SakuraButton) contentView.findViewById(R.id.test_c_confirm_btn);
+        cancleButton.requestFocus();
+        cancleButton.requestFocusFromTouch();
+
+
         cancleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -662,7 +691,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
@@ -678,6 +706,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onHover(View view, MotionEvent event) {
         nodeList.dispatchHoverEvent(event, true);
+
     }
 }
 
