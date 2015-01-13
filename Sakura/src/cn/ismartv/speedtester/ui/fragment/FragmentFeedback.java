@@ -28,6 +28,7 @@ import cn.ismartv.speedtester.data.FeedBackEntity;
 import cn.ismartv.speedtester.data.ProblemEntity;
 import cn.ismartv.speedtester.ui.activity.HomeActivity;
 import cn.ismartv.speedtester.ui.adapter.FeedbackListAdapter;
+import cn.ismartv.speedtester.ui.widget.FeedBackListView;
 import cn.ismartv.speedtester.ui.widget.MessageSubmitButton;
 import cn.ismartv.speedtester.ui.widget.SakuraEditText;
 import cn.ismartv.speedtester.ui.widget.SakuraListView;
@@ -60,7 +61,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     TextView snCode;
     RadioGroup problemType;
     @InjectView(R.id.feedback_list)
-    SakuraListView feedbackList;
+    FeedBackListView feedbackList;
     @InjectView(R.id.phone_number_edit)
     SakuraEditText phone;
     @InjectView(R.id.description_edit)

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.ListView;
 import cn.ismartv.speedtester.AppConstant;
@@ -50,19 +51,7 @@ public class SakuraListView extends ListView {
             setFocusable(true);
             requestFocusFromTouch();
             requestFocus();
-
             setSelection(position);
-//            if (position == 0) {
-//                setSelection(0);
-//            } else if (tempPositioin != position) {
-//                if (position > tempPositioin)
-//                    dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_DOWN));
-//                else if (position < tempPositioin)
-//                    dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_UP));
-//
-//                tempPositioin = position;
-//                Log.d(TAG, "temp position ---> " + tempPositioin);
-//            }
 
         } else {
             clearFocus();
