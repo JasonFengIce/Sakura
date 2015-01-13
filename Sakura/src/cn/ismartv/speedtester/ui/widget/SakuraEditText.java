@@ -31,15 +31,6 @@ public class SakuraEditText extends EditText {
     }
 
 
-    @Override
-    public boolean onHoverEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_HOVER_EXIT:
-                clearFocus();
-                return true;
-        }
-        return false;
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

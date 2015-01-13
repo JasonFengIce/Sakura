@@ -108,6 +108,8 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     private int selectedOne = 0;
 
+    private int pickNode = -1;
+
     public static void uploadTestResult(String cdnId, String speed) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(AppConstant.LOG_LEVEL)
@@ -335,7 +337,11 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             unbindNode.setText(R.string.switch_to_auto);
             unbindNode.setEnabled(true);
             unbindNode.setBackgroundResource(R.drawable.selector_button);
-            if (speedTestBtn.getText().equals(getString(R.string.net_speed_test))) {
+            if (pickNode != -1) {
+                nodeList.setMySelection(pickNode);
+                pickNode = -1;
+
+            } else if (speedTestBtn.getText().equals(getString(R.string.net_speed_test))) {
                 unbindNode.requestFocus();
                 unbindNode.requestFocusFromTouch();
             } else {
@@ -349,7 +355,6 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             currentNode.setText(getText(R.string.current_node) + getString(R.string.auto_fetch));
             unbindNode.setEnabled(false);
             unbindNode.setBackgroundColor(Color.GRAY);
-
             if (speedTestBtn.getText().equals(getString(R.string.net_speed_test))) {
                 speedTestBtn.requestFocusFromTouch();
                 speedTestBtn.requestFocus();
@@ -386,7 +391,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
     @OnItemClick(R.id.node_list)
     public void pickNode(AdapterView<?> parent, View view, int position, long id) {
-
+        pickNode = position;
         if (AppConstant.DEBUG) {
             Log.d(TAG, "item positon ---> " + position);
             Log.d(TAG, "item tag ---> " + view.getTag() + "   " + parent.getTag());
@@ -477,12 +482,14 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
             public void onClick(View view) {
                 popupWindow.dismiss();
                 bindCdn(String.valueOf(cdnID), mActivity);
+
             }
         });
         selectedCompletePopupWindow = popupWindow;
         cancleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                pickNode = -1;
                 popupWindow.dismiss();
             }
         });

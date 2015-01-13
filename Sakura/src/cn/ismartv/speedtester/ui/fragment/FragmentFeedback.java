@@ -2,17 +2,15 @@ package cn.ismartv.speedtester.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnHoverListener;
-import android.view.ViewGroup;
 import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -31,7 +29,6 @@ import cn.ismartv.speedtester.ui.adapter.FeedbackListAdapter;
 import cn.ismartv.speedtester.ui.widget.FeedBackListView;
 import cn.ismartv.speedtester.ui.widget.MessageSubmitButton;
 import cn.ismartv.speedtester.ui.widget.SakuraEditText;
-import cn.ismartv.speedtester.ui.widget.SakuraListView;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
 import com.google.gson.Gson;
@@ -132,6 +129,74 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_feedback, null);
         ButterKnife.inject(this, mView);
+        arrows.get(0).setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_DPAD_LEFT:
+                        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                            Intent intent = new Intent();
+                            intent.setAction(HomeActivity.KEYCODE_DPAD_LEFT);
+                            mActivity.sendBroadcast(intent);
+                        }
+                        return true;
+                    case KeyEvent.KEYCODE_DPAD_UP:
+                        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                            submitBtn.requestFocusFromTouch();
+                            submitBtn.requestFocus();
+                        }
+                        return true;
+
+                }
+
+                return false;
+            }
+        });
+
+        arrows.get(1).setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_DPAD_RIGHT:
+                        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                            Intent intent = new Intent();
+                            intent.setAction(HomeActivity.KEYCODE_DPAD_RIGHT);
+                            mActivity.sendBroadcast(intent);
+                        }
+                        return true;
+                    case KeyEvent.KEYCODE_DPAD_UP:
+                        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                            submitBtn.requestFocusFromTouch();
+                            submitBtn.requestFocus();
+                        }
+                        return true;
+
+                }
+                return false;
+
+
+            }
+        });
+
+        submitBtn.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_DPAD_DOWN:
+                        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+
+                            arrows.get(0).requestFocus();
+                            arrows.get(0).requestFocusFromTouch();
+                        }
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
         return mView;
     }
 

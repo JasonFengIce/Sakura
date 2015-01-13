@@ -60,6 +60,14 @@ public class SakuraListView extends ListView {
         return true;
     }
 
+    public void setMySelection(int position) {
+        setFocusableInTouchMode(true);
+        setFocusable(true);
+        requestFocusFromTouch();
+        requestFocus();
+        setSelection(position);
+    }
+
 
     public void setSelectionOne() {
         setFocusableInTouchMode(true);
