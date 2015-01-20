@@ -24,6 +24,7 @@
             />
 
     <application
+            android:allowBackup="true"
             android:name="cn.ismartv.speedtester.SakuraApplication"
             android:label="@string/app_name"
             android:icon="@drawable/ic_launcher"

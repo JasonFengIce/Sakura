@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/problem_options"
             android:orientation="horizontal"
-            android:layout_alignParentLeft="true"
             android:gravity="center"
             android:layout_margin="30dip"
             >
@@ -63,7 +62,6 @@
             android:id="@+id/description_area"
             android:layout_marginRight="40dp"
             android:layout_marginLeft="40dp"
-            android:layout_below="@id/contact_area"
             android:layout_height="wrap_content">
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"

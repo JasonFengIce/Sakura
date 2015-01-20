@@ -13,6 +13,16 @@ public class SakuraProgressBar extends View {
     private static final String TAG = SakuraProgressBar.class.getSimpleName();
     private float progress;
 
+    int[] colors = {getColor(R.color.sakura_progress), getColor(R.color.sakura_progress)};
+    float[] positioins = {getWidth() / 5, getWidth() * 2 / 5, getWidth() * 3 / 5, getWidth() * 4 / 5, getWidth()};
+
+    Paint backgroundPaint = new Paint();
+    Paint progressPaint = new Paint();
+    LinearGradient linearGradient = new LinearGradient(0, 0, getWidth(), 0, colors, null, Shader.TileMode.MIRROR);
+
+    Paint textPaint = new Paint();
+    Paint dividePaint = new Paint();
+
 
     public SakuraProgressBar(Context context) {
         super(context);
@@ -29,21 +39,19 @@ public class SakuraProgressBar extends View {
 
     @Override
     protected synchronized void onDraw(Canvas canvas) {
-        int[] colors = {getColor(R.color.sakura_progress),getColor(R.color.sakura_progress)};
-        float[] positioins = {getWidth() / 5, getWidth() * 2 / 5, getWidth() * 3 / 5, getWidth() * 4 / 5, getWidth()};
 
 
-        Paint backgroundPaint = new Paint();
+
         backgroundPaint.setColor(Color.WHITE);
-        Paint progressPaint = new Paint();
-        LinearGradient linearGradient = new LinearGradient(0, 0, getWidth(), 0, colors, null, Shader.TileMode.MIRROR);
+
+
         progressPaint.setShader(linearGradient);
 
-        Paint textPaint = new Paint();
+
         textPaint.setColor(Color.GREEN);
         textPaint.setTextSize(15);
         textPaint.setTextAlign(Paint.Align.CENTER);
-        Paint dividePaint = new Paint();
+
         dividePaint.setColor(Color.RED);
         dividePaint.setStrokeWidth(3);
         dividePaint.setAntiAlias(true);
