@@ -14,6 +14,8 @@ public class ClientApi {
 
     public static final String LILY_HOST = "http://lily.tvxio.com";
 
+    public static final String LOG_HOST = "http://speed.calla.tvxio.com";
+
     public interface Problems {
         String HOST = "http://iris.tvxio.com";
 
@@ -96,7 +98,6 @@ public class ClientApi {
     }
 
 
-
     public interface AppVersionInfo {
         public static final String ACTION = "getLatestAppVersion";
 
@@ -147,4 +148,15 @@ public class ClientApi {
                 Callback<IpLookUpEntity> callback
         );
     }
+
+    public interface DeviceLog {
+        @GET("/log")
+        void execute(
+                @Query("data") String data,
+                @Query("sn") String sn,
+                @Query("modelname") String modelName,
+                Callback<Empty> callback
+        );
+    }
+
 }

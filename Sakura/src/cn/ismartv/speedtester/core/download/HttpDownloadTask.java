@@ -40,7 +40,7 @@ public class HttpDownloadTask extends AsyncTask<List<Integer>, String, Long> {
         /**
          * 单个节点测速完成
          */
-        public void onSingleComplete(String cndId, String speed);
+        public void onSingleComplete(String cndId, String nodeName, String speed);
 
         /**
          * 所有节点测速完成
@@ -118,7 +118,7 @@ public class HttpDownloadTask extends AsyncTask<List<Integer>, String, Long> {
                     cacheTable.save();
 
 
-                    publishProgress(String.valueOf(cacheTable.cdnID), String.valueOf(speed));
+                    publishProgress(String.valueOf(cacheTable.cdnID), cacheTable.nodeName, String.valueOf(speed));
 
                     if (AppConstant.DEBUG)
                         Log.d(TAG, cacheTable.nick + " speed is ---> " + speed);
@@ -172,7 +172,7 @@ public class HttpDownloadTask extends AsyncTask<List<Integer>, String, Long> {
          */
 
         try {
-            completeListener.onSingleComplete(values[0], values[1]);
+            completeListener.onSingleComplete(values[0], values[1], values[2]);
         } catch (NullPointerException e) {
             Log.e(TAG, "Please set HttpDownload Listener!!!");
         }

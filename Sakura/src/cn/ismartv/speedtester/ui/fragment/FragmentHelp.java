@@ -149,8 +149,8 @@ public class FragmentHelp extends Fragment {
                     public void success(List<TeleEntity> teleEntities, Response response) {
                         ismartvTitle.setText(teleEntities.get(0).getTitle() + " : ");
                         ismartvTel.setText(teleEntities.get(0).getPhoneNo());
-                        tvTitle.setText(teleEntities.get(1).getTitle() + " : ");
-                        tvTel.setText(teleEntities.get(1).getPhoneNo());
+                        tvTitle.setText(teleEntities.get(1).getTitle());
+//                        tvTel.setText(teleEntities.get(1).getPhoneNo());
                     }
 
                     @Override

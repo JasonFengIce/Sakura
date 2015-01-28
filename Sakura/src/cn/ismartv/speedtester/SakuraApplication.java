@@ -2,6 +2,7 @@ package cn.ismartv.speedtester;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import cn.ismartv.preferences.PreferenceInitializer;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.data.HttpDataEntity;

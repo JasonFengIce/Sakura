@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.*;
 import android.view.View.OnHoverListener;
@@ -22,8 +23,10 @@ import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.logger.Logger;
 import cn.ismartv.speedtester.data.ChatMsgEntity;
+import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.FeedBackEntity;
 import cn.ismartv.speedtester.data.ProblemEntity;
+import cn.ismartv.speedtester.data.http.EventInfoEntity;
 import cn.ismartv.speedtester.ui.activity.HomeActivity;
 import cn.ismartv.speedtester.ui.adapter.FeedbackListAdapter;
 import cn.ismartv.speedtester.ui.widget.FeedBackListView;
@@ -41,6 +44,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -379,6 +383,16 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
             Log.d(TAG, "submit problem feedback");
         CacheManager.updatFeedBack(mActivity, phone.getText().toString());
         setFeedBack();
+
+
+//        Gson gson = new Gson();
+//        HashMap<String, String> map = new HashMap<String, String>();
+//        map.put("event", "SUBMIT_FEEDBACK");
+//        map.put("time", String.valueOf(System.currentTimeMillis()));
+//        EventInfoEntity infoEntity = new EventInfoEntity();
+//        infoEntity.setEvent("speed_app_click");
+//        infoEntity.setProperties(map);
+//        uploadDeviceLog(Base64.encodeToString(gson.toJson(infoEntity, EventInfoEntity.class).getBytes(), Base64.DEFAULT));
     }
 
     @OnClick({R.id.arrow_up, R.id.arrow_down})
@@ -497,5 +511,27 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
                     break;
             }
         }
+    }
+
+
+    private void uploadDeviceLog(String data) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(ClientApi.LOG_HOST)
+                .build();
+        ClientApi.DeviceLog client = restAdapter.create(ClientApi.DeviceLog.class);
+        String sn = DeviceUtils.getSnCode();
+        String modelName = DeviceUtils.getModel();
+        client.execute(data, sn, modelName, new Callback<Empty>() {
+            @Override
+            public void success(Empty empty, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
     }
 }

@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
@@ -23,6 +24,9 @@ import cn.ismartv.speedtester.core.download.HttpDownloadTask;
 import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.HttpDataEntity;
 import cn.ismartv.speedtester.data.IpLookUpEntity;
+import cn.ismartv.speedtester.data.http.EventInfoEntity;
+import cn.ismartv.speedtester.data.http.SpeedLogEntity;
+import cn.ismartv.speedtester.data.preferences.UserLocation;
 import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.ui.activity.HomeActivity;
 import cn.ismartv.speedtester.ui.activity.HomeActivity.OnKeyEventListener;
@@ -32,6 +36,7 @@ import cn.ismartv.speedtester.ui.widget.SakuraListView;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
 import com.activeandroid.content.ContentProvider;
+import com.google.gson.Gson;
 import com.ismartv.android.vod.core.Utils;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -39,6 +44,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static cn.ismartv.speedtester.core.cache.CacheManager.*;
@@ -408,8 +414,30 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public void onSingleComplete(String cdnID, String speed) {
+    public void onSingleComplete(String cdnID, String nodeName, String speed) {
         uploadTestResult(cdnID, speed);
+        SpeedLogEntity speedLog = new SpeedLogEntity();
+        speedLog.setCdn_id(cdnID);
+        speedLog.setCdn_name(nodeName);
+        speedLog.setSpeed(speed);
+
+        SharedPreferences preferences = mActivity.getSharedPreferences("user_location_info", mActivity.MODE_PRIVATE);
+        speedLog.setLocation(preferences.getString("user_default_city", ""));
+        speedLog.setLocation(preferences.getString("user_default_isp", ""));
+
+
+        Gson gson = new Gson();
+        String data = gson.toJson(speedLog, SpeedLogEntity.class);
+        String base64Data = Base64.encodeToString(data.getBytes(), Base64.DEFAULT);
+        uploadDeviceLog(base64Data);
+
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("hello", "world");
+        map.put("hello2", "world2");
+
+
+        Log.d(TAG, gson.toJson(map, HashMap.class));
+
     }
 
     @Override
@@ -455,6 +483,15 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         speedTestBtn.setEnabled(false);
 
         speedTestProgressPopup.show();
+
+//        Gson gson = new Gson();
+//        HashMap<String, String> map = new HashMap<String, String>();
+//        map.put("event", "SPEED_TEST");
+//        map.put("time", String.valueOf(System.currentTimeMillis()));
+//        EventInfoEntity infoEntity = new EventInfoEntity();
+//        infoEntity.setEvent("speed_app_click");
+//        infoEntity.setProperties(map);
+//        uploadDeviceLog(Base64.encodeToString(gson.toJson(infoEntity, EventInfoEntity.class).getBytes(), Base64.DEFAULT));
 
 
     }
@@ -579,6 +616,14 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
 
             }
         });
+//        Gson gson = new Gson();
+//        HashMap<String, String> map = new HashMap<String, String>();
+//        map.put("event", "UNBIND_NODE");
+//        map.put("time", String.valueOf(System.currentTimeMillis()));
+//        EventInfoEntity infoEntity = new EventInfoEntity();
+//        infoEntity.setEvent("speed_app_click");
+//        infoEntity.setProperties(map);
+//        uploadDeviceLog(Base64.encodeToString(gson.toJson(infoEntity, EventInfoEntity.class).getBytes(), Base64.DEFAULT));
     }
 
     private void fetchIpLookup() {
@@ -591,11 +636,21 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         client.execute(new Callback<IpLookUpEntity>() {
             @Override
             public void success(IpLookUpEntity ipLookUpEntity, Response response) {
+
+
+                SharedPreferences preferences = mActivity.getSharedPreferences("user_location_info", mActivity.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("user_default_city", ipLookUpEntity.getCity());
+                editor.putString("user_default_isp", ipLookUpEntity.getIsp());
+                editor.apply();
+
+
                 CacheManager cacheManager = CacheManager.getInstance(mActivity);
                 CacheManager.IpLookUp ipLookUp = cacheManager.new IpLookUp();
                 ipLookUp.updateIpLookUpCache(ipLookUpEntity);
                 provinceSpinner.setSelection(sharedPreferences.getInt(CacheManager.IpLookUp.USER_PROVINCE, 0));
                 ispSpinner.setSelection(sharedPreferences.getInt(CacheManager.IpLookUp.USER_ISP, 0));
+
 
             }
 
@@ -709,6 +764,28 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
     enum Status {
         CANCEL,
         COMPLETE
+    }
+
+
+    private void uploadDeviceLog(String data) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(ClientApi.LOG_HOST)
+                .build();
+        ClientApi.DeviceLog client = restAdapter.create(ClientApi.DeviceLog.class);
+        String sn = DeviceUtils.getSnCode();
+        String modelName = DeviceUtils.getModel();
+        client.execute(data, sn, modelName, new Callback<Empty>() {
+            @Override
+            public void success(Empty empty, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
     }
 }
 

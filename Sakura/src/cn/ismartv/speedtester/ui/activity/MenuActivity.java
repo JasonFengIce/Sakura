@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,13 +16,18 @@ import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheManager;
+import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.IpLookUpEntity;
+import cn.ismartv.speedtester.data.http.EventInfoEntity;
+import cn.ismartv.speedtester.utils.DeviceUtils;
+import com.google.gson.Gson;
 import com.ismartv.android.vod.service.HttpProxyService;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -63,20 +69,38 @@ public class MenuActivity extends BaseActivity implements View.OnHoverListener {
     @OnClick({R.id.tab_speed, R.id.tab_help, R.id.tab_feedback})
     public void pickTab(View view) {
         Intent intent = new Intent(this, HomeActivity.class);
+        Gson gson = new Gson();
+        HashMap<String, String> map = new HashMap<String, String>();
+
+        map.put("time", String.valueOf(System.currentTimeMillis()));
+        EventInfoEntity infoEntity = new EventInfoEntity();
+        infoEntity.setEvent("speed_app_click");
+        infoEntity.setProperties(map);
+
+
         switch (view.getId()) {
+
+
             case R.id.tab_speed:
+                map.put("event", "TAB_SPEED");
                 intent.putExtra(TAB_FLAG, TAB_SPEED);
+
                 break;
             case R.id.tab_help:
+                map.put("event", "TAB_HELP");
                 intent.putExtra(TAB_FLAG, TAB_HELP);
+
                 break;
             case R.id.tab_feedback:
+                map.put("event", "TAB_FEEDBACK");
                 intent.putExtra(TAB_FLAG, TAB_FEEDBACK);
                 break;
             default:
                 break;
         }
+        uploadDeviceLog(Base64.encodeToString(gson.toJson(infoEntity, EventInfoEntity.class).getBytes(), Base64.DEFAULT));
         startActivity(intent);
+
     }
 
 
@@ -119,9 +143,25 @@ public class MenuActivity extends BaseActivity implements View.OnHoverListener {
         return true;
     }
 
-    /**
-     * delete sakura apk, delete vod server apk
-     */
+    private void uploadDeviceLog(String data) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(AppConstant.LOG_LEVEL)
+                .setEndpoint(ClientApi.LOG_HOST)
+                .build();
+        ClientApi.DeviceLog client = restAdapter.create(ClientApi.DeviceLog.class);
+        String sn = DeviceUtils.getSnCode();
+        String modelName = DeviceUtils.getModel();
+        client.execute(data, sn, modelName, new Callback<Empty>() {
+            @Override
+            public void success(Empty empty, Response response) {
 
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
 
 }
