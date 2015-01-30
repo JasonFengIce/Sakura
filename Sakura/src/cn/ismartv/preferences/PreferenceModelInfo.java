@@ -22,6 +22,7 @@ public final class PreferenceModelInfo {
     public PreferenceModelInfo(Context context) {
         try {
             scanForModel(context);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
