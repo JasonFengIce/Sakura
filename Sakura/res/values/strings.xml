@@ -4,7 +4,7 @@
     <string name="prompt">推荐的视频源：如果自动监测结果有误，请手动选择您的省份与网络类型</string>
     <string name="province">所在的省份：</string>
     <string name="isp">网络类型：</string>
-    <string name="net_type">网络类型</string>
+    <string name="net_type">视频源</string>
     <string name="status">状态</string>
     <string name="fast">快</string>
     <string name="slow">慢</string>
@@ -108,6 +108,10 @@
 
     <string name="node_speed_test">网络测速</string>
     <string name="submit_text">提交</string>
+
+    <string name="msg_too_long">您输入的信息过长!!!</string>
+
+    <string name="confirm_submit_feedback_msg">是否提交反馈信息?</string>
 
 
 </resources>

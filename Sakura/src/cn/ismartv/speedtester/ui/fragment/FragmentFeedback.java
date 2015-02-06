@@ -8,7 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Base64;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.*;
 import android.view.View.OnHoverListener;
@@ -27,11 +28,11 @@ import cn.ismartv.speedtester.data.ChatMsgEntity;
 import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.FeedBackEntity;
 import cn.ismartv.speedtester.data.ProblemEntity;
-import cn.ismartv.speedtester.data.http.EventInfoEntity;
 import cn.ismartv.speedtester.ui.activity.HomeActivity;
 import cn.ismartv.speedtester.ui.adapter.FeedbackListAdapter;
 import cn.ismartv.speedtester.ui.widget.FeedBackListView;
 import cn.ismartv.speedtester.ui.widget.MessageSubmitButton;
+import cn.ismartv.speedtester.ui.widget.SakuraButton;
 import cn.ismartv.speedtester.ui.widget.SakuraEditText;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
@@ -45,7 +46,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -202,6 +202,29 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
             }
         });
 
+
+        description.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                int length = description.getText().length();
+                if (length >= 5) {
+                    Toast.makeText(mActivity, R.string.msg_too_long, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
         return mView;
     }
 
@@ -266,7 +289,6 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         super.onDetach();
         mActivity = null;
     }
-
 
 
     private void fetchFeedback(String sn, String top) {
@@ -363,12 +385,9 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
 
     @OnClick(R.id.submit_btn)
     public void submitFeedback(View view) {
-        if (AppConstant.DEBUG)
-            Log.d(TAG, "submit problem feedback");
-        CacheManager.updatFeedBack(mActivity, phone.getText().toString());
-        setFeedBack();
 
 
+        initPopWindow();
 //        Gson gson = new Gson();
 //        HashMap<String, String> map = new HashMap<String, String>();
 //        map.put("event", "SUBMIT_FEEDBACK");
@@ -518,4 +537,43 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
             }
         });
     }
+
+    private void initPopWindow() {
+        View contentView = LayoutInflater.from(mActivity)
+                .inflate(R.layout.popup_confirm_submit_feedback, null);
+        contentView.setBackgroundResource(R.drawable.bg_popup);
+        final PopupWindow popupWindow = new PopupWindow(null, 600, 180);
+        popupWindow.setContentView(contentView);
+        popupWindow.setFocusable(true);
+        popupWindow.showAtLocation(description, Gravity.CENTER, 0, 0);
+
+
+        SakuraButton confirmButton = (SakuraButton) contentView.findViewById(R.id.confirm_btn);
+        SakuraButton cancleButton = (SakuraButton) contentView.findViewById(R.id.cancle_btn);
+
+        confirmButton.requestFocusFromTouch();
+        confirmButton.requestFocus();
+
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupWindow.dismiss();
+
+                if (AppConstant.DEBUG)
+                    Log.d(TAG, "submit problem feedback");
+                CacheManager.updatFeedBack(mActivity, phone.getText().toString());
+                setFeedBack();
+            }
+        });
+        cancleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupWindow.dismiss();
+            }
+        });
+
+
+    }
+
 }
