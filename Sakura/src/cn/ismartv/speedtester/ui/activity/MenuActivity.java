@@ -16,8 +16,10 @@ import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheManager;
+import cn.ismartv.speedtester.core.preference.FeedbackProblem;
 import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.IpLookUpEntity;
+import cn.ismartv.speedtester.data.ProblemEntity;
 import cn.ismartv.speedtester.data.http.EventInfoEntity;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import com.google.gson.Gson;
@@ -63,6 +65,9 @@ public class MenuActivity extends BaseActivity implements View.OnHoverListener {
         if (sharedPreferences.getInt(CacheManager.IpLookUp.USER_PROVINCE, -1) == -1 || sharedPreferences.getInt(CacheManager.IpLookUp.USER_ISP, -1) == -1) {
             fetchIpLookup();
         }
+
+
+        fetchProblems();
     }
 
 
@@ -155,6 +160,30 @@ public class MenuActivity extends BaseActivity implements View.OnHoverListener {
             @Override
             public void success(Empty empty, Response response) {
 
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+
+    /**
+     * fetch tv problems from http server
+     */
+    private void fetchProblems() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.NONE)
+                .setEndpoint(ClientApi.Problems.HOST)
+                .build();
+        ClientApi.Problems client = restAdapter.create(ClientApi.Problems.class);
+        client.excute(new Callback<List<ProblemEntity>>() {
+            @Override
+            public void success(List<ProblemEntity> problemEntities, retrofit.client.Response response) {
+                FeedbackProblem feedbackProblem = FeedbackProblem.getInstance();
+                feedbackProblem.saveCache(problemEntities);
             }
 
             @Override

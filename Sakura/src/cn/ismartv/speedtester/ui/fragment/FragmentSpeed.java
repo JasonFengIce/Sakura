@@ -500,7 +500,7 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         View contentView = LayoutInflater.from(mActivity)
                 .inflate(R.layout.popup_confirm_node, null);
         contentView.setBackgroundResource(R.drawable.bg_popup);
-        final PopupWindow popupWindow = new PopupWindow(null, 500, 150);
+        final PopupWindow popupWindow = new PopupWindow(null, 600, 180);
         popupWindow.setContentView(contentView);
         popupWindow.setFocusable(true);
         popupWindow.showAtLocation(nodeList, Gravity.CENTER, 0, 0);

@@ -22,6 +22,7 @@ import cn.ismartv.speedtester.R;
 import cn.ismartv.speedtester.core.ClientApi;
 import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.core.logger.Logger;
+import cn.ismartv.speedtester.core.preference.FeedbackProblem;
 import cn.ismartv.speedtester.data.ChatMsgEntity;
 import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.FeedBackEntity;
@@ -230,7 +231,6 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         SharedPreferences preferences = mActivity.getSharedPreferences(AppConstant.APP_NAME, Context.MODE_PRIVATE);
         phone.setText(preferences.getString("feedback_phoneNumber", ""));
 
-        fetchProblems();
         fetchFeedback(DeviceUtils.getSnCode(), "10");
         snCode.append(DeviceUtils.getSnCode());
     }
@@ -238,6 +238,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     @Override
     public void onResume() {
         super.onResume();
+        createProblemsRadio(FeedbackProblem.getInstance().getCache());
     }
 
     @Override
@@ -266,24 +267,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         mActivity = null;
     }
 
-    private void fetchProblems() {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.NONE)
-                .setEndpoint(ClientApi.Problems.HOST)
-                .build();
-        ClientApi.Problems client = restAdapter.create(ClientApi.Problems.class);
-        client.excute(new Callback<List<ProblemEntity>>() {
-            @Override
-            public void success(List<ProblemEntity> problemEntities, retrofit.client.Response response) {
-                createProblemsRadio(problemEntities);
-            }
 
-            @Override
-            public void failure(RetrofitError retrofitError) {
-
-            }
-        });
-    }
 
     private void fetchFeedback(String sn, String top) {
         RestAdapter restAdapter = new RestAdapter.Builder()

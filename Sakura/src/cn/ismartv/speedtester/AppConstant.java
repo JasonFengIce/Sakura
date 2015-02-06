@@ -14,4 +14,7 @@ public class AppConstant {
     public static final boolean DEBUG = true;
 
     public static final RestAdapter.LogLevel LOG_LEVEL = RestAdapter.LogLevel.FULL;
+
+    public static final String FEEDBACK_PROBLEM_PREFERENCE = " feedback_problem";
+
 }
