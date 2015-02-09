@@ -109,7 +109,7 @@
     <string name="node_speed_test">网络测速</string>
     <string name="submit_text">提交</string>
 
-    <string name="msg_too_long">您输入的信息过长!!!</string>
+    <string name="max_msg_length">输入信息最长不要超过70个字符!</string>
 
     <string name="confirm_submit_feedback_msg">是否提交反馈信息?</string>
 

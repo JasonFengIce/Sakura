@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.*;
 import android.view.View.OnHoverListener;
@@ -202,25 +200,14 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
             }
         });
 
-
-        description.addTextChangedListener(new TextWatcher() {
+        description.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                int length = description.getText().length();
-                if (length >= 5) {
-                    Toast.makeText(mActivity, R.string.msg_too_long, Toast.LENGTH_SHORT).show();
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    description.setHint("");
+                }else {
+                    description.setHint(R.string.max_msg_length);
                 }
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         });
 

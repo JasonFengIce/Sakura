@@ -21,9 +21,9 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -39,7 +39,10 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * This widget implements the dynamic action bar tab behavior that can change
  * across different configurations or circumstances.
  */
-public class IconPageIndicator extends HorizontalScrollView implements PageIndicator, View.OnClickListener, View.OnFocusChangeListener {
+public class IconPageIndicator extends HorizontalScrollView implements PageIndicator, View.OnClickListener {
+    private static final String TAG = "IconPageIndicator";
+
+
     private final IcsLinearLayout mIconsLayout;
 
     private ViewPager mViewPager;
@@ -70,6 +73,9 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
                 final int scrollPos = iconView.getLeft() - (getWidth() - iconView.getWidth()) / 2;
                 smoothScrollTo(scrollPos, 0);
                 mIconSelector = null;
+
+
+
             }
         };
         post(mIconSelector);
@@ -108,6 +114,9 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
 
     @Override
     public void onPageSelected(int arg0) {
+        Log.d(TAG, "onPageSelected position  ---> " + arg0);
+
+
         setCurrentItem(arg0);
         if (mListener != null) {
             mListener.onPageSelected(arg0);
@@ -148,6 +157,7 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
 
     @Override
     public void setViewPager(ViewPager view) {
+        Log.d(TAG, "setViewPager id  ---> " + view.getId());
         if (mViewPager == view) {
             return;
         }
@@ -185,9 +195,6 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
         for (int i = 0; i < count; i++) {
             imageViews[i].setImageResource(iconAdapter.getIconResId(i));
             imageViews[i].setOnClickListener(this);
-            imageViews[i].setFocusable(true);
-            imageViews[i].setOnFocusChangeListener(this);
-//            imageViews[i].setOnHoverListener(this);
         }
         pretTab = imageViews[0];
         mIconsLayout.addView(linearLayout);
@@ -196,7 +203,6 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
             mSelectedIndex = count - 1;
         }
         setCurrentItem(mSelectedIndex);
-        requestLayout();
     }
 
     @Override
@@ -209,6 +215,9 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
 
     @Override
     public void setCurrentItem(int item) {
+
+        Log.d(TAG, "setCurrentItem position  ---> " + item);
+
         if (mViewPager == null) {
             throw new IllegalStateException("ViewPager has not been bound.");
         }
@@ -222,6 +231,7 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
             child.setSelected(isSelected);
             if (isSelected) {
                 animateToIcon(item);
+
             }
         }
     }
@@ -233,6 +243,7 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
 
     @Override
     public void onClick(View view) {
+        Log.d(TAG, "tab click ---> " + view.getId());
         AnimationSet animationSet = new AnimationSet(true);
         ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2f, 1, 2f,
                 Animation.RELATIVE_TO_SELF, 0.5f,
@@ -267,15 +278,11 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
             default:
                 break;
         }
-        requestLayout();
+//        requestLayout();
 
     }
 
     private View pretTab;
 
-    @Override
-    public void onFocusChange(View view, boolean focused) {
-        onClick(view);
-    }
 
 }

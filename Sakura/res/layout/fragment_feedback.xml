@@ -1,140 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:background="@drawable/bg_fragment"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:background="@drawable/bg_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
-            android:id="@+id/sn_code"
-            android:focusable="true"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="40dp"
-            android:text="@string/sn_text"
-            android:textSize="@dimen/font_size_four"
-            android:textColor="#FFFFFF"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        android:id="@+id/sn_code"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/sn_text"
+        android:textSize="@dimen/font_size_four"
+        android:textColor="#FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 
     <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/problem_options"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_margin="30dip"
-            >
-    </RadioGroup>
-
-    <LinearLayout android:layout_width="match_parent"
-                  android:orientation="horizontal"
-                  android:gravity="center"
-                  android:layout_marginTop="10dp"
-                  android:layout_marginRight="40dp"
-                  android:layout_marginLeft="40dp"
-                  android:id="@+id/contact_area"
-                  android:layout_height="wrap_content">
-
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:textSize="@dimen/font_size_four"
-                  android:text="@string/contact_phone_number"
-                />
-
-        <cn.ismartv.speedtester.ui.widget.SakuraEditText
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:textSize="@dimen/font_size_four"
-                android:gravity="center"
-                android:id="@+id/phone_number_edit"
-                android:inputType="phone"
-                android:background="@drawable/edit_drawable"
-                />
-    </LinearLayout>
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/problem_options"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="30dip"></RadioGroup>
 
     <LinearLayout
-            android:paddingTop="20dp"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:id="@+id/description_area"
-            android:layout_marginRight="40dp"
-            android:layout_marginLeft="40dp"
-            android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:id="@+id/contact_area"
+        android:layout_height="wrap_content">
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:textSize="@dimen/font_size_four"
-                  android:text="@string/add_description"
-                />
-
-        <cn.ismartv.speedtester.ui.widget.SakuraEditText
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:textSize="@dimen/font_size_four"
-                android:maxLength="50"
-                android:gravity="center"
-                android:id="@+id/description_edit"
-                android:background="@drawable/edit_drawable"
-                android:inputType="textMultiLine"
-                />
-    </LinearLayout>
-    <cn.ismartv.speedtester.ui.widget.MessageSubmitButton
-            android:id="@+id/submit_btn"
-            android:layout_marginTop="20dp"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textSize="@dimen/font_size_four"
-            android:layout_gravity="center"
-            android:text="@string/submit_text"
-            android:background="@drawable/selector_button"
-            android:layout_width="180dp"
-            android:layout_height="60dp"/>
+            android:text="@string/contact_phone_number" />
 
-        <cn.ismartv.speedtester.ui.widget.FeedBackListView
-
-                android:id="@+id/feedback_list"
-                android:layout_marginTop="40dp"
-                android:layout_marginLeft="40dp"
-                android:focusable="false"
-                android:clickable="false"
-                android:layout_marginRight="40dp"
-                android:divider="#00000000"
-                android:scrollbars="none"
-                android:dividerHeight="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="230dp"/>
-
+        <cn.ismartv.speedtester.ui.widget.SakuraEditText
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:textSize="@dimen/font_size_four"
+            android:gravity="center"
+            android:id="@+id/phone_number_edit"
+            android:inputType="phone"
+            android:background="@drawable/edit_drawable" />
+    </LinearLayout>
 
 
     <LinearLayout
-            android:id="@+id/arrow"
-            android:layout_width="match_parent"
+        android:paddingTop="20dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:id="@+id/description_area"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:textSize="@dimen/font_size_four"
+            android:text="@string/add_description" />
+
+        <cn.ismartv.speedtester.ui.widget.SakuraEditText
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:textSize="@dimen/font_size_four"
+            android:maxLength="70"
             android:gravity="center"
-            >
+            android:id="@+id/description_edit"
+            android:hint="@string/max_msg_length"
+            android:background="@drawable/edit_drawable"
+            android:inputType="textMultiLine" />
+    </LinearLayout>
+
+    <cn.ismartv.speedtester.ui.widget.MessageSubmitButton
+        android:id="@+id/submit_btn"
+        android:layout_marginTop="20dp"
+        android:textSize="@dimen/font_size_four"
+        android:layout_gravity="center"
+        android:text="@string/submit_text"
+        android:background="@drawable/selector_button"
+        android:layout_width="180dp"
+        android:layout_height="60dp" />
+
+    <cn.ismartv.speedtester.ui.widget.FeedBackListView
+
+        android:id="@+id/feedback_list"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="40dp"
+        android:focusable="false"
+        android:clickable="false"
+        android:layout_marginRight="40dp"
+        android:divider="#00000000"
+        android:scrollbars="none"
+        android:dividerHeight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="230dp" />
+
+
+    <LinearLayout
+        android:id="@+id/arrow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <ImageView
-                android:layout_marginRight="20dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:id="@+id/arrow_up"
-                android:src="@drawable/selector_arrow_up"
-                android:layout_marginTop="20dp"
-                android:layout_gravity="center"
-                android:layout_width="60dp"
-                android:layout_height="60dp"/>
-        <ImageView
-                android:layout_marginLeft="20dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:id="@+id/arrow_down"
-                android:src="@drawable/selector_arrow_down"
-                android:layout_marginTop="20dp"
-                android:layout_gravity="center"
-                android:layout_width="60dp"
+            android:layout_marginRight="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:id="@+id/arrow_up"
+            android:src="@drawable/selector_arrow_up"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
 
-                android:layout_height="60dp"/>
+        <ImageView
+            android:layout_marginLeft="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:id="@+id/arrow_down"
+            android:src="@drawable/selector_arrow_down"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:layout_width="60dp"
+
+            android:layout_height="60dp" />
 
     </LinearLayout>
 
