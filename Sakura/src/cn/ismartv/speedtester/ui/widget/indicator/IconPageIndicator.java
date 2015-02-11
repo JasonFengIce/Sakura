@@ -75,7 +75,6 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
                 mIconSelector = null;
 
 
-
             }
         };
         post(mIconSelector);
@@ -181,6 +180,10 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
         imageViews[0] = (ImageView) linearLayout.findViewById(R.id.icon_node);
         imageViews[1] = (ImageView) linearLayout.findViewById(R.id.icon_help);
         imageViews[2] = (ImageView) linearLayout.findViewById(R.id.icon_feedback);
+        for (int i = 0; i < count; i++) {
+            imageViews[i].setScaleY(0.5f);
+            imageViews[i].setScaleX(0.5f);
+        }
 
 //
         AnimationSet animationSet = new AnimationSet(true);

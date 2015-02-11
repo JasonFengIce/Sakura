@@ -203,9 +203,9 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         description.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus){
+                if (hasFocus) {
                     description.setHint("");
-                }else {
+                } else {
                     description.setHint(R.string.max_msg_length);
                 }
             }
@@ -318,7 +318,8 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
                 problemType.addView(radioButton);
             }
 
-            mRadioButton.setChecked(true);
+            if (null != mRadioButton)
+                mRadioButton.setChecked(true);
         }
     }
 
@@ -492,10 +493,14 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
                     fetchFeedback(DeviceUtils.getSnCode(), "10");
                     if (null != mActivity)
                         Toast.makeText(mActivity, R.string.submit_sucess, Toast.LENGTH_LONG).show();
+                    submitBtn.setEnabled(true);
+
                     break;
                 case UPLAOD_FEEDBACK_FAILED:
                     if (null != mActivity)
                         Toast.makeText(mActivity, R.string.submit_failed, Toast.LENGTH_LONG).show();
+                    submitBtn.setEnabled(true);
+
                     break;
                 default:
                     break;
@@ -551,6 +556,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
                     Log.d(TAG, "submit problem feedback");
                 CacheManager.updatFeedBack(mActivity, phone.getText().toString());
                 setFeedBack();
+                submitBtn.setEnabled(false);
             }
         });
         cancleButton.setOnClickListener(new View.OnClickListener() {

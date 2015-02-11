@@ -10,32 +10,33 @@
 
 
     <ImageView
-        android:layout_width="80dp"
+
+        android:layout_width="160dp"
         android:focusable="true"
         android:clickable="true"
         android:layout_marginLeft="100dp"
         android:layout_marginRight="100dp"
         android:id="@+id/icon_node"
-        android:layout_height="80dp"/>
+        android:layout_height="160dp"/>
 
     <ImageView
         android:focusable="true"
         android:clickable="true"
         android:id="@+id/icon_help"
-        android:layout_width="80dp"
+        android:layout_width="160dp"
         android:layout_marginLeft="100dp"
         android:layout_marginRight="100dp"
-        android:layout_height="80dp"/>
+        android:layout_height="160dp"/>
 
     <ImageView
         android:focusable="true"
         android:clickable="true"
         android:id="@+id/icon_feedback"
-        android:layout_width="80dp"
+        android:layout_width="160dp"
         android:nextFocusDown="@id/icon_feedback"
         android:layout_marginLeft="100dp"
         android:layout_marginRight="100dp"
-        android:layout_height="80dp"/>
+        android:layout_height="160dp"/>
 
     <Space
         android:layout_width="160dp"
