@@ -85,6 +85,7 @@
         android:layout_marginTop="20dp"
         android:textSize="@dimen/font_size_four"
         android:layout_gravity="center"
+        android:textColor="#ffffff"
         android:text="@string/submit_text"
         android:background="@drawable/selector_button"
         android:layout_width="180dp"

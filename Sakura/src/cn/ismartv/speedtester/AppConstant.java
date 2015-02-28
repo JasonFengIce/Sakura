@@ -10,6 +10,9 @@ public class AppConstant {
 
     public static final String API_HOST = "http://wx.api.tvxio.com/";
 
+//    public static final String API_HOST = "http://192.168.1.185:8099";
+    public static final String LOCAL_HOST = "http://192.168.1.185:8099";
+
 
     public static final boolean DEBUG = true;
 

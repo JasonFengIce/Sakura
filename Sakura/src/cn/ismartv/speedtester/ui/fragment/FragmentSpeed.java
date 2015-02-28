@@ -359,8 +359,9 @@ public class FragmentSpeed extends Fragment implements LoaderManager.LoaderCallb
         } else {
             unbindNode.setText(R.string.already_to_auto);
             currentNode.setText(getText(R.string.current_node) + getString(R.string.auto_fetch));
-            unbindNode.setEnabled(false);
+
             unbindNode.setBackgroundColor(Color.GRAY);
+            unbindNode.setEnabled(false);
             if (speedTestBtn.getText().equals(getString(R.string.net_speed_test))) {
                 speedTestBtn.requestFocusFromTouch();
                 speedTestBtn.requestFocus();

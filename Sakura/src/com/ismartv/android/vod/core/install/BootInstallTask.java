@@ -272,7 +272,7 @@ public class BootInstallTask extends AsyncTask<String, Integer, String> {
             @Override
             public void run() {
                 try {
-                    sleep(20000);
+                    sleep(120000);
                     File file = new File(context.getFilesDir(), BootInstallTask.SELF_APP_NAME);
                     if (null != file)
                         file.delete();

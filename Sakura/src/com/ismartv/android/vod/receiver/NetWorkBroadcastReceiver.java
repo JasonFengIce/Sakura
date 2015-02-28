@@ -29,7 +29,7 @@ public class NetWorkBroadcastReceiver extends BroadcastReceiver {
             ethernetState = cm.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET).getState();
             if (NetworkInfo.State.CONNECTED == wifiState || NetworkInfo.State.CONNECTED == ethernetState) {
                 Log.d(TAG, "mobile network connect success!!!");
-                CacheManager.updatLocalIp(context, DeviceUtils.getLocalIpAddressV4());
+                CacheManager.updatLocalIp(context);
                 BootInstallTask bootInstallTask = new BootInstallTask(context);
                 bootInstallTask.execute();
             }else{

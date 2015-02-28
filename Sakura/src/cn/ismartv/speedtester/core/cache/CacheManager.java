@@ -245,8 +245,8 @@ public class CacheManager {
         editor.apply();
     }
 
-    public static void updatLocalIp(Context context, String localIp) {
-       weiXinUpload(context, localIp);
+    public static void updatLocalIp(Context context) {
+       weiXinUpload(context);
     }
 
     public static void updateLaunched(Context context, boolean b) {
@@ -257,7 +257,7 @@ public class CacheManager {
     }
 
 
-    private static void weiXinUpload(final Context context, final String localIp) {
+    private static void weiXinUpload(final Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(AppConstant.LOG_LEVEL)
                 .setEndpoint(AppConstant.API_HOST)
@@ -267,14 +267,6 @@ public class CacheManager {
                 DeviceUtils.getModel(), new Callback<Empty>() {
                     @Override
                     public void success(Empty o, retrofit.client.Response response) {
-                        SharedPreferences preferences = context.getSharedPreferences("sakura", Context.MODE_PRIVATE);
-
-                        if (!preferences.getString("local_ip_2", "").equals(localIp)) {
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString("local_ip_2", localIp);
-                            editor.apply();
-                        }
-
                     }
 
                     @Override

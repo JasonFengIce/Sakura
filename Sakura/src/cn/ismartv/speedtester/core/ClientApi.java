@@ -16,6 +16,8 @@ public class ClientApi {
 
     public static final String LOG_HOST = "http://speed.calla.tvxio.com";
 
+    public static final String LOCAL_HOST = "http://192.168.1.185:8099";
+
     public interface Problems {
         String HOST = "http://iris.tvxio.com";
 

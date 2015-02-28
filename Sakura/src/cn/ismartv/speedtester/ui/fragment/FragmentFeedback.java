@@ -327,9 +327,11 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
         String contactNumber = phone.getEditableText().toString();
         if (StringUtils.isEmpty(contactNumber)) {
             Toast.makeText(mActivity, R.string.fill_contact_number, Toast.LENGTH_LONG).show();
+            submitBtn.setEnabled(true);
             return;
         } else if ((!isMobile(contactNumber) && !isPhone(contactNumber))) {
             Toast.makeText(mActivity, R.string.you_should_give_an_phone_number, Toast.LENGTH_LONG).show();
+            submitBtn.setEnabled(true);
             return;
         } else {
             CacheManager.IpLookUp ipLookUp = CacheManager.getInstance(mActivity).new IpLookUp();
@@ -563,6 +565,7 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
+
             }
         });
 
