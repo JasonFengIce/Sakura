@@ -54,6 +54,10 @@ public class FragmentHelp extends Fragment {
     TextView tvTitle;
     @InjectView(R.id.tv_tel)
     TextView tvTel;
+
+    @InjectView(R.id.device_code)
+    TextView deviceCode;
+
     private Handler messageHandler;
 
     private HomeActivity mActivity;
@@ -103,6 +107,8 @@ public class FragmentHelp extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        deviceCode.setText(" " + DeviceUtils.ipToHex());
+
         getTicket(mActivity);
         fetchTel();
 

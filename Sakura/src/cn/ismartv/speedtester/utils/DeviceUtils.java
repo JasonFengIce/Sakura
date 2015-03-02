@@ -1,8 +1,6 @@
 package cn.ismartv.speedtester.utils;
 
 import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import org.apache.http.conn.util.InetAddressUtils;
 
@@ -95,5 +93,25 @@ public class DeviceUtils {
     public static String getAppCacheDirectory(Context context) {
         return context.getCacheDir().getAbsolutePath();
     }
+
+
+    public static String ipToHex() {
+
+        String ipAddress = DeviceUtils.getLocalIpAddressV4();
+
+        long[] ip = new long[4];
+        // 先找到IP地址字符串中.的位置
+        int position1 = ipAddress.indexOf(".");
+        int position2 = ipAddress.indexOf(".", position1 + 1);
+        int position3 = ipAddress.indexOf(".", position2 + 1);
+        // 将每个.之间的字符串转换成整型
+        ip[0] = Long.parseLong(ipAddress.substring(0, position1));
+        ip[1] = Long.parseLong(ipAddress.substring(position1 + 1, position2));
+        ip[2] = Long.parseLong(ipAddress.substring(position2 + 1, position3));
+        ip[3] = Long.parseLong(ipAddress.substring(position3 + 1));
+        long ipAddressLong = (ip[0] << 24) + (ip[1] << 16) + (ip[2] << 8) + ip[3];
+        return Long.toHexString(ipAddressLong);
+    }
+
 
 }

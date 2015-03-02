@@ -113,5 +113,7 @@
 
     <string name="confirm_submit_feedback_msg">是否提交反馈信息?</string>
 
+    <string name="device_code">设备识别码: </string>
+
 
 </resources>
