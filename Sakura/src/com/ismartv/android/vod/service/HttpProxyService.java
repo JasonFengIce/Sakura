@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 import cn.ismartv.speedtester.AppConstant;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import com.ismartv.android.vod.core.keyevent.EventDeliver;
@@ -59,7 +60,7 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         server.post(PING, this);
-        server.post(MODEL,this);
+        server.post(MODEL, this);
         server.get(HTTP_ACTIOIN, this);
         server.listen(PORT);
         return super.onStartCommand(intent, flags, startId);
@@ -89,8 +90,21 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
                     keyEventInterface = EventDeliver.create(getApplicationContext(), actionCode, request.getQuery().getString("seek"), nativeservice);
                     break;
                 case PLAY_VIDEO_EVENT:
-                    android.util.Log.d(TAG, "url is ---> " + request.getQuery().getString("url"));
-                    keyEventInterface = EventDeliver.create(getApplicationContext(), actionCode, request.getQuery().getString("url"), nativeservice);
+                    String url = request.getQuery().getString("url");
+                    String pk = request.getQuery().getString("pk");
+                    Log.d(TAG, "url is ---> " + url);
+                    Log.d(TAG, "code is ---> " + pk);
+
+                    Intent intent = new Intent();
+
+                    intent.putExtra("ItemUrl", url);
+                    intent.putExtra("Code", pk);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("ContentModel", "teleplay");
+                    intent.putExtra("ModuleName", "4S");
+                    intent.setClassName("com.lenovo.dll.nebula.vod", "com.lenovo.dll.nebula.vod.player.VODPlayerActivity");
+                    startActivity(intent);
+
 
                     break;
                 default:
