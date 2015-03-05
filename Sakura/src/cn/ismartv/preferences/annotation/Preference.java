@@ -15,6 +15,4 @@ import java.lang.annotation.Target;
 public @interface Preference {
     public String name() default "";
 
-
-
 }

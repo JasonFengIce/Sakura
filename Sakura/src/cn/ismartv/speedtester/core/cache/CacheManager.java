@@ -15,6 +15,7 @@ import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import cn.ismartv.speedtester.utils.StringUtils;
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -204,7 +205,7 @@ public class CacheManager {
     }
 
     public static void updateNodeCache(Context context, ArrayList<NodeEntity> nodes) {
-
+        new Delete().from(NodeCacheTable.class).execute();
         ActiveAndroid.beginTransaction();
         try {
             for (NodeEntity nodeEntity : nodes) {
@@ -246,7 +247,7 @@ public class CacheManager {
     }
 
     public static void updatLocalIp(Context context) {
-       weiXinUpload(context);
+        weiXinUpload(context);
     }
 
     public static void updateLaunched(Context context, boolean b) {

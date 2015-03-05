@@ -7,7 +7,9 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 import cn.ismartv.speedtester.AppConstant;
+import cn.ismartv.speedtester.provider.NodeCacheTable;
 import cn.ismartv.speedtester.utils.DeviceUtils;
+import com.activeandroid.query.Delete;
 import com.ismartv.android.vod.core.keyevent.EventDeliver;
 import com.ismartv.android.vod.core.keyevent.KeyEventInterface;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
@@ -25,6 +27,8 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     private static final int BUTTON_KEY_EVENT = 1;
     private static final int VOL_SEEK_EVENT = 2;
     private static final int PLAY_VIDEO_EVENT = 3;
+    private static final int DELETE_CDN = 4;
+
     private static final String TAG = "HttpProxyService";
     private static final int PORT = 10114;
     private static final String HTTP_ACTIOIN = "/keyevent";
@@ -106,6 +110,10 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
                     startActivity(intent);
 
 
+                    break;
+                case DELETE_CDN:
+                    Log.d(TAG, "execute delete cdn");
+                    new Delete().from(NodeCacheTable.class).execute();
                     break;
                 default:
                     break;

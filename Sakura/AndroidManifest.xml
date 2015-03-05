@@ -4,6 +4,7 @@
           android:installLocation="internalOnly"
           android:versionCode="216"
           android:versionName="2.16">
+
     <uses-sdk android:minSdkVersion="14"/>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -18,26 +19,32 @@
 
 
     <instrumentation
-            android:name="android.test.InstrumentationTestRunner"
-            android:targetPackage="cn.ismartv.speedtester"
-            android:label="Test for my app"
-            />
+        android:name="android.test.InstrumentationTestRunner"
+        android:targetPackage="cn.ismartv.speedtester"
+        android:label="Test for my app"
+        />
 
     <application
-            android:allowBackup="true"
-            android:name="cn.ismartv.speedtester.SakuraApplication"
-            android:label="@string/app_name"
-            android:icon="@drawable/ic_launcher"
-            android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"
-            >
+        android:allowBackup="true"
+        android:name="cn.ismartv.speedtester.SakuraApplication"
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher"
+        android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"
+        >
         <uses-library android:name="android.test.runner"/>
-        <meta-data android:name="AA_DB_NAME" android:value="sakura.db"/>
-        <meta-data android:name="AA_DB_VERSION" android:value="2"/>
 
-        <activity android:name=".ui.activity.MenuActivity"
-                  android:launchMode="singleTask"
-                  android:label="@string/app_name"
-                >
+        <meta-data
+            android:name="AA_DB_NAME"
+            android:value="sakura.db"/>
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="2"/>
+
+        <activity
+            android:name=".ui.activity.MenuActivity"
+            android:launchMode="singleTask"
+            android:label="@string/app_name"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -50,15 +57,16 @@
         </activity>
 
 
-        <activity android:name=".ui.activity.HomeActivity"
-                  android:launchMode="singleTask"
-                >
+        <activity
+            android:name=".ui.activity.HomeActivity"
+            android:launchMode="singleTask"
+            >
         </activity>
 
         <activity
-                android:name=".setting.OobeActivity"
-                android:theme="@style/oobe_for_s52_style"
-                >
+            android:name=".setting.OobeActivity"
+            android:theme="@style/oobe_for_s52_style"
+            >
 
             <intent-filter>
                 <action android:name="cn.ismartv.speedtester.settings"/>
@@ -83,12 +91,17 @@
         <service android:name="com.ismartv.android.vod.service.HttpProxyService"></service>
 
         <!--content provider-->
-        <provider android:authorities="cn.ismartv.speedtester"
-                  android:exported="false"
-                  android:name="com.activeandroid.content.ContentProvider"/>
+        <provider
+            android:authorities="cn.ismartv.speedtester"
+            android:exported="false"
+            android:name="com.activeandroid.content.ContentProvider"/>
 
         <!-- 友盟配置-->
-        <meta-data android:value="54ab5d2cfd98c53141001725" android:name="UMENG_APPKEY"></meta-data>
-        <meta-data android:value="IsmarTV" android:name="UMENG_CHANNEL"/>
+        <meta-data
+            android:value="54ab5d2cfd98c53141001725"
+            android:name="UMENG_APPKEY"></meta-data>
+        <meta-data
+            android:value="IsmarTV"
+            android:name="UMENG_CHANNEL"/>
     </application>
 </manifest>
