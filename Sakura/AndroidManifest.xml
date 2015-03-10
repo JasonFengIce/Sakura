@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="cn.ismartv.speedtester"
           android:installLocation="internalOnly"
-          android:versionCode="216"
-          android:versionName="2.16">
+          android:versionCode="217"
+          android:versionName="2.17">
 
     <uses-sdk android:minSdkVersion="14"/>
 

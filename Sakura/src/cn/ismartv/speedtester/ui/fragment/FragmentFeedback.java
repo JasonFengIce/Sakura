@@ -326,13 +326,13 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     private void setFeedBack() {
         String contactNumber = phone.getEditableText().toString();
         if (StringUtils.isEmpty(contactNumber)) {
+            submitBtn.setEnabled(true);
             Toast.makeText(mActivity, R.string.fill_contact_number, Toast.LENGTH_LONG).show();
-            submitBtn.setEnabled(true);
-            return;
+
         } else if ((!isMobile(contactNumber) && !isPhone(contactNumber))) {
-            Toast.makeText(mActivity, R.string.you_should_give_an_phone_number, Toast.LENGTH_LONG).show();
             submitBtn.setEnabled(true);
-            return;
+            Toast.makeText(mActivity, R.string.you_should_give_an_phone_number, Toast.LENGTH_LONG).show();
+
         } else {
             CacheManager.IpLookUp ipLookUp = CacheManager.getInstance(mActivity).new IpLookUp();
             FeedBackEntity feedBack = new FeedBackEntity();
@@ -556,9 +556,10 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
 
                 if (AppConstant.DEBUG)
                     Log.d(TAG, "submit problem feedback");
-                CacheManager.updatFeedBack(mActivity, phone.getText().toString());
-                setFeedBack();
                 submitBtn.setEnabled(false);
+                CacheManager.updatFeedBack(mActivity, phone.getText().toString());
+
+                setFeedBack();
             }
         });
         cancleButton.setOnClickListener(new View.OnClickListener() {

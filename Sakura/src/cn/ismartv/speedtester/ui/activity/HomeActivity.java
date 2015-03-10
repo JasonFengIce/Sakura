@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,6 +17,8 @@ import cn.ismartv.speedtester.core.cache.CacheManager;
 import cn.ismartv.speedtester.ui.TabAdapter;
 import cn.ismartv.speedtester.ui.widget.SakuraViewPager;
 import cn.ismartv.speedtester.ui.widget.indicator.IconPageIndicator;
+import cn.ismartv.speedtester.ui.widget.indicator.RotationPagerTransformer;
+import cn.ismartv.speedtester.ui.widget.indicator.ViewPagerScroller;
 
 
 public class HomeActivity extends BaseActivity implements View.OnHoverListener {
@@ -58,8 +61,19 @@ public class HomeActivity extends BaseActivity implements View.OnHoverListener {
         ButterKnife.inject(this);
 
         tabAdapter = new TabAdapter(getSupportFragmentManager());
+
+        ViewPagerScroller scroller = new ViewPagerScroller(this);
+        scroller.setScrollDuration(1500);
+        scroller.initViewPagerScroll(pager);//这个是设置切换过渡时间为2秒
+
         pager.setAdapter(tabAdapter);
+
+        pager.setPageTransformer(false, new RotationPagerTransformer());
+
+
+
         indicator.setViewPager(pager);
+
         /////////////////////////////////////////////////////////////
         //Init Page Position
         /////////////////////////////////////////////////////////////
