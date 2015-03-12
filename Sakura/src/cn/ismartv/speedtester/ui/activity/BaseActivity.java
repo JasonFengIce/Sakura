@@ -18,6 +18,7 @@ public class BaseActivity extends FragmentActivity {
     private static final String S61 = "ideatv S61";
     private static final String S51 = "ideatv S51";
     private static final String K82 = "ideatv K82";
+    private static final String S9i = "LenovoTV 55S9i";
 
     public TVModel tvModel;
     /**
@@ -30,7 +31,9 @@ public class BaseActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (DeviceUtils.getModel().equals(S51) || DeviceUtils.getModel().equals(S61) || DeviceUtils.getModel().equals(K82))
+        if (DeviceUtils.getModel().equals(S9i)) {
+            tvModel = TVModel.S9i;
+        } else if (DeviceUtils.getModel().equals(S51) || DeviceUtils.getModel().equals(S61) || DeviceUtils.getModel().equals(K82))
             tvModel = TVModel.S51;
         else
             tvModel = TVModel.S52;
@@ -76,6 +79,6 @@ public class BaseActivity extends FragmentActivity {
     }
 
     public enum TVModel {
-        S51, S52
+        S51, S52, S9i
     }
 }

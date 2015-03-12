@@ -113,10 +113,13 @@ public class OobeActivity extends BaseActivity implements OnKeyListener {
         switch (tvModel) {
             case S51:
                 setContentView(R.layout.activity_setting_for_s51);
-                    break;
+                break;
             case S52:
                 setContentView(R.layout.activity_setting_for_s52);
-                    break;
+                break;
+            case S9i:
+                setContentView(R.layout.activity_setting_for_s9i);
+                break;
             default:
                 break;
         }
@@ -133,6 +136,14 @@ public class OobeActivity extends BaseActivity implements OnKeyListener {
                 params.width = 1110;
                 params.height = 971;
                 getWindow().setAttributes(params);
+                break;
+            case S9i:
+                WindowManager.LayoutParams S9iparams = getWindow().getAttributes();
+                S9iparams.x = 248;
+                S9iparams.y = -1;
+                S9iparams.width = 1110;
+                S9iparams.height = 971;
+                getWindow().setAttributes(S9iparams);
                 break;
             default:
                 break;
@@ -166,6 +177,10 @@ public class OobeActivity extends BaseActivity implements OnKeyListener {
         mCurrentProgressBar = (ProgressBar) findViewById(R.id.current_progress);
 
         LinearLayout speedIndicator = (LinearLayout) findViewById(R.id.speed_indicator);
+        speedIndicator.setFocusable(true);
+        speedIndicator.setFocusableInTouchMode(true);
+        speedIndicator.requestFocus();
+        speedIndicator.requestFocusFromTouch();
         int speedIndicatorChildCount = speedIndicator.getChildCount();
         mSpeedIndicatorTextArray = new TextView[speedIndicatorChildCount];
 
@@ -567,7 +582,6 @@ public class OobeActivity extends BaseActivity implements OnKeyListener {
             //WIFI setting Activity: ACTION_WIFI_SETTINGS
             showDialog(DIALOG_NETWORK_UNESTABLISHED);
         }
-        mSpeedActionButton.requestFocus();
         super.onResume();
     }
 
