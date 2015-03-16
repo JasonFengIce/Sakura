@@ -533,6 +533,8 @@ public class FragmentFeedback extends Fragment implements RadioGroup.OnCheckedCh
     }
 
     private void initPopWindow() {
+        submitBtn.clearFocus();
+
         View contentView = LayoutInflater.from(mActivity)
                 .inflate(R.layout.popup_confirm_submit_feedback, null);
         contentView.setBackgroundResource(R.drawable.bg_popup);
