@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import cn.ismartv.speedtester.data.Empty;
 import cn.ismartv.speedtester.data.TeleEntity;
 import cn.ismartv.speedtester.data.TicketEntity;
 import cn.ismartv.speedtester.ui.activity.HomeActivity;
+import cn.ismartv.speedtester.ui.activity.HomeActivity.OnKeyEventListener;
 import cn.ismartv.speedtester.ui.activity.MenuActivity;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import org.w3c.dom.Text;
@@ -41,7 +43,7 @@ import java.util.List;
 /**
  * Created by huaijie on 14-10-29.
  */
-public class FragmentHelp extends Fragment {
+public class FragmentHelp extends Fragment implements OnKeyEventListener{
     public static final int QR_CODE = 0x0001;
     private static final String TAG = "FragmentHelp";
     @InjectView(R.id.weixin_image)
@@ -87,6 +89,7 @@ public class FragmentHelp extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = (HomeActivity) activity;
+        ((HomeActivity) activity).setOnKeyEventListener(this);
 
     }
 
@@ -165,6 +168,11 @@ public class FragmentHelp extends Fragment {
                     }
                 }
         );
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return false;
     }
 
 

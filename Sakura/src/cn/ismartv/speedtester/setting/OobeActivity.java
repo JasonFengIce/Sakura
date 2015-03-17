@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.*;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -139,10 +140,11 @@ public class OobeActivity extends BaseActivity implements OnKeyListener {
                 break;
             case S9i:
                 WindowManager.LayoutParams S9iparams = getWindow().getAttributes();
-                S9iparams.x = 248;
-                S9iparams.y = -1;
-                S9iparams.width = 1110;
-                S9iparams.height = 971;
+//                S9iparams.x = 248;
+//                S9iparams.y = -1;
+                S9iparams.width = WindowManager.LayoutParams.MATCH_PARENT;
+                S9iparams.height = WindowManager.LayoutParams.MATCH_PARENT;
+                S9iparams.gravity = Gravity.CENTER;
                 getWindow().setAttributes(S9iparams);
                 break;
             default:
@@ -157,6 +159,9 @@ public class OobeActivity extends BaseActivity implements OnKeyListener {
                 break;
             case S52:
                 setTheme(R.style.oobe_for_s52_style);
+                break;
+            case S9i:
+                setTheme(R.style.oobe_for_s9i_style);
                 break;
             default:
                 break;
