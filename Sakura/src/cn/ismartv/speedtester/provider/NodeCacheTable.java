@@ -12,7 +12,7 @@ import com.activeandroid.query.Select;
  */
 
 @Table(name = "nodes")
-public class NodeCacheTable extends Model {
+public  class NodeCacheTable extends Model {
     public static final String CDN_ID = "cdn_id";
     public static final String URL = "url";
     public static final String ID = "_id";

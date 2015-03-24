@@ -766,22 +766,6 @@ public class OobeActivity extends BaseActivity implements OnKeyListener {
     private Handler mExpiredHandler = new Handler();
 
 
-    @Override
-    public boolean onFnKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_RC_SETTINGS || keyCode == KeyEvent.KEYCODE_SETTINGS || keyCode == KeyEvent.KEYCODE_RC_SOURCE) {
-            Log.d("OobeActivity", "rc_setting is pressed: " + (keyCode == KeyEvent.KEYCODE_RC_SETTINGS));
-            Intent intent = new Intent("lenovo.settings.action.finish");
-            this.sendBroadcast(intent);
-            this.finish();
-        }
-        if (keyCode == KeyEvent.KEYCODE_RC_SETTINGS) {
-            return true;
-        } else {
-            return super.onFnKeyUp(keyCode, event);
-        }
-    }
-
-
     private OnClickListener mActionButtonListener = new OnClickListener() {
 
         public void onClick(View v) {

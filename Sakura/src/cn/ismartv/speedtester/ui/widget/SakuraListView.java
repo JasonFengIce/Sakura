@@ -96,6 +96,8 @@ public class SakuraListView extends ListView {
         }
     }
 
-
-
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+    }
 }

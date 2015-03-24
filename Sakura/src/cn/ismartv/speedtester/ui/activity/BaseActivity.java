@@ -1,8 +1,6 @@
 package cn.ismartv.speedtester.ui.activity;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.os.RemoteController;
 import android.support.v4.app.FragmentActivity;
 import cn.ismartv.speedtester.utils.DeviceUtils;
 import com.umeng.analytics.MobclickAgent;
@@ -13,7 +11,6 @@ import com.umeng.analytics.MobclickAgent;
 public class BaseActivity extends FragmentActivity {
     private static final String TAG = "BaseActivity";
 
-    private RemoteController mRemoteController;
 
     private static final String S61 = "ideatv S61";
     private static final String S51 = "ideatv S51";
@@ -43,24 +40,11 @@ public class BaseActivity extends FragmentActivity {
 //        registerReceiver(mCloseReceiver, new IntentFilter(ACTION_SETTING));
     }
 
-    public void hideCursor(boolean hide) {
-        if (mRemoteController == null) {
-            mRemoteController = (RemoteController) getSystemService(Context.REMOTECONTROLLER_SERVICE);
-        }
-        if (hide) {
-            mRemoteController.setRcGestureOnly();
-            mRemoteController.displayCursor(false);
-        } else {
-            mRemoteController.setDefaultMode();
-        }
-    }
 
     @Override
     protected void onResume() {
         MobclickAgent.onResume(this);
         super.onResume();
-        if (DeviceUtils.getModel().equals(S51) || DeviceUtils.getModel().equals(S61) || DeviceUtils.getModel().equals(K82))
-            hideCursor(true);
 
     }
 
