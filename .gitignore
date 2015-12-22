@@ -37,6 +37,4 @@ tmp
 .gradle
 /build
 /out
-Sakura/out
-Sakura/build/
-
+*/build
