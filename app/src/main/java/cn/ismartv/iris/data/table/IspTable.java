@@ -1,4 +1,4 @@
-package cn.ismartv.iris.data.table.location;
+package cn.ismartv.iris.data.table;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;

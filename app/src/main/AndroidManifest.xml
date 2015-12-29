@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cn.ismartv.iris" >
+          package="cn.ismartv.iris">
     <supports-screens
-        android:anyDensity="true"
-        android:largeScreens="true"
-        android:normalScreens="true"
-        android:resizeable="true"
-        android:smallScreens="true"/>
+            android:anyDensity="true"
+            android:largeScreens="true"
+            android:normalScreens="true"
+            android:resizeable="true"
+            android:smallScreens="true"/>
 
     <uses-sdk
             android:minSdkVersion="14"
@@ -59,23 +59,37 @@
     <!-- 允许应用读取低级别的系统日志文件 -->
     <uses-permission android:name="android.permission.READ_LOGS"></uses-permission>
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+            android:name=".VodApplication"
+            android:allowBackup="true"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
+        <meta-data
+                android:name="AA_DB_NAME"
+                android:value="sakura.db"/>
+        <meta-data
+                android:name="AA_DB_VERSION"
+                android:value="14"/>
+        <service
+                android:name="com.baidu.location.f"
+                android:enabled="true"
+                android:process=":remote"></service>
         <activity
                 android:name=".LauncherActivity"
                 android:label="@string/app_name"
                 android:screenOrientation="landscape"
                 android:launchMode="singleTask"
-                android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen" >
+                android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <provider android:authorities="cn.ismartv.iris"
+                  android:name="com.activeandroid.content.ContentProvider"/>
 
         <activity
                 android:name=".ui.activity.HomeActivity"

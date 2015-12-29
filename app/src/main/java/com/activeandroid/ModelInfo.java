@@ -39,7 +39,7 @@ final class ModelInfo {
         {
             put(Calendar.class, new CalendarSerializer());
             put(java.sql.Date.class, new SqlDateSerializer());
-            put(java.util.Date.class, new UtilDateSerializer());
+            put(Date.class, new UtilDateSerializer());
             put(File.class, new FileSerializer());
         }
     };

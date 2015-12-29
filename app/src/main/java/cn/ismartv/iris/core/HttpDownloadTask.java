@@ -3,9 +3,9 @@ package cn.ismartv.iris.core;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import cn.ismartv.iris.data.table.location.CdnTable;
-import cn.ismartv.iris.utils.DeviceUtils;
 import com.activeandroid.query.Select;
+import cn.ismartv.iris.data.table.CdnTable;
+import cn.ismartv.iris.utils.DeviceUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import cn.ismartv.iris.R;
-import cn.ismartv.iris.data.table.location.IspTable;
+import cn.ismartv.iris.data.table.IspTable;
 
 import java.util.List;
 

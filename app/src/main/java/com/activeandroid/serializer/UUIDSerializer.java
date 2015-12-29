@@ -24,6 +24,6 @@ public final class UUIDSerializer extends TypeSerializer {
 			return null;
 		}
 
-		return UUID.fromString((String) data);
+		return UUID.fromString((String)data);
 	}
 }

@@ -7,12 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
-import cn.ismartv.iris.R;
-import cn.ismartv.iris.data.table.location.CdnTable;
-import cn.ismartv.iris.data.table.location.IspTable;
-import cn.ismartv.iris.ui.widget.SakuraProgressBar;
 import com.activeandroid.query.Select;
-
+import cn.ismartv.iris.R;
+import cn.ismartv.iris.data.table.CdnTable;
+import cn.ismartv.iris.data.table.IspTable;
+import cn.ismartv.iris.ui.widget.SakuraProgressBar;
 
 /**
  * Created by huaijie on 14-10-31.

@@ -19,22 +19,6 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import cn.ismartv.iris.R;
-import cn.ismartv.iris.core.*;
-import cn.ismartv.iris.core.preferences.AccountSharedPrefs;
-import cn.ismartv.iris.data.http.BindedCdnEntity;
-import cn.ismartv.iris.data.http.Empty;
-import cn.ismartv.iris.data.http.SpeedLogEntity;
-import cn.ismartv.iris.data.table.location.CdnTable;
-import cn.ismartv.iris.data.table.location.IspTable;
-import cn.ismartv.iris.data.table.location.ProvinceTable;
-import cn.ismartv.iris.ui.adapter.IspSpinnerAdapter;
-import cn.ismartv.iris.ui.adapter.NodeListAdapter;
-import cn.ismartv.iris.ui.adapter.ProvinceSpinnerAdapter;
-import cn.ismartv.iris.ui.widget.SakuraButton;
-import cn.ismartv.iris.ui.widget.SakuraListView;
-import cn.ismartv.iris.ui.widget.dialog.MessageDialogFragment;
-import cn.ismartv.iris.utils.StringUtils1;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.content.ContentProvider;
 import com.activeandroid.query.Select;
@@ -42,17 +26,32 @@ import com.google.gson.Gson;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+import cn.ismartv.iris.R;
+import cn.ismartv.iris.core.DaisyUtils;
+import cn.ismartv.iris.core.SimpleRestClient;
+import cn.ismartv.iris.core.preferences.AccountSharedPrefs;
+import cn.ismartv.iris.data.table.CdnTable;
+import cn.ismartv.iris.data.table.IspTable;
+import cn.ismartv.iris.data.table.ProvinceTable;
+import cn.ismartv.iris.ui.widget.dialog.MessageDialogFragment;
+import cn.ismartv.iris.utils.StringUtils;
+import cn.ismartv.iris.core.CdnCacheLoader;
+import cn.ismartv.iris.core.HttpDownloadTask;
+import cn.ismartv.iris.core.SakuraClientAPI;
+import cn.ismartv.iris.data.http.BindedCdnEntity;
+import cn.ismartv.iris.data.http.Empty;
+import cn.ismartv.iris.data.http.SpeedLogEntity;
+import cn.ismartv.iris.ui.adapter.IspSpinnerAdapter;
+import cn.ismartv.iris.ui.adapter.NodeListAdapter;
+import cn.ismartv.iris.ui.adapter.ProvinceSpinnerAdapter;
+import cn.ismartv.iris.ui.widget.SakuraButton;
+import cn.ismartv.iris.ui.widget.SakuraListView;
 
 import java.util.ArrayList;
 import java.util.List;
-import cn.ismartv.iris.core.SakuraClientAPI;
+
 import static cn.ismartv.iris.core.SakuraClientAPI.restAdapter_SPEED_CALLA_TVXIO;
 import static cn.ismartv.iris.core.SakuraClientAPI.restAdapter_WX_API_TVXIO;
-import cn.ismartv.iris.core.DaisyUtils;
-import cn.ismartv.iris.core.SimpleRestClient;
-import cn.ismartv.iris.core.CdnCacheLoader;
-import cn.ismartv.iris.core.HttpDownloadTask;
-
 
 /**
  * Created by huaijie on 2015/4/8.
@@ -114,8 +113,8 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        rate = DaisyUtils.getVodApplication(getActivity()).getRate(getActivity());
-        TIE_TONG = StringUtils1.getMd5Code("铁通");
+        rate = DaisyUtils.getVodApplication(getActivity()).getRate(getActivity());
+        TIE_TONG = StringUtils.getMd5Code("铁通");
 
     }
 
@@ -247,8 +246,8 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     private void notifiySourceChanged() {
         if (mIspId.equals(TIE_TONG)) {
 
-            String unicom = StringUtils1.getMd5Code("联通");
-            String chinaMobile = StringUtils1.getMd5Code("移动");
+            String unicom = StringUtils.getMd5Code("联通");
+            String chinaMobile = StringUtils.getMd5Code("移动");
             selectionArgs = new String[]{mDistrictId, chinaMobile, unicom, NOT_THIRD_CDN};
             getLoaderManager().destroyLoader(NORMAL_ISP_FLAG);
             getLoaderManager().restartLoader(OTHER_ISP_FLAG, null, NodeFragment.this).forceLoad();
@@ -581,9 +580,12 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
      */
     public static List<Integer> cursorToList(Cursor cursor) {
         List<Integer> cdnCollections = new ArrayList<Integer>();
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            cdnCollections.add(cursor.getInt(cursor.getColumnIndex("cdn_id")));
+        if(cursor!=null){
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                cdnCollections.add(cursor.getInt(cursor.getColumnIndex("cdn_id")));
+            }
         }
+
         return cdnCollections;
     }
 

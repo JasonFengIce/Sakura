@@ -2,13 +2,9 @@ package cn.ismartv.iris.core.client;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import cn.ismartv.iris.VodApplication;
-import cn.ismartv.iris.core.SimpleRestClient;
-import cn.ismartv.iris.core.preferences.AccountSharedPrefs;
 import com.squareup.okhttp.*;
 
 import java.io.IOException;
@@ -116,29 +112,6 @@ public class IsmartvUrlClient extends Thread {
     }
 
 
-    public void doRequest(Method method, String api, HashMap<String, String> hashMap, CallBack callback) {
-        hashMap.put("access_token", SimpleRestClient.access_token);
-        if (SimpleRestClient.device_token == null || "".equals(SimpleRestClient.device_token)) {
-            VodApplication.setDevice_Token();
-        }
-        hashMap.put("device_token", SimpleRestClient.device_token);
-        Iterator<Map.Entry<String, String>> iterator = hashMap.entrySet().iterator();
-        StringBuffer stringBuffer = new StringBuffer();
-        while (iterator.hasNext()) {
-            Map.Entry<String, String> entry = iterator.next();
-            String key = entry.getKey();
-            String value = entry.getValue();
-            stringBuffer.append(key).append("=").append(value).append("&");
-        }
-        stringBuffer.deleteCharAt(stringBuffer.length() - 1);
-        this.params = stringBuffer.toString();
-        this.url = api;
-        this.callback = callback;
-        this.method = method;
-        start();
-    }
-
-
     public void doNormalRequest(Method method, String api, HashMap<String, String> hashMap, CallBack callback) {
         Iterator<Map.Entry<String, String>> iterator = hashMap.entrySet().iterator();
         StringBuffer stringBuffer = new StringBuffer();
@@ -153,72 +126,6 @@ public class IsmartvUrlClient extends Thread {
         this.url = api;
         this.callback = callback;
         this.method = method;
-        start();
-    }
-
-    public void doRequest(String api, CallBack callback) {
-        HashMap<String, String> hashMap = new HashMap<String, String>();
-        hashMap.put("device_token", SimpleRestClient.device_token);
-        hashMap.put("access_token", SimpleRestClient.access_token);
-        Iterator<Map.Entry<String, String>> iterator = hashMap.entrySet().iterator();
-        StringBuffer stringBuffer = new StringBuffer();
-        while (iterator.hasNext()) {
-            Map.Entry<String, String> entry = iterator.next();
-            String key = entry.getKey();
-            String value = entry.getValue();
-            stringBuffer.append(key).append("=").append(value).append("&");
-        }
-        stringBuffer.deleteCharAt(stringBuffer.length() - 1);
-        this.params = stringBuffer.toString();
-        this.url = api;
-        this.callback = callback;
-        this.method = Method.GET;
-        start();
-    }
-
-
-    public void doAdvertisementRequest(Method method, String api, HashMap<String, String> hashMap, CallBack callback) {
-
-        hashMap.put("channel", " ");
-        hashMap.put("section", " ");
-        hashMap.put("itemid", " ");
-        hashMap.put("topic", " ");
-        hashMap.put("source", "power");
-        hashMap.put("genre", " ");
-        hashMap.put("content_model", " ");
-        hashMap.put("director", " ");
-        hashMap.put("actor", " ");
-        hashMap.put("clipid", " ");
-        hashMap.put("live_video", " ");
-        hashMap.put("vendor", " ");
-        hashMap.put("expense", " ");
-        hashMap.put("length", " ");
-        hashMap.put("modelName", Build.MODEL.replace(" ", "_"));
-        hashMap.put("sn", SimpleRestClient.sn_token);
-        hashMap.put("access_token", SimpleRestClient.access_token);
-        hashMap.put("device_token", SimpleRestClient.device_token);
-        hashMap.put("version", String.valueOf(SimpleRestClient.appVersion));
-        hashMap.put("province", AccountSharedPrefs.getInstance(mContext).getSharedPrefs(AccountSharedPrefs.PROVINCE_PY));
-        hashMap.put("city", "");
-        hashMap.put("app", "sky");
-        hashMap.put("resolution", SimpleRestClient.screenWidth + "," + SimpleRestClient.screenHeight);
-        hashMap.put("dpi", String.valueOf(SimpleRestClient.densityDpi));
-
-
-        Iterator<Map.Entry<String, String>> iterator = hashMap.entrySet().iterator();
-        StringBuffer stringBuffer = new StringBuffer();
-        while (iterator.hasNext()) {
-            Map.Entry<String, String> entry = iterator.next();
-            String key = entry.getKey();
-            String value = entry.getValue();
-            stringBuffer.append(key).append("=").append(value).append("&");
-        }
-        stringBuffer.deleteCharAt(stringBuffer.length() - 1);
-        this.params = stringBuffer.toString();
-        this.url = api;
-        this.callback = callback;
-        this.method = method;
-        this.errorHandler = ErrorHandler.LOG_MESSAGE;
         start();
     }
 
@@ -247,11 +154,11 @@ public class IsmartvUrlClient extends Thread {
             response = client.newCall(request).execute();
             String result = response.body().string();
             Log.i(TAG, "---> BEGIN\n" +
-                            "\t<--- Request URL: " + "\t" + api + "\n" +
-                            "\t<--- Request Method: " + "\t" + "GET" + "\n" +
-                            "\t<--- Response Code: " + "\t" + response.code() + "\n" +
-                            "\t<--- Response Result: " + "\t" + result + "\n" +
-                            "\t---> END"
+                    "\t<--- Request URL: " + "\t" + api + "\n" +
+                    "\t<--- Request Method: " + "\t" + "GET" + "\n" +
+                    "\t<--- Response Code: " + "\t" + response.code() + "\n" +
+                    "\t<--- Response Result: " + "\t" + result + "\n" +
+                    "\t---> END"
             );
             if (response.code() >= 400 && response.code() < 500) {
                 message.what = FAILURE_4XX;
@@ -288,12 +195,12 @@ public class IsmartvUrlClient extends Thread {
             response = client.newCall(request).execute();
             String result = response.body().string();
             Log.i(TAG, "---> BEGIN\n" +
-                            "\t<--- Request URL: " + "\t" + url + "\n" +
-                            "\t<--- Request Method: " + "\t" + "POST" + "\n" +
-                            "\t<--- Request Params: " + "\t" + params + "\n" +
-                            "\t<--- Response Code: " + "\t" + response.code() + "\n" +
-                            "\t<--- Response Result: " + "\t" + result + "\n" +
-                            "\t---> END"
+                    "\t<--- Request URL: " + "\t" + url + "\n" +
+                    "\t<--- Request Method: " + "\t" + "POST" + "\n" +
+                    "\t<--- Request Params: " + "\t" + params + "\n" +
+                    "\t<--- Response Code: " + "\t" + response.code() + "\n" +
+                    "\t<--- Response Result: " + "\t" + result + "\n" +
+                    "\t---> END"
             );
 
             if (response.code() >= 400 && response.code() < 500) {

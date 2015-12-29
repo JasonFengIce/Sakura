@@ -2,8 +2,8 @@ package cn.ismartv.iris.core.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import cn.ismartv.iris.data.table.location.ProvinceTable;
 import com.activeandroid.query.Select;
+import cn.ismartv.iris.data.table.ProvinceTable;
 
 /**
  * Created by huaijie on 8/3/15.

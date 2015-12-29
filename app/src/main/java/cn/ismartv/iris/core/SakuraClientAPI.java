@@ -1,13 +1,12 @@
 package cn.ismartv.iris.core;
 
-
-import cn.ismartv.iris.data.http.*;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import retrofit.http.*;
+import cn.ismartv.iris.data.http.*;
 
 import java.util.List;
 

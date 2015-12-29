@@ -1,7 +1,10 @@
 package cn.ismartv.iris.utils;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class StringUtils {
-    private static final String TAG = "StringUtilities";
     private static final String NORTH_CHINA_STRING = "北京市, 天津市, 河北省, 山西省,山东省,内蒙古自治区";
     private static final String EAST_CHINA_STRING = "上海市,江苏省,浙江省";
     private static final String SOUTH_CHINA_STRING = "广东省,福建省,海南省,香港特区,澳门特区,台湾省";
@@ -110,5 +113,17 @@ public class StringUtils {
         else if (node.indexOf(CHINA_GREATE_WALL) != -1)
             return CHINA_GREATE_CODE;
         else return OTHERS_CODE;
+    }
+
+    public static String getMd5Code(String string) {
+        String value = "";
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.update(string.getBytes());
+            value = new BigInteger(1, messageDigest.digest()).toString(16);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return value;
     }
 }

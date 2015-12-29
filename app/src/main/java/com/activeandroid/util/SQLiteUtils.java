@@ -17,6 +17,7 @@ package com.activeandroid.util;
  */
 
 import android.database.Cursor;
+import android.nfc.Tag;
 import android.os.Build;
 import android.text.TextUtils;
 import com.activeandroid.Cache;
