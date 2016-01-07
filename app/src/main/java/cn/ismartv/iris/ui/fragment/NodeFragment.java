@@ -14,41 +14,48 @@ import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-import android.view.*;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.ismartv.injectdb.library.ActiveAndroid;
 import cn.ismartv.injectdb.library.content.ContentProvider;
 import cn.ismartv.injectdb.library.query.Select;
-import com.google.gson.Gson;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
 import cn.ismartv.iris.R;
-import cn.ismartv.iris.core.DaisyUtils;
-import cn.ismartv.iris.core.SimpleRestClient;
-import cn.ismartv.iris.core.preferences.AccountSharedPrefs;
-import cn.ismartv.iris.data.table.CdnTable;
-import cn.ismartv.iris.data.table.IspTable;
-import cn.ismartv.iris.data.table.ProvinceTable;
-import cn.ismartv.iris.ui.widget.dialog.MessageDialogFragment;
-import cn.ismartv.iris.utils.StringUtils;
 import cn.ismartv.iris.core.CdnCacheLoader;
 import cn.ismartv.iris.core.HttpDownloadTask;
 import cn.ismartv.iris.core.SakuraClientAPI;
+import cn.ismartv.iris.core.SimpleRestClient;
+import cn.ismartv.iris.core.preferences.AccountSharedPrefs;
 import cn.ismartv.iris.data.http.BindedCdnEntity;
 import cn.ismartv.iris.data.http.Empty;
 import cn.ismartv.iris.data.http.SpeedLogEntity;
+import cn.ismartv.iris.data.table.CdnTable;
+import cn.ismartv.iris.data.table.IspTable;
+import cn.ismartv.iris.data.table.ProvinceTable;
 import cn.ismartv.iris.ui.adapter.IspSpinnerAdapter;
 import cn.ismartv.iris.ui.adapter.NodeListAdapter;
 import cn.ismartv.iris.ui.adapter.ProvinceSpinnerAdapter;
 import cn.ismartv.iris.ui.widget.SakuraButton;
 import cn.ismartv.iris.ui.widget.SakuraListView;
-
-import java.util.ArrayList;
-import java.util.List;
+import cn.ismartv.iris.ui.widget.dialog.MessageDialogFragment;
+import cn.ismartv.iris.utils.StringUtils;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 import static cn.ismartv.iris.core.SakuraClientAPI.restAdapter_SPEED_CALLA_TVXIO;
 import static cn.ismartv.iris.core.SakuraClientAPI.restAdapter_WX_API_TVXIO;
@@ -113,7 +120,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        rate = DaisyUtils.getVodApplication(getActivity()).getRate(getActivity());
         TIE_TONG = StringUtils.getMd5Code("铁通");
 
     }
@@ -580,7 +586,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
      */
     public static List<Integer> cursorToList(Cursor cursor) {
         List<Integer> cdnCollections = new ArrayList<Integer>();
-        if(cursor!=null){
+        if (cursor != null) {
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 cdnCollections.add(cursor.getInt(cursor.getColumnIndex("cdn_id")));
             }

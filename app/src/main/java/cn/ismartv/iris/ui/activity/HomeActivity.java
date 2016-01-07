@@ -1,16 +1,11 @@
 package cn.ismartv.iris.ui.activity;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import cn.ismartv.iris.R;
-import cn.ismartv.iris.VodApplication;
-import cn.ismartv.iris.core.DaisyUtils;
-import cn.ismartv.iris.core.SimpleRestClient;
-import cn.ismartv.iris.core.preferences.AccountSharedPrefs;
 import cn.ismartv.iris.ui.adapter.IndicatorAdapter;
 import cn.ismartv.iris.ui.fragment.FeedbackFragment;
 import cn.ismartv.iris.ui.fragment.HelpFragment;
