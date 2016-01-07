@@ -2,7 +2,7 @@ package cn.ismartv.iris.ui.provider;
 
 import android.content.ContentValues;
 import android.net.Uri;
-import com.activeandroid.content.ContentProvider;
+import cn.ismartv.injectdb.library.content.ContentProvider;
 
 /**
  * Created by admin on 2015/12/29.

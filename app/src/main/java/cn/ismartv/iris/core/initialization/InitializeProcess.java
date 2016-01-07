@@ -13,9 +13,9 @@ import cn.ismartv.iris.data.http.IpLookUpEntity;
 import cn.ismartv.iris.data.table.*;
 import cn.ismartv.iris.utils.HardwareUtils;
 import cn.ismartv.iris.utils.StringUtils;
-import com.activeandroid.ActiveAndroid;
-import com.activeandroid.query.Delete;
-import com.activeandroid.query.Select;
+import cn.ismartv.injectdb.library.ActiveAndroid;
+import cn.ismartv.injectdb.library.query.Delete;
+import cn.ismartv.injectdb.library.query.Select;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;

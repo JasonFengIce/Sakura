@@ -3,7 +3,7 @@ package cn.ismartv.iris.core;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import com.activeandroid.query.Select;
+import cn.ismartv.injectdb.library.query.Select;
 import cn.ismartv.iris.data.table.CdnTable;
 import cn.ismartv.iris.utils.DeviceUtils;
 

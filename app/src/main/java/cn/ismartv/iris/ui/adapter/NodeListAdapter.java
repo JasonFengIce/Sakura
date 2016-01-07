@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
-import com.activeandroid.query.Select;
+import cn.ismartv.injectdb.library.query.Select;
 import cn.ismartv.iris.R;
 import cn.ismartv.iris.data.table.CdnTable;
 import cn.ismartv.iris.data.table.IspTable;

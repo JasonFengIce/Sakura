@@ -3,10 +3,9 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 22
     buildToolsVersion "23.0.2"
-//    useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "cn.ismartv.iris"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -27,5 +26,5 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'cn.ismartv.injectdb:injectdb:1.1'
+    compile 'cn.ismartv.injectdb:injectdb:1.2'
 }

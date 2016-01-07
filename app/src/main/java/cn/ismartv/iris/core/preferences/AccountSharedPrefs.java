@@ -2,7 +2,7 @@ package cn.ismartv.iris.core.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.activeandroid.query.Select;
+import cn.ismartv.injectdb.library.query.Select;
 import cn.ismartv.iris.data.table.ProvinceTable;
 
 /**
