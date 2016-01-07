@@ -7,18 +7,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
-import cn.ismartv.iris.R;
+import java.util.List;
+
 import cn.ismartv.iris.core.FeedbackProblem;
 import cn.ismartv.iris.core.SakuraClientAPI;
 import cn.ismartv.iris.data.http.ProblemEntity;
 import cn.ismartv.iris.ui.activity.HomeActivity;
-
-import java.util.List;
-
-import static cn.ismartv.iris.core.SakuraClientAPI.restAdapter_IRIS_TVXIO;
+import okhttp3.OkHttpClient;
+import retrofit2.Callback;
+import retrofit2.GsonConverterFactory;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class LauncherActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "LauncherActivity";
@@ -73,11 +72,16 @@ public class LauncherActivity extends Activity implements View.OnClickListener {
      * fetch tv problems from http server
      */
     private void fetchProblems() {
+        Retrofit restAdapter_IRIS_TVXIO = new Retrofit.Builder()
+                .client(new OkHttpClient())
+                .baseUrl(SakuraClientAPI.IRIS_TVXIO_HOST)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
         SakuraClientAPI.Problems client = restAdapter_IRIS_TVXIO.create(SakuraClientAPI.Problems.class);
 
         client.excute().enqueue(new Callback<List<ProblemEntity>>() {
             @Override
-            public void onResponse(Response<List<ProblemEntity>> response, Retrofit retrofit) {
+            public void onResponse(Response<List<ProblemEntity>> response) {
                 FeedbackProblem feedbackProblem = FeedbackProblem.getInstance();
                 feedbackProblem.saveCache(response.body());
             }

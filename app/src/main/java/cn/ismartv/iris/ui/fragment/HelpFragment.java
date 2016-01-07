@@ -9,14 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
+
 import cn.ismartv.iris.R;
 import cn.ismartv.iris.core.SimpleRestClient;
 import cn.ismartv.iris.core.SakuraClientAPI;
 import cn.ismartv.iris.data.http.TeleEntity;
 import cn.ismartv.iris.utils.DeviceUtils;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class HelpFragment extends Fragment {
         SakuraClientAPI.FetchTel client = restAdapter_WX_API_TVXIO.create(SakuraClientAPI.FetchTel.class);
         client.excute(SakuraClientAPI.FetchTel.ACTION, model, snCode).enqueue(new Callback<List<TeleEntity>>() {
             @Override
-            public void onResponse(Response<List<TeleEntity>> response, Retrofit retrofit) {
+            public void onResponse(Response<List<TeleEntity>> response) {
                 List<TeleEntity> teleEntities = response.body();
                 ismartvTitle.setText(teleEntities.get(0).getTitle() + " : ");
                 ismartvTel.setText(teleEntities.get(0).getPhoneNo());

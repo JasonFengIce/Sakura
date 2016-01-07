@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import com.squareup.okhttp.*;
+
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -13,6 +13,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by huaijie on 5/28/15.
@@ -145,7 +151,6 @@ public class IsmartvUrlClient extends Thread {
         try {
             String api = url + "?" + params;
             OkHttpClient client = new OkHttpClient();
-            client.setConnectTimeout(10, TimeUnit.SECONDS);
             Request request = new Request.Builder()
                     .url(api)
                     .build();
@@ -154,11 +159,11 @@ public class IsmartvUrlClient extends Thread {
             response = client.newCall(request).execute();
             String result = response.body().string();
             Log.i(TAG, "---> BEGIN\n" +
-                    "\t<--- Request URL: " + "\t" + api + "\n" +
-                    "\t<--- Request Method: " + "\t" + "GET" + "\n" +
-                    "\t<--- Response Code: " + "\t" + response.code() + "\n" +
-                    "\t<--- Response Result: " + "\t" + result + "\n" +
-                    "\t---> END"
+                            "\t<--- Request URL: " + "\t" + api + "\n" +
+                            "\t<--- Request Method: " + "\t" + "GET" + "\n" +
+                            "\t<--- Response Code: " + "\t" + response.code() + "\n" +
+                            "\t<--- Response Result: " + "\t" + result + "\n" +
+                            "\t---> END"
             );
             if (response.code() >= 400 && response.code() < 500) {
                 message.what = FAILURE_4XX;
@@ -173,8 +178,8 @@ public class IsmartvUrlClient extends Thread {
             }
         } catch (Exception e) {
             message.what = FAILURE;
-            if(e.getMessage() == null)
-            	e = new Exception("请求超时");
+            if (e.getMessage() == null)
+                e = new Exception("请求超时");
             message.obj = e;
         }
         messageHandler.sendMessage(message);
@@ -184,7 +189,6 @@ public class IsmartvUrlClient extends Thread {
         Message message = messageHandler.obtainMessage();
         try {
             OkHttpClient client = new OkHttpClient();
-            client.setConnectTimeout(10, TimeUnit.SECONDS);
             RequestBody body = RequestBody.create(JSON, params);
 
             Request request = new Request.Builder()
@@ -195,12 +199,12 @@ public class IsmartvUrlClient extends Thread {
             response = client.newCall(request).execute();
             String result = response.body().string();
             Log.i(TAG, "---> BEGIN\n" +
-                    "\t<--- Request URL: " + "\t" + url + "\n" +
-                    "\t<--- Request Method: " + "\t" + "POST" + "\n" +
-                    "\t<--- Request Params: " + "\t" + params + "\n" +
-                    "\t<--- Response Code: " + "\t" + response.code() + "\n" +
-                    "\t<--- Response Result: " + "\t" + result + "\n" +
-                    "\t---> END"
+                            "\t<--- Request URL: " + "\t" + url + "\n" +
+                            "\t<--- Request Method: " + "\t" + "POST" + "\n" +
+                            "\t<--- Request Params: " + "\t" + params + "\n" +
+                            "\t<--- Response Code: " + "\t" + response.code() + "\n" +
+                            "\t<--- Response Result: " + "\t" + result + "\n" +
+                            "\t---> END"
             );
 
             if (response.code() >= 400 && response.code() < 500) {
@@ -216,8 +220,8 @@ public class IsmartvUrlClient extends Thread {
             }
         } catch (Exception e) {
             message.what = FAILURE;
-            if(e.getMessage() == null)
-            	e = new Exception("请求超时");
+            if (e.getMessage() == null)
+                e = new Exception("请求超时");
             message.obj = e;
         }
         messageHandler.sendMessage(message);

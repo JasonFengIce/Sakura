@@ -1,26 +1,34 @@
 package cn.ismartv.iris.core;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.logging.HttpLoggingInterceptor;
-import retrofit.Call;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
-import retrofit.http.*;
-import cn.ismartv.iris.data.http.*;
 
 import java.util.List;
+
+import cn.ismartv.iris.data.http.BindedCdnEntity;
+import cn.ismartv.iris.data.http.ChatMsgEntity;
+import cn.ismartv.iris.data.http.Empty;
+import cn.ismartv.iris.data.http.ProblemEntity;
+import cn.ismartv.iris.data.http.TeleEntity;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.GsonConverterFactory;
+import retrofit2.Retrofit;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * Created by huaijie on 2015/4/7.
  */
 public class SakuraClientAPI {
     public static final Retrofit restAdapter_WX_API_TVXIO;
-    public static final Retrofit restAdapter_IRIS_TVXIO;
     public static final Retrofit restAdapter_SPEED_CALLA_TVXIO;
     public static final Retrofit restAdapter_LILY_TVXIO_HOST;
 
     public static final String API_HOST = "http://wx.api.tvxio.com/";
-    private static final String IRIS_TVXIO_HOST = "http://iris.tvxio.com";
+    public static final String IRIS_TVXIO_HOST = "http://iris.tvxio.com";
     private static final String SPEED_CALLA_TVXIO_HOST = "http://speed.calla.tvxio.com";
     private static final String LILY_TVXIO_HOST = "http://lily.tvxio.com";
 
@@ -33,11 +41,6 @@ public class SakuraClientAPI {
         restAdapter_WX_API_TVXIO = new Retrofit.Builder()
                 .client(client)
                 .baseUrl(SakuraClientAPI.API_HOST)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        restAdapter_IRIS_TVXIO = new Retrofit.Builder()
-                .client(client)
-                .baseUrl(SakuraClientAPI.IRIS_TVXIO_HOST)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         restAdapter_SPEED_CALLA_TVXIO = new Retrofit.Builder()
