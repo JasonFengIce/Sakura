@@ -10,16 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import cn.ismartv.iris.R;
-import cn.ismartv.iris.core.SimpleRestClient;
 import cn.ismartv.iris.core.SakuraClientAPI;
+import cn.ismartv.iris.core.SimpleRestClient;
 import cn.ismartv.iris.data.http.TeleEntity;
 import cn.ismartv.iris.utils.DeviceUtils;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-
-import java.util.List;
 
 import static cn.ismartv.iris.core.SakuraClientAPI.restAdapter_WX_API_TVXIO;
 

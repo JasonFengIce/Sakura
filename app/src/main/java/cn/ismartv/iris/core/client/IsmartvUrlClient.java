@@ -6,13 +6,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;

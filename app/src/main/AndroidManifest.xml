@@ -3,8 +3,6 @@
     package="cn.ismartv.iris"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-
-    <!-- TODO SDK接入必须权限模块 START -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -62,7 +60,8 @@
 
         <provider
             android:name="cn.ismartv.injectdb.library.content.ContentProvider"
-            android:authorities="cn.ismartv.iris"/>
+            android:authorities="cn.ismartv.iris"
+            android:exported="false"/>
 
         <activity
             android:name=".ui.activity.HomeActivity"
