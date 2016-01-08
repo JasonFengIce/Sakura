@@ -2,26 +2,6 @@ package tv.ismar.sakura.core.initialization;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
-import tv.ismar.sakura.R;
-import tv.ismar.sakura.core.client.HttpMethod;
-import tv.ismar.sakura.core.client.HttpResponseMessage;
-import tv.ismar.sakura.core.client.JavaHttpClient;
-import tv.ismar.sakura.core.preferences.AccountSharedPrefs;
-import tv.ismar.sakura.data.http.CdnListEntity;
-import tv.ismar.sakura.data.http.IpLookUpEntity;
-import tv.ismar.sakura.data.table.*;
-import tv.ismar.sakura.data.table.CdnTable;
-import tv.ismar.sakura.data.table.CityTable;
-import tv.ismar.sakura.data.table.DistrictTable;
-import tv.ismar.sakura.data.table.IspTable;
-import tv.ismar.sakura.data.table.ProvinceTable;
-import tv.ismar.sakura.utils.HardwareUtils;
-import tv.ismar.sakura.utils.StringUtils;
-import cn.ismartv.injectdb.library.ActiveAndroid;
-import cn.ismartv.injectdb.library.query.Delete;
-import cn.ismartv.injectdb.library.query.Select;
-import tv.ismar.sakura.data.table.*;
 
 import com.google.gson.Gson;
 
@@ -29,7 +9,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+
+import cn.ismartv.injectdb.library.ActiveAndroid;
+import cn.ismartv.injectdb.library.query.Delete;
+import cn.ismartv.injectdb.library.query.Select;
+import okhttp3.Request;
+import okhttp3.Response;
+import tv.ismar.sakura.R;
+import tv.ismar.sakura.core.client.OkHttpClientManager;
 
 /**
  * Created by huaijie on 8/3/15.
@@ -46,11 +33,9 @@ public class InitializeProcess implements Runnable {
             R.array.china_northwest,
             R.array.china_northeast
     };
-
-    private Context mContext;
-
     private final String[] mDistrictArray;
     private final String[] mIspArray;
+    private Context mContext;
 
 
     public InitializeProcess(Context context) {
@@ -172,21 +157,18 @@ public class InitializeProcess implements Runnable {
     }
 
     private void fetchCdnList() {
-        String api = "http://wx.api.tvxio.com/shipinkefu/getCdninfo";
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("actiontype", "getcdnlist");
-        new tv.ismar.sakura.core.client.JavaHttpClient().doRequest(tv.ismar.sakura.core.client.HttpMethod.GET, api, params, new tv.ismar.sakura.core.client.JavaHttpClient.Callback() {
-            @Override
-            public void onSuccess(tv.ismar.sakura.core.client.HttpResponseMessage result) {
-                tv.ismar.sakura.data.http.CdnListEntity cdnListEntity = new Gson().fromJson(result.responseResult, tv.ismar.sakura.data.http.CdnListEntity.class);
-                initializeCdnTable(cdnListEntity);
-            }
-
-            @Override
-            public void onFailed(tv.ismar.sakura.core.client.HttpResponseMessage error) {
-                Log.e(TAG, "fetchCdnList error");
-            }
-        });
+        String api = "http://wx.api.tvxio.com/shipinkefu/getCdninfo?actiontype=getcdnlist";
+        Request request = new Request.Builder()
+                .url(api)
+                .build();
+        Response response = null;
+        try {
+            response = OkHttpClientManager.getInstance().client.newCall(request).execute();
+            tv.ismar.sakura.data.http.CdnListEntity cdnListEntity = new Gson().fromJson(response.body().string(), tv.ismar.sakura.data.http.CdnListEntity.class);
+            initializeCdnTable(cdnListEntity);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initializeCdnTable(tv.ismar.sakura.data.http.CdnListEntity cdnListEntity) {
@@ -216,19 +198,15 @@ public class InitializeProcess implements Runnable {
 
     private void fetchLocationByIP() {
         String api = "http://lily.tvxio.com/iplookup";
-        new tv.ismar.sakura.core.client.JavaHttpClient().doRequest(api, new tv.ismar.sakura.core.client.JavaHttpClient.Callback() {
-            @Override
-            public void onSuccess(tv.ismar.sakura.core.client.HttpResponseMessage result) {
-                tv.ismar.sakura.data.http.IpLookUpEntity ipLookUpEntity = new Gson().fromJson(result.responseResult, tv.ismar.sakura.data.http.IpLookUpEntity.class);
-                initializeLocation(ipLookUpEntity);
-            }
-
-            @Override
-            public void onFailed(tv.ismar.sakura.core.client.HttpResponseMessage error) {
-                Log.e(TAG, "fetchLocation: error");
-            }
-        });
-
+        Request request = new Request.Builder().url(api).build();
+        Response response = null;
+        try {
+            response = OkHttpClientManager.getInstance().client.newCall(request).execute();
+            tv.ismar.sakura.data.http.IpLookUpEntity ipLookUpEntity = new Gson().fromJson(response.body().string(), tv.ismar.sakura.data.http.IpLookUpEntity.class);
+            initializeLocation(ipLookUpEntity);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

@@ -3,6 +3,7 @@ package tv.ismar.sakura.core.client;
 import java.util.concurrent.TimeUnit;
 
 import cn.ismartv.log.interceptor.HttpLoggingInterceptor;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
@@ -11,6 +12,8 @@ import retrofit2.Retrofit;
  * Created by huaijie on 1/7/16.
  */
 public class OkHttpClientManager {
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
 
     public static final String API_HOST = "http://wx.api.tvxio.com/";
     public static final String IRIS_TVXIO_HOST = "http://iris.tvxio.com";
@@ -52,7 +55,7 @@ public class OkHttpClientManager {
                 .build();
 
         restAdapter_IRIS_TVXIO = new Retrofit.Builder()
-                .client(new OkHttpClient())
+                .client(client)
                 .baseUrl(IRIS_TVXIO_HOST)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
