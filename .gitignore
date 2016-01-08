@@ -20,7 +20,7 @@ gen-external-apklibs
 #Maven
 target
 release.properties
-pom.xml.*
+pom.xml.*i
 
 #Ant
 ant.properties

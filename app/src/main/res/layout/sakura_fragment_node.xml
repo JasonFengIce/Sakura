@@ -31,7 +31,7 @@
                 android:textColor="@color/white"
                 />
 
-        <cn.ismartv.iris.ui.widget.SakuraButton
+        <tv.ismar.sakura.ui.widget.SakuraButton
                 android:layout_marginLeft="@dimen/layout_margin"
                 android:id="@+id/unbind_node"
                 android:layout_width="250dp"
@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     />
 
-            <cn.ismartv.iris.ui.widget.SakuraSpinner
+            <tv.ismar.sakura.ui.widget.SakuraSpinner
                     style="@style/spinner_style"
                     android:focusable="true"
                     android:id="@+id/province_spinner"
@@ -94,7 +94,7 @@
                     android:layout_height="wrap_content"
                     />
 
-            <cn.ismartv.iris.ui.widget.SakuraSpinner
+            <tv.ismar.sakura.ui.widget.SakuraSpinner
                     style="@style/spinner_style"
                     android:focusable="true"
                     android:id="@+id/isp_spinner"
@@ -104,7 +104,7 @@
 
         </LinearLayout>
 
-        <cn.ismartv.iris.ui.widget.SakuraButton
+        <tv.ismar.sakura.ui.widget.SakuraButton
                 android:id="@+id/speed_test_btn"
                 android:layout_height="@dimen/sakura_node_testbutton_height"
                 android:layout_weight="1"
@@ -156,7 +156,7 @@
                     android:layout_height="wrap_content"/>
         </LinearLayout>
 
-        <cn.ismartv.iris.ui.widget.SakuraListView
+        <tv.ismar.sakura.ui.widget.SakuraListView
                 android:fastScrollEnabled="false"
                 android:smoothScrollbar="false"
                 android:id="@+id/node_list"

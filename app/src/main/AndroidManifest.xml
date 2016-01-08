@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-    package="cn.ismartv.iris"
+    package="tv.ismar.sakura"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -60,7 +60,7 @@
 
         <provider
             android:name="cn.ismartv.injectdb.library.content.ContentProvider"
-            android:authorities="cn.ismartv.iris"
+            android:authorities="tv.ismar.sakura"
             android:exported="false"/>
 
         <activity

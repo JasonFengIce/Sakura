@@ -57,7 +57,7 @@
                 android:textSize="@dimen/sakura_h5_text_size"
                 android:text="@string/contact_phone_number"/>
 
-        <cn.ismartv.iris.ui.widget.SakuraEditText
+        <tv.ismar.sakura.ui.widget.SakuraEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="@dimen/sakura_h5_text_size"
@@ -87,7 +87,7 @@
                 android:textSize="@dimen/sakura_h5_text_size"
                 android:text="@string/add_description"/>
 
-        <cn.ismartv.iris.ui.widget.SakuraEditText
+        <tv.ismar.sakura.ui.widget.SakuraEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="@dimen/sakura_h5_text_size"
@@ -99,7 +99,7 @@
                 android:inputType="textMultiLine"/>
     </LinearLayout>
 
-    <cn.ismartv.iris.ui.widget.MessageSubmitButton
+    <tv.ismar.sakura.ui.widget.MessageSubmitButton
             android:layout_marginLeft="@dimen/feedback_layout_h_margin"
             android:layout_marginRight="@dimen/feedback_layout_h_margin"
             android:layout_marginTop="@dimen/feedback_layout_v_margin"
@@ -115,7 +115,7 @@
             android:layout_weight="1"
             />
 
-    <cn.ismartv.iris.ui.widget.FeedBackListView
+    <tv.ismar.sakura.ui.widget.FeedBackListView
             android:layout_marginLeft="@dimen/feedback_layout_h_margin"
             android:layout_marginRight="@dimen/feedback_layout_h_margin"
             android:layout_marginTop="@dimen/feedback_layout_v_margin"

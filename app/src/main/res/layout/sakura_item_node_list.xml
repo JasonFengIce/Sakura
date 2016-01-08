@@ -62,7 +62,7 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"/>
 
-    <cn.ismartv.iris.ui.widget.SakuraProgressBar
+    <tv.ismar.sakura.ui.widget.SakuraProgressBar
             android:clickable="false"
             android:focusable="false"
             android:id="@+id/speed_progress"
