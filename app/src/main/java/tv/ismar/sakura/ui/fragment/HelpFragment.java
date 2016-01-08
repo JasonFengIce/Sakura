@@ -12,15 +12,11 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import tv.ismar.sakura.R;
-import tv.ismar.sakura.core.SakuraClientAPI;
-import tv.ismar.sakura.core.SimpleRestClient;
-import tv.ismar.sakura.data.http.TeleEntity;
-import tv.ismar.sakura.utils.DeviceUtils;
 import retrofit2.Callback;
 import retrofit2.Response;
+import tv.ismar.sakura.R;
+import tv.ismar.sakura.core.client.OkHttpClientManager;
 
-import static tv.ismar.sakura.core.SakuraClientAPI.restAdapter_WX_API_TVXIO;
 
 /**
  * Created by huaijie on 2015/4/8.
@@ -57,7 +53,7 @@ public class HelpFragment extends Fragment {
     }
 
     private void fetchTel(String model, String snCode) {
-        tv.ismar.sakura.core.SakuraClientAPI.FetchTel client = restAdapter_WX_API_TVXIO.create(tv.ismar.sakura.core.SakuraClientAPI.FetchTel.class);
+        tv.ismar.sakura.core.SakuraClientAPI.FetchTel client = OkHttpClientManager.getInstance().restAdapter_WX_API_TVXIO.create(tv.ismar.sakura.core.SakuraClientAPI.FetchTel.class);
         client.excute(tv.ismar.sakura.core.SakuraClientAPI.FetchTel.ACTION, model, snCode).enqueue(new Callback<List<tv.ismar.sakura.data.http.TeleEntity>>() {
             @Override
             public void onResponse(Response<List<tv.ismar.sakura.data.http.TeleEntity>> response) {

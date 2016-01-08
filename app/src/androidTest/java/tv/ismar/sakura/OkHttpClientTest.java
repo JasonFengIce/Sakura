@@ -25,8 +25,8 @@ public class OkHttpClientTest extends AndroidTestCase {
     }
 
     public void testUrl() {
-        OkHttpClient client = OkHttpClientManager.getClient();
-        final Request request = new Request.Builder().url("http://www.baidu.com").build();
+        OkHttpClient client = OkHttpClientManager.getInstance().client;
+        final Request request = new Request.Builder().url("http://wx.api.tvxio.com/shipinkefu/getCdninfo?actiontype=getContact&ModeName=Nexus%205&sn=sn%20is%20null").build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override

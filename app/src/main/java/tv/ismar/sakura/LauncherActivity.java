@@ -9,13 +9,11 @@ import android.widget.ImageView;
 
 import java.util.List;
 
-import okhttp3.OkHttpClient;
 import retrofit2.Callback;
-import retrofit2.GsonConverterFactory;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 import tv.ismar.sakura.core.FeedbackProblem;
 import tv.ismar.sakura.core.SakuraClientAPI;
+import tv.ismar.sakura.core.client.OkHttpClientManager;
 import tv.ismar.sakura.data.http.ProblemEntity;
 import tv.ismar.sakura.ui.activity.HomeActivity;
 
@@ -72,13 +70,7 @@ public class LauncherActivity extends Activity implements View.OnClickListener {
      * fetch tv problems from http server
      */
     private void fetchProblems() {
-        Retrofit restAdapter_IRIS_TVXIO = new Retrofit.Builder()
-                .client(new OkHttpClient())
-                .baseUrl(SakuraClientAPI.IRIS_TVXIO_HOST)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        SakuraClientAPI.Problems client = restAdapter_IRIS_TVXIO.create(SakuraClientAPI.Problems.class);
-
+        SakuraClientAPI.Problems client = OkHttpClientManager.getInstance().restAdapter_IRIS_TVXIO.create(SakuraClientAPI.Problems.class);
         client.excute().enqueue(new Callback<List<ProblemEntity>>() {
             @Override
             public void onResponse(Response<List<ProblemEntity>> response) {

@@ -7,14 +7,13 @@ import android.support.v4.view.ViewPager;
 
 import java.util.ArrayList;
 
-import tv.ismar.sakura.R;
-import tv.ismar.sakura.ui.fragment.FeedbackFragment;
-import tv.ismar.sakura.ui.fragment.NodeFragment;
 import cn.ismartv.viewpagerindicator.FragmentPager;
 import cn.ismartv.viewpagerindicator.IconPagerIndicator;
 import cn.ismartv.viewpagerindicator.IndicatorFragmentPagerAdapter;
 import cn.ismartv.viewpagerindicator.RotationPagerTransformer;
 import cn.ismartv.viewpagerindicator.ViewPagerScroller;
+import tv.ismar.sakura.R;
+import tv.ismar.sakura.ui.fragment.HelpFragment;
 
 /**
  * Created by huaijie on 2015/4/7.
@@ -48,7 +47,7 @@ public class HomeActivity extends FragmentActivity {
         fragments.add(fragmentPager);
 
         fragmentPager = new FragmentPager();
-        fragmentPager.setFragment(new tv.ismar.sakura.ui.fragment.FeedbackFragment());
+        fragmentPager.setFragment(new HelpFragment());
         fragmentPager.setIconResId(R.drawable.sakura_selector_indicator_help);
         fragments.add(fragmentPager);
 

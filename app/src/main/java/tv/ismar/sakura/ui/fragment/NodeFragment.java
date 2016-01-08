@@ -34,31 +34,17 @@ import java.util.List;
 import cn.ismartv.injectdb.library.ActiveAndroid;
 import cn.ismartv.injectdb.library.content.ContentProvider;
 import cn.ismartv.injectdb.library.query.Select;
-import tv.ismar.sakura.R;
-import tv.ismar.sakura.core.CdnCacheLoader;
-import tv.ismar.sakura.core.HttpDownloadTask;
-import tv.ismar.sakura.core.SakuraClientAPI;
-import tv.ismar.sakura.core.SimpleRestClient;
-import tv.ismar.sakura.core.preferences.AccountSharedPrefs;
-import tv.ismar.sakura.data.http.BindedCdnEntity;
-import tv.ismar.sakura.data.http.Empty;
-import tv.ismar.sakura.data.http.SpeedLogEntity;
-import tv.ismar.sakura.data.table.CdnTable;
-import tv.ismar.sakura.data.table.IspTable;
-import tv.ismar.sakura.data.table.ProvinceTable;
-import tv.ismar.sakura.ui.adapter.IspSpinnerAdapter;
-import tv.ismar.sakura.ui.adapter.NodeListAdapter;
-import tv.ismar.sakura.ui.adapter.ProvinceSpinnerAdapter;
-import tv.ismar.sakura.ui.widget.SakuraButton;
-import tv.ismar.sakura.ui.widget.SakuraListView;
-import tv.ismar.sakura.ui.widget.dialog.MessageDialogFragment;
-import tv.ismar.sakura.utils.StringUtils;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
+import tv.ismar.sakura.R;
+import tv.ismar.sakura.core.client.OkHttpClientManager;
+import tv.ismar.sakura.data.http.BindedCdnEntity;
 
-import static tv.ismar.sakura.core.SakuraClientAPI.restAdapter_SPEED_CALLA_TVXIO;
-import static tv.ismar.sakura.core.SakuraClientAPI.restAdapter_WX_API_TVXIO;
+import static tv.ismar.sakura.core.SakuraClientAPI.BindCdn;
+import static tv.ismar.sakura.core.SakuraClientAPI.DeviceLog;
+import static tv.ismar.sakura.core.SakuraClientAPI.GetBindCdn;
+import static tv.ismar.sakura.core.SakuraClientAPI.UnbindNode;
+import static tv.ismar.sakura.core.SakuraClientAPI.UploadResult;
 
 /**
  * Created by huaijie on 2015/4/8.
@@ -304,13 +290,12 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 //     * @param snCode
 //     */
     private void fetchBindedCdn(final String snCode) {
-        tv.ismar.sakura.core.SakuraClientAPI.GetBindCdn client = restAdapter_WX_API_TVXIO.create(tv.ismar.sakura.core.SakuraClientAPI.GetBindCdn.class);
-
-        client.excute(snCode).enqueue(new Callback<tv.ismar.sakura.data.http.BindedCdnEntity>() {
+        GetBindCdn client = OkHttpClientManager.getInstance().restAdapter_WX_API_TVXIO.create(GetBindCdn.class);
+        client.excute(snCode).enqueue(new Callback<BindedCdnEntity>() {
             @Override
-            public void onResponse(Response<tv.ismar.sakura.data.http.BindedCdnEntity> response) {
-                tv.ismar.sakura.data.http.BindedCdnEntity bindedCdnEntity = response.body();
-                if (tv.ismar.sakura.data.http.BindedCdnEntity.NO_RECORD.equals(bindedCdnEntity.getRetcode())) {
+            public void onResponse(Response<BindedCdnEntity> response) {
+                BindedCdnEntity bindedCdnEntity = response.body();
+                if (BindedCdnEntity.NO_RECORD.equals(bindedCdnEntity.getRetcode())) {
                     clearCheck();
                 } else {
                     updateCheck(Integer.parseInt(bindedCdnEntity.getSncdn().getCdnid()));
@@ -326,7 +311,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private void bindCdn(final String snCode, final int cdnId) {
-        tv.ismar.sakura.core.SakuraClientAPI.BindCdn client = restAdapter_WX_API_TVXIO.create(tv.ismar.sakura.core.SakuraClientAPI.BindCdn.class);
+        BindCdn client = OkHttpClientManager.getInstance().restAdapter_WX_API_TVXIO.create(BindCdn.class);
         client.excute(snCode, cdnId).enqueue(new Callback<tv.ismar.sakura.data.http.Empty>() {
 
             @Override
@@ -345,7 +330,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private void unbindNode(final String snCode) {
-        tv.ismar.sakura.core.SakuraClientAPI.UnbindNode client = restAdapter_WX_API_TVXIO.create(tv.ismar.sakura.core.SakuraClientAPI.UnbindNode.class);
+        UnbindNode client = OkHttpClientManager.getInstance().restAdapter_WX_API_TVXIO.create(UnbindNode.class);
         client.excute(snCode).enqueue(new Callback<tv.ismar.sakura.data.http.Empty>() {
             @Override
             public void onResponse(Response<tv.ismar.sakura.data.http.Empty> response) {
@@ -550,7 +535,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
 
     private void uploadCdnTestLog(String data, String snCode, String model) {
-        tv.ismar.sakura.core.SakuraClientAPI.DeviceLog client = restAdapter_SPEED_CALLA_TVXIO.create(tv.ismar.sakura.core.SakuraClientAPI.DeviceLog.class);
+        DeviceLog client = OkHttpClientManager.getInstance().restAdapter_SPEED_CALLA_TVXIO.create(DeviceLog.class);
         client.execute(data, snCode, model).enqueue(new Callback<tv.ismar.sakura.data.http.Empty>() {
             @Override
             public void onResponse(Response<tv.ismar.sakura.data.http.Empty> response) {
@@ -568,8 +553,8 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
 
     public void uploadTestResult(String cdnId, String speed) {
-        tv.ismar.sakura.core.SakuraClientAPI.UploadResult client = restAdapter_WX_API_TVXIO.create(tv.ismar.sakura.core.SakuraClientAPI.UploadResult.class);
-        client.excute(tv.ismar.sakura.core.SakuraClientAPI.UploadResult.ACTION_TYPE, snCode, cdnId, speed).enqueue(new Callback<tv.ismar.sakura.data.http.Empty>() {
+        UploadResult client = OkHttpClientManager.getInstance().restAdapter_WX_API_TVXIO.create(UploadResult.class);
+        client.excute(UploadResult.ACTION_TYPE, snCode, cdnId, speed).enqueue(new Callback<tv.ismar.sakura.data.http.Empty>() {
             @Override
             public void onResponse(Response<tv.ismar.sakura.data.http.Empty> response) {
                 Log.i(TAG, "uploadTestResult success");

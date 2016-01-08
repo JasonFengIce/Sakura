@@ -3,58 +3,22 @@ package tv.ismar.sakura.core;
 
 import java.util.List;
 
-import tv.ismar.sakura.data.http.BindedCdnEntity;
-import tv.ismar.sakura.data.http.ChatMsgEntity;
-import tv.ismar.sakura.data.http.Empty;
-import tv.ismar.sakura.data.http.ProblemEntity;
-import tv.ismar.sakura.data.http.TeleEntity;
-import cn.ismartv.log.interceptor.HttpLoggingInterceptor;
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
-import retrofit2.GsonConverterFactory;
-import retrofit2.Retrofit;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import tv.ismar.sakura.data.http.BindedCdnEntity;
+import tv.ismar.sakura.data.http.ChatMsgEntity;
+import tv.ismar.sakura.data.http.Empty;
+import tv.ismar.sakura.data.http.ProblemEntity;
+import tv.ismar.sakura.data.http.TeleEntity;
 
 /**
  * Created by huaijie on 2015/4/7.
  */
 public class SakuraClientAPI {
-    public static final Retrofit restAdapter_WX_API_TVXIO;
-    public static final Retrofit restAdapter_SPEED_CALLA_TVXIO;
-    public static final Retrofit restAdapter_LILY_TVXIO_HOST;
-
-    public static final String API_HOST = "http://wx.api.tvxio.com/";
-    public static final String IRIS_TVXIO_HOST = "http://iris.tvxio.com";
-    private static final String SPEED_CALLA_TVXIO_HOST = "http://speed.calla.tvxio.com";
-    private static final String LILY_TVXIO_HOST = "http://lily.tvxio.com";
-
-
-    static {
-        OkHttpClient client = new OkHttpClient();
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        client.interceptors().add(interceptor);
-        restAdapter_WX_API_TVXIO = new Retrofit.Builder()
-                .client(client)
-                .baseUrl(tv.ismar.sakura.core.SakuraClientAPI.API_HOST)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        restAdapter_SPEED_CALLA_TVXIO = new Retrofit.Builder()
-                .client(client)
-                .baseUrl(tv.ismar.sakura.core.SakuraClientAPI.SPEED_CALLA_TVXIO_HOST)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        restAdapter_LILY_TVXIO_HOST = new Retrofit.Builder()
-                .client(client)
-                .baseUrl(tv.ismar.sakura.core.SakuraClientAPI.LILY_TVXIO_HOST)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-    }
 
     public interface Problems {
         @GET("/customer/points/")
@@ -101,7 +65,7 @@ public class SakuraClientAPI {
 
 
     public interface FetchTel {
-        public String ACTION = "getContact";
+        String ACTION = "getContact";
 
         @GET("/shipinkefu/getCdninfo")
         Call<List<TeleEntity>> excute(
