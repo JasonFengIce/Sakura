@@ -3,7 +3,6 @@ package tv.ismar.sakura.ui.fragment;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import tv.ismar.sakura.R;
 import tv.ismar.sakura.core.client.OkHttpClientManager;
+import tv.ismar.sakura.utils.DeviceUtils;
 
 
 /**
@@ -24,7 +24,6 @@ import tv.ismar.sakura.core.client.OkHttpClientManager;
 public class HelpFragment extends Fragment {
     private static final String TAG = "HelpFragment";
 
-    private String snCode = TextUtils.isEmpty(tv.ismar.sakura.core.SimpleRestClient.sn_token) ? "sn is null" : tv.ismar.sakura.core.SimpleRestClient.sn_token;
 
     private TextView ismartvTitle;
     private TextView ismartvTel;
@@ -48,7 +47,7 @@ public class HelpFragment extends Fragment {
         deviceCode = (TextView) view.findViewById(R.id.device_code);
         deviceCode.setText(" " + tv.ismar.sakura.utils.DeviceUtils.ipToHex());
 
-        fetchTel(Build.MODEL, snCode);
+        fetchTel(Build.MODEL, DeviceUtils.getSnToken());
 
     }
 

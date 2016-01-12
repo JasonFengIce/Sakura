@@ -16,20 +16,20 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import okhttp3.ResponseBody;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import tv.ismar.sakura.R;
 import tv.ismar.sakura.core.FeedbackProblem;
 import tv.ismar.sakura.core.SakuraClientAPI;
-import tv.ismar.sakura.core.SimpleRestClient;
-import tv.ismar.sakura.core.UploadFeedback;
 import tv.ismar.sakura.core.client.OkHttpClientManager;
 import tv.ismar.sakura.core.preferences.AccountSharedPrefs;
 import tv.ismar.sakura.data.http.ChatMsgEntity;
@@ -40,12 +40,12 @@ import tv.ismar.sakura.ui.widget.FeedBackListView;
 import tv.ismar.sakura.ui.widget.MessageSubmitButton;
 import tv.ismar.sakura.ui.widget.SakuraEditText;
 import tv.ismar.sakura.ui.widget.dialog.MessageDialogFragment;
+import tv.ismar.sakura.utils.DeviceUtils;
 
 /**
  * Created by huaijie on 2015/4/8.
  */
-public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedChangeListener,
-        View.OnClickListener {
+public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
     private static final String TAG = "FeedbackFragment";
 
     private Context mContext;
@@ -61,9 +61,8 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
 
     private ImageView arrowUp;
     private ImageView arrowDown;
+    private String snToken;
 
-
-    private String snCode = TextUtils.isEmpty(SimpleRestClient.sn_token) ? "sn is null" : SimpleRestClient.sn_token;
 
     /**
      * 手机号验证
@@ -110,6 +109,12 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        snToken = DeviceUtils.getSnToken();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sakura_fragment_feedback, null);
         return view;
@@ -121,7 +126,7 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
         problemType = (RadioGroup) view.findViewById(R.id.problem_options);
         problemType.setOnCheckedChangeListener(this);
         snCodeTextView = (TextView) view.findViewById(R.id.sn_code);
-        snCodeTextView.append(snCode);
+        snCodeTextView.append(TextUtils.isEmpty(snToken) ? "sn is null" : snToken);
         feedBackListView = (FeedBackListView) view.findViewById(R.id.feedback_list);
         submitButton = (MessageSubmitButton) view.findViewById(R.id.submit_btn);
         submitButton.setOnClickListener(this);
@@ -139,7 +144,7 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
     public void onResume() {
         super.onResume();
         createProblemsRadio(FeedbackProblem.getInstance().getCache());
-        fetchFeedback(snCode, "5");
+        fetchFeedback(snToken, "5");
     }
 
     @Override
@@ -236,18 +241,26 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
             feedBack.setIp(accountSharedPrefs.getSharedPrefs(AccountSharedPrefs.IP));
             feedBack.setIsp(accountSharedPrefs.getSharedPrefs(AccountSharedPrefs.ISP));
             feedBack.setLocation(accountSharedPrefs.getSharedPrefs(AccountSharedPrefs.PROVINCE));
-            UploadFeedback.getInstance().excute(feedBack, snCode, new UploadFeedback.Callback() {
+
+            OkHttpClientManager clientManager = OkHttpClientManager.getInstance();
+            SakuraClientAPI.UploadFeedback client = clientManager.restAdapter_IRIS_TVXIO.create(SakuraClientAPI.UploadFeedback.class);
+            String userAgent = android.os.Build.MODEL.replaceAll(" ", "_") + "/" + android.os.Build.ID + " " + snToken;
+            final String json = new Gson().toJson(feedBack);
+
+
+            client.excute(userAgent, json).enqueue(new Callback<ResponseBody>() {
                 @Override
-                public void success(String msg) {
-                    Log.d(TAG, "uploadFeedback: " + msg);
-                    fetchFeedback(snCode, "5");
+                public void onResponse(Response<ResponseBody> response) {
+                    Response<ResponseBody> resp = response;
+                    Log.d(TAG, "uploadFeedback: " + json);
+                    fetchFeedback(snToken, "5");
                     Toast.makeText(mContext, "提交成功!", Toast.LENGTH_LONG).show();
                     submitButton.setEnabled(true);
                 }
 
                 @Override
-                public void failure(String msg) {
-//                    Log.d(TAG, "uploadFeedback: " + msg);
+                public void onFailure(Throwable t) {
+                    Log.d(TAG, "uploadFeedback: " + json);
                     Toast.makeText(mContext, "提交失败!", Toast.LENGTH_LONG).show();
                     submitButton.setEnabled(true);
                 }

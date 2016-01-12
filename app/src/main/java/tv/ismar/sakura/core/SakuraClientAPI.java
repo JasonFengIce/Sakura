@@ -3,10 +3,12 @@ package tv.ismar.sakura.core;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import tv.ismar.sakura.data.http.BindedCdnEntity;
@@ -97,6 +99,15 @@ public class SakuraClientAPI {
                 @Field("snCode") String snCode,
                 @Field("nodeId") String nodeId,
                 @Field("nodeSpeed") String nodeSpeed
+        );
+    }
+
+    public interface UploadFeedback {
+        @FormUrlEncoded
+        @POST("/customer/pointlogs/")
+        Call<ResponseBody> excute(
+                @Header("User-Agent") String userAgent,
+                @Field("q") String q
         );
     }
 

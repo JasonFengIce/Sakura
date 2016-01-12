@@ -2,6 +2,7 @@ package tv.ismar.sakura.utils;
 
 import android.content.Context;
 import android.os.Build;
+
 import org.apache.http.conn.util.InetAddressUtils;
 
 import java.net.InetAddress;
@@ -36,8 +37,6 @@ public class DeviceUtils {
     }
 
 
-
-
     public static String getModel() {
         return Build.MODEL;
     }
@@ -65,5 +64,8 @@ public class DeviceUtils {
         return Long.toHexString(ipAddressLong);
     }
 
+    public static String getSnToken() {
+        return "1";
+    }
 
 }

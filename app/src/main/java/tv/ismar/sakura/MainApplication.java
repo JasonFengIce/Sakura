@@ -5,7 +5,7 @@ import cn.ismartv.injectdb.library.app.Application;
 import tv.ismar.sakura.core.initialization.InitializeProcess;
 
 
-public class MainApplication extends Application {
+public class  MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();

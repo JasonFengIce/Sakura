@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -39,6 +38,7 @@ import retrofit2.Response;
 import tv.ismar.sakura.R;
 import tv.ismar.sakura.core.client.OkHttpClientManager;
 import tv.ismar.sakura.data.http.BindedCdnEntity;
+import tv.ismar.sakura.utils.DeviceUtils;
 
 import static tv.ismar.sakura.core.SakuraClientAPI.BindCdn;
 import static tv.ismar.sakura.core.SakuraClientAPI.DeviceLog;
@@ -87,15 +87,12 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
      */
     private List<Integer> cdnCollections;
 
-    private String snCode = TextUtils.isEmpty(tv.ismar.sakura.core.SimpleRestClient.sn_token) ? "sn is null" : tv.ismar.sakura.core.SimpleRestClient.sn_token;
-
 
     private Context mContext;
 
     private tv.ismar.sakura.core.HttpDownloadTask httpDownloadTask;
 
-
-    private float rate;
+    private String snToken;
 
     @Override
     public void onAttach(Activity activity) {
@@ -107,6 +104,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TIE_TONG = tv.ismar.sakura.utils.StringUtils.getMd5Code("铁通");
+        snToken = DeviceUtils.getSnToken();
 
     }
 
@@ -271,7 +269,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.unbind_node:
-                unbindNode(tv.ismar.sakura.core.SimpleRestClient.sn_token);
+                unbindNode(snToken);
                 break;
             case R.id.speed_test_btn:
                 showCdnTestDialog();
@@ -411,7 +409,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         selectNodePup.showAtLocation(getView(), Gravity.CENTER, new tv.ismar.sakura.ui.widget.dialog.MessageDialogFragment.ConfirmListener() {
             @Override
             public void confirmClick(View view) {
-                bindCdn(tv.ismar.sakura.core.SimpleRestClient.sn_token, cndId);
+                bindCdn(snToken, cndId);
                 selectNodePup.dismiss();
             }
         }, new tv.ismar.sakura.ui.widget.dialog.MessageDialogFragment.CancelListener() {
@@ -516,7 +514,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
 
         uploadTestResult(cndId, speed);
-        uploadCdnTestLog(base64Data, snCode, Build.MODEL);
+        uploadCdnTestLog(base64Data, snToken, Build.MODEL);
     }
 
     @Override
@@ -554,7 +552,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public void uploadTestResult(String cdnId, String speed) {
         UploadResult client = OkHttpClientManager.getInstance().restAdapter_WX_API_TVXIO.create(UploadResult.class);
-        client.excute(UploadResult.ACTION_TYPE, snCode, cdnId, speed).enqueue(new Callback<tv.ismar.sakura.data.http.Empty>() {
+        client.excute(UploadResult.ACTION_TYPE, snToken, cdnId, speed).enqueue(new Callback<tv.ismar.sakura.data.http.Empty>() {
             @Override
             public void onResponse(Response<tv.ismar.sakura.data.http.Empty> response) {
                 Log.i(TAG, "uploadTestResult success");
