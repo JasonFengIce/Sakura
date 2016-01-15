@@ -17,7 +17,7 @@ import tv.ismar.sakura.core.client.OkHttpClientManager;
 import tv.ismar.sakura.data.http.ProblemEntity;
 import tv.ismar.sakura.ui.activity.HomeActivity;
 
-public class LauncherActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "LauncherActivity";
 
 

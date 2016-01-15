@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/sakura_background">
+                android:background="@drawable/sakura_background"
+    >
 
     <ImageView
         android:layout_width="@dimen/sakura_ismartv_icon_width"
@@ -27,6 +29,9 @@
         android:layout_alignParentBottom="true"
         android:layout_below="@id/pager"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/home_indicator_margin_bottom"/>
+        android:layout_marginBottom="@dimen/home_indicator_margin_bottom"
+        app:indicator_icon_height="@dimen/indicator_icon_height"
+        app:indicator_icon_width="@dimen/indicator_icon_width"
+        />
 
 </RelativeLayout>

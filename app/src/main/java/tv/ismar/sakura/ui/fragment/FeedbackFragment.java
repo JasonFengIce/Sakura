@@ -3,7 +3,6 @@ package tv.ismar.sakura.ui.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -45,7 +44,7 @@ import tv.ismar.sakura.utils.DeviceUtils;
 /**
  * Created by huaijie on 2015/4/8.
  */
-public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
+public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
     private static final String TAG = "FeedbackFragment";
 
     private Context mContext;
@@ -166,11 +165,10 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
         RadioButton mRadioButton = null;
         for (int i = 0; i < problemEntities.size(); i++) {
             RadioButton radioButton = new RadioButton(getActivity());
-            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
-                    RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, 0, (int) getResources().getDimension(R.dimen.feedback_radiogroup_margin), 0);
+            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, 0, (int) (getResources().getDimension(R.dimen.feedback_radiogroup_margin) / getDensityRate()), 0);
             radioButton.setLayoutParams(params);
-            radioButton.setTextSize(30);
+            radioButton.setTextSize(getResources().getDimension(R.dimen.feedback_fragment_radio_textSize) / getDensityRate());
             radioButton.setText(problemEntities.get(i).getPoint_name());
             radioButton.setId(problemEntities.get(i).getPoint_id());
 
