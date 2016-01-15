@@ -33,6 +33,7 @@ import java.util.List;
 import cn.ismartv.injectdb.library.ActiveAndroid;
 import cn.ismartv.injectdb.library.content.ContentProvider;
 import cn.ismartv.injectdb.library.query.Select;
+import okhttp3.ResponseBody;
 import retrofit2.Callback;
 import retrofit2.Response;
 import tv.ismar.sakura.R;
@@ -302,7 +303,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.e(TAG, "fetchBindedCdn error!!!");
+                Log.e(TAG, "fetchBindedCdn error: " + throwable.getMessage());
             }
         });
 
@@ -310,17 +311,17 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private void bindCdn(final String snCode, final int cdnId) {
         BindCdn client = OkHttpClientManager.getInstance().restAdapter_WX_API_TVXIO.create(BindCdn.class);
-        client.excute(snCode, cdnId).enqueue(new Callback<tv.ismar.sakura.data.http.Empty>() {
+        client.excute(snCode, cdnId).enqueue(new Callback<ResponseBody>() {
 
             @Override
-            public void onResponse(Response<tv.ismar.sakura.data.http.Empty> response) {
+            public void onResponse(Response<ResponseBody> response) {
                 Toast.makeText(mContext, R.string.node_bind_success, Toast.LENGTH_LONG).show();
                 fetchBindedCdn(snCode);
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.e(TAG, "bindCdn error");
+                Log.e(TAG, "bindCdn error: " + throwable.getMessage());
             }
         });
 
@@ -329,15 +330,15 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private void unbindNode(final String snCode) {
         UnbindNode client = OkHttpClientManager.getInstance().restAdapter_WX_API_TVXIO.create(UnbindNode.class);
-        client.excute(snCode).enqueue(new Callback<tv.ismar.sakura.data.http.Empty>() {
+        client.excute(snCode).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Response<tv.ismar.sakura.data.http.Empty> response) {
+            public void onResponse(Response<ResponseBody> response) {
                 fetchBindedCdn(snCode);
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.e(TAG, "unbindNode");
+                Log.e(TAG, "unbindNode: " + throwable.getMessage());
             }
         });
     }
@@ -534,15 +535,15 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private void uploadCdnTestLog(String data, String snCode, String model) {
         DeviceLog client = OkHttpClientManager.getInstance().restAdapter_SPEED_CALLA_TVXIO.create(DeviceLog.class);
-        client.execute(data, snCode, model).enqueue(new Callback<tv.ismar.sakura.data.http.Empty>() {
+        client.execute(data, snCode, model).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Response<tv.ismar.sakura.data.http.Empty> response) {
+            public void onResponse(Response<ResponseBody> response) {
                 Log.d(TAG, "uploadCdnTestLog success");
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.e(TAG, "uploadCdnTestLog");
+                Log.e(TAG, "uploadCdnTestLog: " + throwable.getMessage());
             }
         });
 
@@ -552,15 +553,15 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public void uploadTestResult(String cdnId, String speed) {
         UploadResult client = OkHttpClientManager.getInstance().restAdapter_WX_API_TVXIO.create(UploadResult.class);
-        client.excute(UploadResult.ACTION_TYPE, snToken, cdnId, speed).enqueue(new Callback<tv.ismar.sakura.data.http.Empty>() {
+        client.excute(UploadResult.ACTION_TYPE, snToken, cdnId, speed).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Response<tv.ismar.sakura.data.http.Empty> response) {
+            public void onResponse(Response<ResponseBody> response) {
                 Log.i(TAG, "uploadTestResult success");
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.e(TAG, "uploadTestResult");
+                Log.e(TAG, "uploadTestResult: " + throwable.getMessage());
             }
         });
     }

@@ -13,7 +13,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import tv.ismar.sakura.data.http.BindedCdnEntity;
 import tv.ismar.sakura.data.http.ChatMsgEntity;
-import tv.ismar.sakura.data.http.Empty;
 import tv.ismar.sakura.data.http.ProblemEntity;
 import tv.ismar.sakura.data.http.TeleEntity;
 
@@ -48,7 +47,7 @@ public class SakuraClientAPI {
 
     public interface BindCdn {
         @GET("/shipinkefu/getCdninfo?actiontype=bindecdn")
-        Call<Empty> excute(
+        Call<ResponseBody> excute(
                 @Query("sn") String snCode,
                 @Query("cdn") int cdnId
         );
@@ -59,7 +58,7 @@ public class SakuraClientAPI {
      */
     public interface UnbindNode {
         @GET("/shipinkefu/getCdninfo?actiontype=unbindCdn")
-        Call<Empty> excute(
+        Call<ResponseBody> excute(
                 @Query("sn") String sn
 
         );
@@ -81,7 +80,7 @@ public class SakuraClientAPI {
 
     public interface DeviceLog {
         @GET("/log")
-        Call<Empty> execute(
+        Call<ResponseBody> execute(
                 @Query("data") String data,
                 @Query("sn") String sn,
                 @Query("modelname") String modelName
@@ -94,7 +93,7 @@ public class SakuraClientAPI {
 
         @FormUrlEncoded
         @POST("/shipinkefu/getCdninfo")
-        Call<Empty> excute(
+        Call<ResponseBody> excute(
                 @Field("actiontype") String actionType,
                 @Field("snCode") String snCode,
                 @Field("nodeId") String nodeId,
