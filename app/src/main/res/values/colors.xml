@@ -11,4 +11,12 @@
     <drawable name="button_disable">#7f7f7f</drawable>
     <drawable name="pop_bg_drawable">#CC000000</drawable>
     <color name="sakura_progress">#128FFF</color>
+
+    <color name="_ff9c3c">#ff9c3c</color>
+    <color name="_ffffff">#ffffff</color>
+    <color name="_a6a6a6">#a6a6a6</color>
+    <color name="_00000000">#00000000</color>
+    <color name="pop_bg">#b2000000</color>
+    <drawable name="pop_bg">#b2000000</drawable>
+    <color name="_787878">#787878</color>
 </resources>

@@ -104,6 +104,7 @@
 <dimen name="pop_btn_margin_bottom">27.00dp</dimen>
 <dimen name="pop_btn_margin_lr">61.50dp</dimen>
 <dimen name="pop_text_layout_height">55.00dp</dimen>
+    <dimen name="app_update_pop_text_layout_height">275.00dp</dimen>
 
 
 <dimen name="h3_text_size">15.00sp</dimen>
@@ -128,5 +129,24 @@
 <dimen name="textSize_30sp">15.00sp</dimen>
 
 <dimen name="feedback_item_height">72.50dp</dimen>
+    <dimen name="pop_cursor_left">125.00dp</dimen>
+    <dimen name="pop_cursor_middle">182.50dp</dimen>
+    <dimen name="pop_cursor_right">237.50dp</dimen>
+
+    <dimen name="message_pop_width">380.00dp</dimen>
+    <dimen name="message_pop_height">190.00dp</dimen>
+    <dimen name="pop_cursor_width">20.00dp</dimen>
+    <dimen name="pop_cursor_btn_height">25.00dp</dimen>
+    <dimen name="pop_cursor_btn_width">82.50dp</dimen>
+    <dimen name="pop_cursor_height">10.00dp</dimen>
+    <dimen name="app_update_message_pop_height">340.00dp</dimen>
+    <dimen name="app_pop_text_layout_height">105.00dp</dimen>
+    <dimen name="app_pop_text_width">315.00dp</dimen>
+    <dimen name="app_pop_btn_height">65.00dp</dimen>
+    <dimen name="app_pop_btn_margin_lr">30.00dp</dimen>
+    <dimen name="app_update_title_marginTop">20.00dp</dimen>
+    <dimen name="app_update_title_marginBottom">5.00dp</dimen>
+    <dimen name="app_update_item_margin">8.00dp</dimen>
+
 
 </resources>

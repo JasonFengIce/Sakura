@@ -1,7 +1,6 @@
 package tv.ismar.sakura.core.update;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -9,6 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,6 +23,7 @@ import retrofit2.Response;
 import tv.ismar.sakura.MainApplication;
 import tv.ismar.sakura.core.SakuraClientAPI;
 import tv.ismar.sakura.core.client.OkHttpClientManager;
+import tv.ismar.sakura.core.event.AnswerAvailableEvent;
 import tv.ismar.sakura.utils.DeviceUtils;
 
 
@@ -52,7 +54,8 @@ public class AppUpdateUtilsV2 extends Handler {
         //当前apk版本号
         int currentApkVersionCode = fetchVersionCode();
         //地理位置信息
-        String location = MainApplication.getLocationPY();
+//        String location = MainApplication.getLocationPY();
+        String location = "SH";
         String sn = MainApplication.getSnToken();
         String app = "sakura";
         String ver = String.valueOf(currentApkVersionCode);
@@ -69,13 +72,13 @@ public class AppUpdateUtilsV2 extends Handler {
                         updateProcess(versionInfoV2Entity);
                     }
                 } else {
-//                    EventBus.getDefault().post(new AnswerAvailableEvent(AnswerAvailableEvent.EventType.NETWORK_ERROR, AnswerAvailableEvent.NETWORK_ERROR));
+                    EventBus.getDefault().post(new AnswerAvailableEvent(AnswerAvailableEvent.EventType.NETWORK_ERROR, AnswerAvailableEvent.NETWORK_ERROR));
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
-//                EventBus.getDefault().post(new AnswerAvailableEvent(AnswerAvailableEvent.EventType.NETWORK_ERROR, AnswerAvailableEvent.NETWORK_ERROR));
+                EventBus.getDefault().post(new AnswerAvailableEvent(AnswerAvailableEvent.EventType.NETWORK_ERROR, AnswerAvailableEvent.NETWORK_ERROR));
             }
         });
 
@@ -110,7 +113,7 @@ public class AppUpdateUtilsV2 extends Handler {
                     Bundle bundle = new Bundle();
                     bundle.putStringArrayList("msgs", versionInfoV2Entity.getApplication().getUpdate());
                     bundle.putString("path", apkFile.getAbsolutePath());
-                    sendUpdateBroadcast(mContext, bundle);
+                    sendUpdateBroadcast(bundle);
                 } else {
                     if (apkFile.exists()) {
                         apkFile.delete();
@@ -183,11 +186,10 @@ public class AppUpdateUtilsV2 extends Handler {
     }
 
 
-    private void sendUpdateBroadcast(Context context, Bundle bundle) {
-        Intent intent = new Intent();
-        intent.setAction("tv.ismar.sakura.action_app_update");
-        intent.putExtra("data", bundle);
-        context.sendBroadcast(intent);
+    private void sendUpdateBroadcast(Bundle bundle) {
+        AnswerAvailableEvent appUpdateEvent = new AnswerAvailableEvent(AnswerAvailableEvent.EventType.APP_UPDATE);
+        appUpdateEvent.setMsg(bundle);
+        EventBus.getDefault().post(appUpdateEvent);
     }
 
     private int getApkVersionCode(Context context, String path) {
