@@ -10,8 +10,21 @@ android {
         versionCode 9999
         versionName "9999"
     }
+
+    signingConfigs {
+        release {
+            storeFile file("key.keystore")
+            storePassword "8271454abc"
+            keyAlias "iriskey"
+            keyPassword "8271454abc"
+        }
+
+
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
