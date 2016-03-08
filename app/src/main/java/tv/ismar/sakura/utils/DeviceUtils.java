@@ -2,12 +2,17 @@ package tv.ismar.sakura.utils;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 
 import org.apache.http.conn.util.InetAddressUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.security.MessageDigest;
 import java.util.Enumeration;
 
 /**
@@ -39,6 +44,36 @@ public class DeviceUtils {
 
     public static String getModel() {
         return Build.MODEL;
+    }
+
+    public static String getMd5ByFile(File file) {
+        String value;
+        FileInputStream in;
+        try {
+            in = new FileInputStream(file);
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            byte[] buffer = new byte[1024 * 1024];
+            int length;
+            while ((length = in.read(buffer)) > 0) {
+                messageDigest.update(buffer, 0, length);
+            }
+            BigInteger bi = new BigInteger(1, messageDigest.digest());
+            value = bi.toString(16);
+            in.close();
+        } catch (Exception e) {
+            Log.e("getMd5ByFile", e.getMessage());
+            return "";
+        }
+
+        int offset = 32 - value.length();
+        if (offset > 0) {
+            String data = new String();
+            for (int i = 0; i < offset; i++) {
+                data = data + "0";
+            }
+            value = data + value;
+        }
+        return value;
     }
 
     public static String getAppCacheDirectory(Context context) {

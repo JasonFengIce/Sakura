@@ -14,6 +14,7 @@ import retrofit2.Response;
 import tv.ismar.sakura.core.FeedbackProblem;
 import tv.ismar.sakura.core.SakuraClientAPI;
 import tv.ismar.sakura.core.client.OkHttpClientManager;
+import tv.ismar.sakura.core.update.AppUpdateUtilsV2;
 import tv.ismar.sakura.data.http.ProblemEntity;
 import tv.ismar.sakura.ui.activity.HomeActivity;
 
@@ -30,6 +31,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sakura_activity_launch);
         initViews();
+        AppUpdateUtilsV2.getInstance(this).checkAppUpdate();
         fetchProblems();
     }
 
@@ -85,5 +87,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         });
 
     }
+
 
 }

@@ -11,6 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import tv.ismar.sakura.core.update.VersionInfoV2Entity;
 import tv.ismar.sakura.data.http.BindedCdnEntity;
 import tv.ismar.sakura.data.http.ChatMsgEntity;
 import tv.ismar.sakura.data.http.ProblemEntity;
@@ -20,6 +21,19 @@ import tv.ismar.sakura.data.http.TeleEntity;
  * Created by huaijie on 2015/4/7.
  */
 public class SakuraClientAPI {
+
+    public interface CheckAppUpdate {
+        @GET("api/v2/upgrade/")
+        Call<VersionInfoV2Entity> doRequest(
+                @Query("sn") String sn,
+                @Query("manu") String manu,
+                @Query("app") String app,
+                @Query("modelname") String modelname,
+                @Query("loc") String loc,
+                @Query("ver") String ver
+        );
+    }
+
 
     public interface Problems {
         @GET("/customer/points/")

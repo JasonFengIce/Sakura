@@ -14,7 +14,7 @@ import retrofit2.Retrofit;
 public class OkHttpClientManager {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-
+    public static final String APP_UPDATE_HOST = "http://oak.t.tvxio.com";
     public static final String API_HOST = "http://wx.api.tvxio.com/";
     public static final String IRIS_TVXIO_HOST = "http://iris.tvxio.com";
     private static final String SPEED_CALLA_TVXIO_HOST = "http://speed.calla.tvxio.com";
@@ -30,6 +30,7 @@ public class OkHttpClientManager {
     public Retrofit restAdapter_SPEED_CALLA_TVXIO;
     public Retrofit restAdapter_LILY_TVXIO_HOST;
     public Retrofit restAdapter_IRIS_TVXIO;
+    public Retrofit resetAdapter_APP_UPDATE;
 
     private OkHttpClientManager() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -38,6 +39,13 @@ public class OkHttpClientManager {
                 .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
                 .build();
+
+        resetAdapter_APP_UPDATE = new Retrofit.Builder()
+                .client(client)
+                .baseUrl(APP_UPDATE_HOST)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
         restAdapter_WX_API_TVXIO = new Retrofit.Builder()
                 .client(client)
                 .baseUrl(API_HOST)
