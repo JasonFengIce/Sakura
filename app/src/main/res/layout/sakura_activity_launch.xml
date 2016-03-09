@@ -7,6 +7,14 @@
               android:gravity="center"
     >
 
+    <ImageView
+        android:id="@+id/tmp"
+        android:layout_width="@dimen/tmp"
+        android:layout_height="@dimen/tmp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:src="#00000000"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,6 +39,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
+                android:nextFocusLeft="@id/indicator_node_image"
                 android:src="@drawable/sakura_selector_indicator_node"
                 />
 

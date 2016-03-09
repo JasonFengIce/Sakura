@@ -148,6 +148,7 @@
     <dimen name="app_update_title_marginBottom">10dp</dimen>
     <dimen name="app_update_item_margin">16dp</dimen>
     <dimen name="item_spinner_text_height">60dp</dimen>
+    <dimen name="tmp">10dp</dimen>
 
 
 </resources>

@@ -7,8 +7,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -36,7 +39,6 @@ import tv.ismar.sakura.data.http.FeedBackEntity;
 import tv.ismar.sakura.data.http.ProblemEntity;
 import tv.ismar.sakura.ui.adapter.FeedbackListAdapter;
 import tv.ismar.sakura.ui.widget.FeedBackListView;
-import tv.ismar.sakura.ui.widget.MessageSubmitButton;
 import tv.ismar.sakura.ui.widget.SakuraEditText;
 import tv.ismar.sakura.ui.widget.dialog.MessageDialogFragment;
 import tv.ismar.sakura.utils.DeviceUtils;
@@ -44,7 +46,7 @@ import tv.ismar.sakura.utils.DeviceUtils;
 /**
  * Created by huaijie on 2015/4/8.
  */
-public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
+public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheckedChangeListener, View.OnClickListener, OnHoverListener {
     private static final String TAG = "FeedbackFragment";
 
     private Context mContext;
@@ -53,7 +55,7 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
     private RadioGroup problemType;
     private TextView snCodeTextView;
     private FeedBackListView feedBackListView;
-    private MessageSubmitButton submitButton;
+    private Button submitButton;
 
     private SakuraEditText phoneNumberText;
     private SakuraEditText descriptioinText;
@@ -61,6 +63,7 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
     private ImageView arrowUp;
     private ImageView arrowDown;
     private String snToken;
+    private ImageView tmpImageView;
 
 
     /**
@@ -127,13 +130,18 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
         snCodeTextView = (TextView) view.findViewById(R.id.sn_code);
         snCodeTextView.append(TextUtils.isEmpty(snToken) ? "sn is null" : snToken);
         feedBackListView = (FeedBackListView) view.findViewById(R.id.feedback_list);
-        submitButton = (MessageSubmitButton) view.findViewById(R.id.submit_btn);
+        tmpImageView = (ImageView) view.findViewById(R.id.tmp);
+        submitButton = (Button) view.findViewById(R.id.submit_btn);
         submitButton.setOnClickListener(this);
+        submitButton.setOnHoverListener(this);
         phoneNumberText = (SakuraEditText) view.findViewById(R.id.phone_number_edit);
         descriptioinText = (SakuraEditText) view.findViewById(R.id.description_edit);
 
         arrowUp = (ImageView) view.findViewById(R.id.arrow_up);
         arrowDown = (ImageView) view.findViewById(R.id.arrow_down);
+
+        arrowUp.setOnHoverListener(this);
+        arrowDown.setOnHoverListener(this);
 
         arrowUp.setOnClickListener(this);
         arrowDown.setOnClickListener(this);
@@ -171,6 +179,9 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
             radioButton.setTextSize(getResources().getDimension(R.dimen.feedback_fragment_radio_textSize) / getDensityRate());
             radioButton.setText(problemEntities.get(i).getPoint_name());
             radioButton.setId(problemEntities.get(i).getPoint_id());
+            radioButton.setFocusable(true);
+            radioButton.setFocusableInTouchMode(true);
+            radioButton.setOnHoverListener(this);
 
             if (i == 0)
                 mRadioButton = radioButton;
@@ -285,5 +296,18 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
                     }
                 }
         );
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+                v.requestFocusFromTouch();
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                tmpImageView.requestFocusFromTouch();
+                break;
+        }
+        return true;
     }
 }

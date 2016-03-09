@@ -23,6 +23,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -76,6 +77,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     private tv.ismar.sakura.ui.widget.dialog.MessageDialogFragment selectNodePup;
     private Dialog cdnTestDialog;
     private tv.ismar.sakura.ui.widget.dialog.MessageDialogFragment cdnTestCompletedPop;
+    private ImageView tmpImageView;
 
 
     private String[] selectionArgs = {"0", "0"};
@@ -154,6 +156,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sakura_fragment_node, null);
+        tmpImageView = (ImageView) view.findViewById(R.id.tmp);
         currentNodeTextView = (TextView) view.findViewById(R.id.current_node_text);
         unbindButton = (Button) view.findViewById(R.id.unbind_node);
         unbindButton.setOnHoverListener(this);
@@ -584,6 +587,9 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
                 v.requestFocusFromTouch();
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                tmpImageView.requestFocusFromTouch();
                 break;
         }
         return true;

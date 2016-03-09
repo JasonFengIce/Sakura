@@ -41,6 +41,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnHo
     private ImageView indicatorHelp;
     private View contentView;
 
+    private ImageView tmpImageView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +74,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnHo
         indicatorNode = (ImageView) findViewById(R.id.indicator_node_image);
         indicatorFeedback = (ImageView) findViewById(R.id.indicator_feedback_image);
         indicatorHelp = (ImageView) findViewById(R.id.indicator_help_image);
+        tmpImageView = (ImageView) findViewById(R.id.tmp);
 
         indicatorNode.setOnClickListener(this);
         indicatorFeedback.setOnClickListener(this);
@@ -81,6 +84,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnHo
         indicatorFeedback.setOnHoverListener(this);
         indicatorHelp.setOnHoverListener(this);
 
+        indicatorNode.requestFocusFromTouch();
+
 
     }
 
@@ -89,6 +94,9 @@ public class MainActivity extends Activity implements View.OnClickListener, OnHo
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
                 v.requestFocusFromTouch();
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                tmpImageView.requestFocusFromTouch();
                 break;
         }
         return true;
