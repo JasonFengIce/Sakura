@@ -31,12 +31,14 @@
             android:textSize="@dimen/sakura_h5_text_size"
             />
 
-        <tv.ismar.sakura.ui.widget.SakuraButton
+        <Button
             android:id="@+id/unbind_node"
             android:layout_width="@dimen/node_fragment_auto_fetch_width"
             android:layout_height="@dimen/node_fragment_auto_fetch_height"
             android:layout_marginLeft="@dimen/layout_margin"
             android:background="@drawable/sakura_selector_button"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:gravity="center"
             android:nextFocusLeft="@id/unbind_node"
             android:singleLine="true"
@@ -69,7 +71,7 @@
                 android:textSize="@dimen/sakura_h5_text_size"
                 />
 
-            <tv.ismar.sakura.ui.widget.SakuraSpinner
+            <Spinner
                 android:id="@+id/province_spinner"
                 style="@style/spinner_style"
                 android:layout_width="@dimen/node_fragment_spinner_width"
@@ -94,7 +96,7 @@
                 android:textSize="@dimen/sakura_h5_text_size"
                 />
 
-            <tv.ismar.sakura.ui.widget.SakuraSpinner
+            <Spinner
                 android:id="@+id/isp_spinner"
                 style="@style/spinner_style"
                 android:layout_width="@dimen/node_fragment_spinner_width"
@@ -104,7 +106,7 @@
 
         </LinearLayout>
 
-        <tv.ismar.sakura.ui.widget.SakuraButton
+        <Button
             android:id="@+id/speed_test_btn"
             android:layout_width="0dp"
             android:layout_height="@dimen/sakura_node_testbutton_height"
@@ -112,6 +114,7 @@
             android:background="@drawable/sakura_selector_button"
             android:clickable="true"
             android:focusable="true"
+            android:focusableInTouchMode="true"
             android:text="@string/source_speed_test"
             android:textColor="#ffffff"
             android:textSize="@dimen/sakura_h1_text_size"
@@ -156,7 +159,7 @@
                 android:textSize="@dimen/sakura_h5_text_size"/>
         </LinearLayout>
 
-        <tv.ismar.sakura.ui.widget.SakuraListView
+        <ListView
             android:id="@+id/node_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

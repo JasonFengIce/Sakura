@@ -47,6 +47,7 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         ActiveAndroid.initialize(this, true);
+        initializeInfo();
         new Thread(new InitializeProcess(this)).start();
 
     }

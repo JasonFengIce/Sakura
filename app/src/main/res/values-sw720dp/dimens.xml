@@ -116,7 +116,7 @@
 <dimen name="node_fragment_auto_fetch_height">26.67dp</dimen>
 
 <dimen name="node_fragment_spinner_width">106.67dp</dimen>
-<dimen name="node_fragment_spinner_height">33.33dp</dimen>
+    <dimen name="node_fragment_spinner_height">40.00dp</dimen>
 
 <dimen name="indicator_icon_height">66.67dp</dimen>
 <dimen name="indicator_icon_width">66.67dp</dimen>
@@ -147,6 +147,7 @@
 <dimen name="app_update_title_marginTop">26.67dp</dimen>
 <dimen name="app_update_title_marginBottom">6.67dp</dimen>
 <dimen name="app_update_item_margin">10.67dp</dimen>
+    <dimen name="item_spinner_text_height">40.00dp</dimen>
 
 
 </resources>

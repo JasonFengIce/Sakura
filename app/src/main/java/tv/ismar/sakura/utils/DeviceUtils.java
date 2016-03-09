@@ -15,6 +15,8 @@ import java.net.SocketException;
 import java.security.MessageDigest;
 import java.util.Enumeration;
 
+import tv.ismar.sakura.MainApplication;
+
 /**
  * Created by huaijie on 14-10-30.
  */
@@ -100,7 +102,7 @@ public class DeviceUtils {
     }
 
     public static String getSnToken() {
-        return "1";
+        return MainApplication.getSnToken();
     }
 
 }

@@ -16,11 +16,14 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +40,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Callback;
 import retrofit2.Response;
 import tv.ismar.sakura.R;
+import tv.ismar.sakura.core.HttpDownloadTask;
 import tv.ismar.sakura.core.client.OkHttpClientManager;
 import tv.ismar.sakura.data.http.BindedCdnEntity;
 import tv.ismar.sakura.utils.DeviceUtils;
@@ -51,26 +55,23 @@ import static tv.ismar.sakura.core.SakuraClientAPI.UploadResult;
  * Created by huaijie on 2015/4/8.
  */
 public class NodeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        tv.ismar.sakura.core.HttpDownloadTask.OnCompleteListener, View.OnClickListener, AdapterView.OnItemClickListener {
+        HttpDownloadTask.OnCompleteListener, View.OnClickListener, AdapterView.OnItemClickListener,
+        View.OnHoverListener {
     private static final String TAG = "NodeFragment";
-
-    private static String NORMAL_SELECTION = tv.ismar.sakura.data.table.CdnTable.DISTRICT_ID + "=? and " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + "=?" + " or " + tv.ismar.sakura.data.table.CdnTable.CDN_FLAG + "  <> ?" + " ORDER BY " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + " DESC," + tv.ismar.sakura.data.table.CdnTable.SPEED + " DESC";
-    private static String OTHER_SELECTION = tv.ismar.sakura.data.table.CdnTable.DISTRICT_ID + "=? and " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + " in (?, ?)" + " or " + tv.ismar.sakura.data.table.CdnTable.CDN_FLAG + "  <> ?" + " ORDER BY " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + " DESC," + tv.ismar.sakura.data.table.CdnTable.SPEED + " DESC";
-
     private static final String NOT_THIRD_CDN = "0";
-
     private static final int NORMAL_ISP_FLAG = 01245;
     private static final int OTHER_ISP_FLAG = 3;
-
+    private static String NORMAL_SELECTION = tv.ismar.sakura.data.table.CdnTable.DISTRICT_ID + "=? and " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + "=?" + " or " + tv.ismar.sakura.data.table.CdnTable.CDN_FLAG + "  <> ?" + " ORDER BY " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + " DESC," + tv.ismar.sakura.data.table.CdnTable.SPEED + " DESC";
+    private static String OTHER_SELECTION = tv.ismar.sakura.data.table.CdnTable.DISTRICT_ID + "=? and " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + " in (?, ?)" + " or " + tv.ismar.sakura.data.table.CdnTable.CDN_FLAG + "  <> ?" + " ORDER BY " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + " DESC," + tv.ismar.sakura.data.table.CdnTable.SPEED + " DESC";
     private String TIE_TONG = "";
 
-    private tv.ismar.sakura.ui.widget.SakuraListView nodeListView;
+    private ListView nodeListView;
     private tv.ismar.sakura.ui.adapter.NodeListAdapter nodeListAdapter;
     private TextView currentNodeTextView;
-    private tv.ismar.sakura.ui.widget.SakuraButton unbindButton;
+    private Button unbindButton;
     private Spinner provinceSpinner;
     private Spinner ispSpinner;
-    private tv.ismar.sakura.ui.widget.SakuraButton speedTestButton;
+    private Button speedTestButton;
 
     private tv.ismar.sakura.ui.widget.dialog.MessageDialogFragment selectNodePup;
     private Dialog cdnTestDialog;
@@ -95,6 +96,47 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private String snToken;
 
+    /**
+     * updateCheck
+     *
+     * @param cdnId
+     */
+    public static void updateCheck(int cdnId) {
+        ActiveAndroid.beginTransaction();
+
+        try {
+            tv.ismar.sakura.data.table.CdnTable checkedItem = new Select().from(tv.ismar.sakura.data.table.CdnTable.class).where(tv.ismar.sakura.data.table.CdnTable.CHECKED + " = ?", true).executeSingle();
+            if (null != checkedItem) {
+                checkedItem.checked = false;
+                checkedItem.save();
+            }
+
+            tv.ismar.sakura.data.table.CdnTable cdnCacheTable = new Select().from(tv.ismar.sakura.data.table.CdnTable.class).where(tv.ismar.sakura.data.table.CdnTable.CDN_ID + " = ?", cdnId).executeSingle();
+            if (null != cdnCacheTable) {
+                cdnCacheTable.checked = true;
+                cdnCacheTable.save();
+            }
+
+            ActiveAndroid.setTransactionSuccessful();
+        } finally {
+            ActiveAndroid.endTransaction();
+        }
+    }
+
+    /**
+     * 将 cursor 转为 list, 因为 在使用 cursor 的时候,可能已经关闭了
+     */
+    public static List<Integer> cursorToList(Cursor cursor) {
+        List<Integer> cdnCollections = new ArrayList<Integer>();
+        if (cursor != null) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                cdnCollections.add(cursor.getInt(cursor.getColumnIndex("cdn_id")));
+            }
+        }
+
+        return cdnCollections;
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -113,21 +155,27 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sakura_fragment_node, null);
         currentNodeTextView = (TextView) view.findViewById(R.id.current_node_text);
-        unbindButton = (tv.ismar.sakura.ui.widget.SakuraButton) view.findViewById(R.id.unbind_node);
-        nodeListView = (tv.ismar.sakura.ui.widget.SakuraListView) view.findViewById(R.id.node_list);
+        unbindButton = (Button) view.findViewById(R.id.unbind_node);
+        unbindButton.setOnHoverListener(this);
+        nodeListView = (ListView) view.findViewById(R.id.node_list);
         nodeListAdapter = new tv.ismar.sakura.ui.adapter.NodeListAdapter(mContext, null, true);
         nodeListView.setAdapter(nodeListAdapter);
 
         provinceSpinner = (Spinner) view.findViewById(R.id.province_spinner);
+        provinceSpinner.setOnHoverListener(this);
         ispSpinner = (Spinner) view.findViewById(R.id.isp_spinner);
+        ispSpinner.setOnHoverListener(this);
 
-        speedTestButton = (tv.ismar.sakura.ui.widget.SakuraButton) view.findViewById(R.id.speed_test_btn);
+        speedTestButton = (Button) view.findViewById(R.id.speed_test_btn);
+        speedTestButton.setOnHoverListener(this);
 
         speedTestButton.setOnClickListener(this);
         nodeListView.setOnItemClickListener(this);
         unbindButton.setOnClickListener(this);
 
         nodeListView.setNextFocusDownId(nodeListView.getId());
+
+
         return view;
     }
 
@@ -191,7 +239,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         updateCurrentNode();
     }
 
-
     @Override
     public void onLoaderReset(Loader loader) {
         nodeListAdapter.swapCursor(null);
@@ -233,7 +280,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         });
     }
 
-
     private void notifiySourceChanged() {
         if (mIspId.equals(TIE_TONG)) {
 
@@ -264,7 +310,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
         super.onDestroy();
     }
-
 
     @Override
     public void onClick(View view) {
@@ -344,33 +389,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     /**
-     * updateCheck
-     *
-     * @param cdnId
-     */
-    public static void updateCheck(int cdnId) {
-        ActiveAndroid.beginTransaction();
-
-        try {
-            tv.ismar.sakura.data.table.CdnTable checkedItem = new Select().from(tv.ismar.sakura.data.table.CdnTable.class).where(tv.ismar.sakura.data.table.CdnTable.CHECKED + " = ?", true).executeSingle();
-            if (null != checkedItem) {
-                checkedItem.checked = false;
-                checkedItem.save();
-            }
-
-            tv.ismar.sakura.data.table.CdnTable cdnCacheTable = new Select().from(tv.ismar.sakura.data.table.CdnTable.class).where(tv.ismar.sakura.data.table.CdnTable.CDN_ID + " = ?", cdnId).executeSingle();
-            if (null != cdnCacheTable) {
-                cdnCacheTable.checked = true;
-                cdnCacheTable.save();
-            }
-
-            ActiveAndroid.setTransactionSuccessful();
-        } finally {
-            ActiveAndroid.endTransaction();
-        }
-    }
-
-    /**
      * clearCheck
      */
     private void clearCheck() {
@@ -399,7 +417,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
-
     /**
      * showSelectNodePop
      *
@@ -420,7 +437,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
             }
         });
     }
-
 
     private void showCdnTestDialog() {
         cdnTestDialog = new Dialog(mContext, R.style.ProgressDialog);
@@ -469,7 +485,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         cdnTestDialog.show();
     }
 
-
     private void showCdnTestCompletedPop(final Status status) {
         int titleRes;
         speedTestButton.clearFocus();
@@ -492,7 +507,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
             @Override
             public void confirmClick(View view) {
                 cdnTestCompletedPop.dismiss();
-                nodeListView.setSelectionOne();
+                nodeListView.getChildAt(0).setSelected(true);
             }
         }, null);
 
@@ -532,7 +547,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
-
     private void uploadCdnTestLog(String data, String snCode, String model) {
         DeviceLog client = OkHttpClientManager.getInstance().restAdapter_SPEED_CALLA_TVXIO.create(DeviceLog.class);
         client.execute(data, snCode, model).enqueue(new Callback<ResponseBody>() {
@@ -550,7 +564,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
-
     public void uploadTestResult(String cdnId, String speed) {
         UploadResult client = OkHttpClientManager.getInstance().restAdapter_WX_API_TVXIO.create(UploadResult.class);
         client.excute(UploadResult.ACTION_TYPE, snToken, cdnId, speed).enqueue(new Callback<ResponseBody>() {
@@ -566,18 +579,14 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         });
     }
 
-    /**
-     * 将 cursor 转为 list, 因为 在使用 cursor 的时候,可能已经关闭了
-     */
-    public static List<Integer> cursorToList(Cursor cursor) {
-        List<Integer> cdnCollections = new ArrayList<Integer>();
-        if (cursor != null) {
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                cdnCollections.add(cursor.getInt(cursor.getColumnIndex("cdn_id")));
-            }
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+                v.requestFocusFromTouch();
+                break;
         }
-
-        return cdnCollections;
+        return true;
     }
 
     enum Status {

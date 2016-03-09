@@ -54,8 +54,7 @@ public class AppUpdateUtilsV2 extends Handler {
         //当前apk版本号
         int currentApkVersionCode = fetchVersionCode();
         //地理位置信息
-//        String location = MainApplication.getLocationPY();
-        String location = "SH";
+        String location = MainApplication.getLocationPY();
         String sn = MainApplication.getSnToken();
         String app = "sakura";
         String ver = String.valueOf(currentApkVersionCode);
@@ -72,7 +71,6 @@ public class AppUpdateUtilsV2 extends Handler {
                         updateProcess(versionInfoV2Entity);
                     }
                 } else {
-                    EventBus.getDefault().post(new AnswerAvailableEvent(AnswerAvailableEvent.EventType.NETWORK_ERROR, AnswerAvailableEvent.NETWORK_ERROR));
                 }
             }
 
