@@ -148,7 +148,6 @@ public class AppUpdateUtilsV2 extends Handler {
     }
 
     private void downloadAPK(final Context mContext, final String downloadUrl) {
-        checkDowload = false;
         new Thread() {
             @Override
             public void run() {
@@ -179,6 +178,7 @@ public class AppUpdateUtilsV2 extends Handler {
 
                 Log.d(TAG, "downloadAPK is end...");
                 if (!checkDowload) {
+                    checkDowload = true;
                     sendEmptyMessage(0);
                 }
             }
