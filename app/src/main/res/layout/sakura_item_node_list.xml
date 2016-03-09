@@ -1,81 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:focusable="false"
-                android:clickable="false"
-                android:minHeight="@dimen/sakura_node_list_item_height"
-                android:layout_height="match_parent"
-        >
+<RelativeLayout
+    android:id="@+id/list_item_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/selector_item_list"
+    android:clickable="false"
+    android:focusable="false"
+    android:minHeight="@dimen/sakura_node_list_item_height"
+    >
 
     <FrameLayout
-            android:focusable="false"
-            android:clickable="false"
-            android:layout_marginLeft="@dimen/layout_margin"
-            android:layout_centerVertical="true"
-            android:id="@+id/title"
-            android:layout_width="@dimen/count_layout_width"
-            android:layout_height="@dimen/count_layout_height">
+        android:id="@+id/title"
+        android:layout_width="@dimen/count_layout_width"
+        android:layout_height="@dimen/count_layout_height"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/layout_margin"
+        android:clickable="false"
+        android:focusable="false">
 
         <ImageView
 
-                android:clickable="false"
-                android:focusable="false"
-                android:src="@drawable/title_icon"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            android:src="@drawable/title_icon"/>
 
         <TextView
-                android:clickable="false"
-                android:focusable="false"
-                android:id="@+id/title_number"
-                android:layout_width="match_parent"
-                android:textSize="@dimen/sakura_h7_text_size"
-                android:textColor="#00a2ff"
-                android:gravity="center"
-                android:layout_height="match_parent"/>
+            android:id="@+id/title_number"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            android:gravity="center"
+            android:textColor="#00a2ff"
+            android:textSize="@dimen/sakura_h7_text_size"/>
     </FrameLayout>
 
     <TextView
-            android:id="@+id/node_name"
-            android:layout_width="@dimen/sakura_node_nodename_width"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/list_item_margin"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/title"
-            android:textColor="#8f8f8f"
-            android:textSize="@dimen/sakura_h5_text_size"
-            android:singleLine="true"
-            android:clickable="false"
-            android:focusable="false"
-            />
+        android:id="@+id/node_name"
+        android:layout_width="@dimen/sakura_node_nodename_width"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/list_item_margin"
+        android:layout_toRightOf="@id/title"
+        android:clickable="false"
+        android:focusable="false"
+        android:singleLine="true"
+        android:textColor="#8f8f8f"
+        android:textSize="@dimen/sakura_h5_text_size"
+        />
 
     <TextView
-            android:clickable="false"
-            android:focusable="false"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="0dp"
-            android:layout_alignParentRight="true"
-            android:id="@+id/select_prompt"
-            android:textColor="#8f8f8f"
-            android:textSize="@dimen/sakura_h5_text_size"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"/>
+        android:id="@+id/select_prompt"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="0dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:textColor="#8f8f8f"
+        android:textSize="@dimen/sakura_h5_text_size"/>
 
     <tv.ismar.sakura.ui.widget.SakuraProgressBar
-            android:clickable="false"
-            android:focusable="false"
-            android:id="@+id/speed_progress"
-            android:layout_marginRight="@dimen/list_item_margin"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/node_name"
-            android:layout_toLeftOf="@id/select_prompt"
-            android:layout_marginLeft="@dimen/list_item_margin"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:progress="100"
-            android:layout_width="200dp"
-            android:layout_height="20dp"
-            />
+        android:id="@+id/speed_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="200dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/list_item_margin"
+        android:layout_marginRight="@dimen/list_item_margin"
+        android:layout_toLeftOf="@id/select_prompt"
+        android:layout_toRightOf="@id/node_name"
+        android:clickable="false"
+        android:focusable="false"
+        android:progress="100"
+        />
 
 
 </RelativeLayout>

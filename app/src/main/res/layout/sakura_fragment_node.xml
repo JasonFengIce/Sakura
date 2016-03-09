@@ -168,7 +168,7 @@
                 android:textSize="@dimen/sakura_h5_text_size"/>
         </LinearLayout>
 
-        <ListView
+        <tv.ismar.sakura.ui.widget.SakuraListView
             android:id="@+id/node_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -177,6 +177,7 @@
             android:layout_marginRight="40dp"
             android:divider="@drawable/sakura_divider"
             android:fastScrollEnabled="false"
+            android:listSelector="@drawable/selector_item_list"
             android:smoothScrollbar="false"
             />
     </LinearLayout>

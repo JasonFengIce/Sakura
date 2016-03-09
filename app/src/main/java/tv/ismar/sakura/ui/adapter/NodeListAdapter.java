@@ -3,10 +3,13 @@ package tv.ismar.sakura.ui.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+
 import cn.ismartv.injectdb.library.query.Select;
 import tv.ismar.sakura.R;
 import tv.ismar.sakura.data.table.CdnTable;
@@ -16,14 +19,23 @@ import tv.ismar.sakura.ui.widget.SakuraProgressBar;
 /**
  * Created by huaijie on 14-10-31.
  */
-public class NodeListAdapter extends CursorAdapter {
+public class NodeListAdapter extends CursorAdapter implements View.OnHoverListener {
+    private ListView listView;
+    private View selectedView;
 
-    public NodeListAdapter(Context context, Cursor c, boolean autoRequery) {
+    public NodeListAdapter(Context context, Cursor c, boolean autoRequery, ListView listView) {
         super(context, c, autoRequery);
+        this.listView = listView;
     }
 
     public NodeListAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
+    }
+
+    public void resetSelectedView() {
+        if (selectedView != null) {
+            selectedView.setSelected(false);
+        }
     }
 
     @Override
@@ -53,6 +65,27 @@ public class NodeListAdapter extends CursorAdapter {
                 message.setText(R.string.can_select);
             nodeNmae.setText(node);
             view.setTag((cursor.getInt(cursor.getColumnIndex(CdnTable.CDN_ID))));
+            view.setTag(R.id.list_item_position, cursor.getPosition());
+            view.setOnHoverListener(this);
         }
     }
+
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+            case MotionEvent.ACTION_HOVER_MOVE:
+                listView.requestFocusFromTouch();
+                listView.getSelectedView().setSelected(false);
+                v.setSelected(true);
+                selectedView = v;
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                v.setSelected(false);
+                break;
+        }
+        return true;
+    }
+
 }

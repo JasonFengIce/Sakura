@@ -57,7 +57,7 @@ import static tv.ismar.sakura.core.SakuraClientAPI.UploadResult;
  */
 public class NodeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
         HttpDownloadTask.OnCompleteListener, View.OnClickListener, AdapterView.OnItemClickListener,
-        View.OnHoverListener {
+        View.OnHoverListener, AdapterView.OnItemSelectedListener {
     private static final String TAG = "NodeFragment";
     private static final String NOT_THIRD_CDN = "0";
     private static final int NORMAL_ISP_FLAG = 01245;
@@ -161,8 +161,19 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         unbindButton = (Button) view.findViewById(R.id.unbind_node);
         unbindButton.setOnHoverListener(this);
         nodeListView = (ListView) view.findViewById(R.id.node_list);
-        nodeListAdapter = new tv.ismar.sakura.ui.adapter.NodeListAdapter(mContext, null, true);
+        nodeListAdapter = new tv.ismar.sakura.ui.adapter.NodeListAdapter(mContext, null, true, nodeListView);
         nodeListView.setAdapter(nodeListAdapter);
+        nodeListView.setSelection(-1);
+        nodeListView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    nodeListView.setSelection(0);
+                } else {
+                    nodeListView.setSelection(-1);
+                }
+            }
+        });
 
         provinceSpinner = (Spinner) view.findViewById(R.id.province_spinner);
         provinceSpinner.setOnHoverListener(this);
@@ -174,6 +185,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
         speedTestButton.setOnClickListener(this);
         nodeListView.setOnItemClickListener(this);
+        nodeListView.setOnItemSelectedListener(this);
         unbindButton.setOnClickListener(this);
 
         nodeListView.setNextFocusDownId(nodeListView.getId());
@@ -595,6 +607,16 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        nodeListAdapter.resetSelectedView();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
     enum Status {
