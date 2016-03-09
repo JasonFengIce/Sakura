@@ -213,6 +213,8 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
         speedTestButton.requestFocus();
 
+        fetchBindedCdn(snToken);
+
 
     }
 
