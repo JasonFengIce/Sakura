@@ -89,6 +89,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnHo
         indicatorNode.setOnKeyListener(this);
 
         indicatorNode.requestFocusFromTouch();
+        indicatorNode.requestFocus();
 
 
     }
@@ -97,9 +98,11 @@ public class MainActivity extends Activity implements View.OnClickListener, OnHo
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
+                v.requestFocusFromTouch();
                 v.requestFocus();
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
+                tmpImageView.requestFocusFromTouch();
                 tmpImageView.requestFocus();
                 break;
         }

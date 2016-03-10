@@ -195,7 +195,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
         nodeListView.setNextFocusDownId(nodeListView.getId());
 
-
         return view;
     }
 
@@ -228,9 +227,10 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         setSpinnerItemSelectedListener();
         getLoaderManager().initLoader(NORMAL_ISP_FLAG, null, this);
 
-        speedTestButton.requestFocus();
 
         fetchBindedCdn(snToken);
+        speedTestButton.requestFocusFromTouch();
+        speedTestButton.requestFocus();
 
 
     }
@@ -462,13 +462,11 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
             unbindButton.setText(R.string.switch_to_auto);
             unbindButton.setEnabled(true);
             unbindButton.setFocusable(true);
-            unbindButton.setFocusableInTouchMode(true);
         } else {
             currentNodeTextView.setText(getText(R.string.current_node) + getString(R.string.auto_fetch));
             unbindButton.setText(R.string.already_to_auto);
             unbindButton.setEnabled(false);
             unbindButton.setFocusable(false);
-            unbindButton.setFocusableInTouchMode(false);
         }
 
     }
@@ -643,9 +641,11 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 //                if (nodeListView.getSelectedView() != null) {
 //                    nodeListView.getSelectedView().setSelected(false);
 //                }
+                v.requestFocusFromTouch();
                 v.requestFocus();
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
+                tmpImageView.requestFocusFromTouch();
                 tmpImageView.requestFocus();
                 break;
         }
