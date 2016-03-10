@@ -48,6 +48,7 @@
             android:focusable="true"
             android:gravity="center"
             android:nextFocusLeft="@id/unbind_node"
+            android:nextFocusUp="@id/unbind_node"
             android:singleLine="true"
             android:textSize="@dimen/textSize_normal"
             />
@@ -165,18 +166,23 @@
                 android:textSize="@dimen/sakura_h5_text_size"/>
         </LinearLayout>
 
-        <tv.ismar.sakura.ui.widget.SakuraListView
+        <ScrollView
             android:id="@+id/node_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
-            android:divider="@drawable/sakura_divider"
-            android:fastScrollEnabled="false"
-            android:listSelector="@drawable/selector_item_list"
-            android:smoothScrollbar="false"
-            />
+            android:descendantFocusability="afterDescendants"
+            >
+
+            <LinearLayout
+                android:id="@+id/node_list_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:descendantFocusability="afterDescendants"
+                android:orientation="vertical"/>
+        </ScrollView>
     </LinearLayout>
 
 

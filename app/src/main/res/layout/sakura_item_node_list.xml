@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/selector_item_list"
-    android:clickable="false"
-    android:focusable="false"
+    android:clickable="true"
+    android:focusable="true"
     android:minHeight="@dimen/sakura_node_list_item_height"
     >
 
@@ -79,6 +79,4 @@
         android:focusable="false"
         android:progress="100"
         />
-
-
 </RelativeLayout>

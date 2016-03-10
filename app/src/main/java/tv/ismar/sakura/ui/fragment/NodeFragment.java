@@ -24,7 +24,8 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +45,9 @@ import tv.ismar.sakura.R;
 import tv.ismar.sakura.core.HttpDownloadTask;
 import tv.ismar.sakura.core.client.OkHttpClientManager;
 import tv.ismar.sakura.data.http.BindedCdnEntity;
+import tv.ismar.sakura.data.table.CdnTable;
+import tv.ismar.sakura.data.table.IspTable;
+import tv.ismar.sakura.ui.widget.SakuraProgressBar;
 import tv.ismar.sakura.utils.DeviceUtils;
 
 import static tv.ismar.sakura.core.SakuraClientAPI.BindCdn;
@@ -66,7 +70,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     private static String OTHER_SELECTION = tv.ismar.sakura.data.table.CdnTable.DISTRICT_ID + "=? and " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + " in (?, ?)" + " or " + tv.ismar.sakura.data.table.CdnTable.CDN_FLAG + "  <> ?" + " ORDER BY " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + " DESC," + tv.ismar.sakura.data.table.CdnTable.SPEED + " DESC";
     private String TIE_TONG = "";
 
-    private ListView nodeListView;
+    private ScrollView nodeListView;
     private tv.ismar.sakura.ui.adapter.NodeListAdapter nodeListAdapter;
     private TextView currentNodeTextView;
     private Button unbindButton;
@@ -97,6 +101,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     private tv.ismar.sakura.core.HttpDownloadTask httpDownloadTask;
 
     private String snToken;
+    private LinearLayout nodeListLayout;
 
     /**
      * updateCheck
@@ -160,20 +165,21 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         currentNodeTextView = (TextView) view.findViewById(R.id.current_node_text);
         unbindButton = (Button) view.findViewById(R.id.unbind_node);
         unbindButton.setOnHoverListener(this);
-        nodeListView = (ListView) view.findViewById(R.id.node_list);
-        nodeListAdapter = new tv.ismar.sakura.ui.adapter.NodeListAdapter(mContext, null, true, nodeListView);
-        nodeListView.setAdapter(nodeListAdapter);
-        nodeListView.setSelection(-1);
-        nodeListView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    nodeListView.setSelection(0);
-                } else {
-                    nodeListView.setSelection(-1);
-                }
-            }
-        });
+        nodeListView = (ScrollView) view.findViewById(R.id.node_list);
+        nodeListLayout = (LinearLayout) view.findViewById(R.id.node_list_layout);
+//        nodeListAdapter = new tv.ismar.sakura.ui.adapter.NodeListAdapter(mContext, null, true, nodeListView);
+//        nodeListView.setAdapter(nodeListAdapter);
+//        nodeListView.setSelection(-1);
+//        nodeListView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    nodeListView.setSelection(0);
+//                } else {
+//                    nodeListView.setSelection(-1);
+//                }
+//            }
+//        });
 
         provinceSpinner = (Spinner) view.findViewById(R.id.province_spinner);
         provinceSpinner.setOnHoverListener(this);
@@ -184,8 +190,8 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         speedTestButton.setOnHoverListener(this);
 
         speedTestButton.setOnClickListener(this);
-        nodeListView.setOnItemClickListener(this);
-        nodeListView.setOnItemSelectedListener(this);
+//        nodeListView.setOnItemClickListener(this);
+//        nodeListView.setOnItemSelectedListener(this);
         unbindButton.setOnClickListener(this);
 
         nodeListView.setNextFocusDownId(nodeListView.getId());
@@ -250,11 +256,45 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        cdnCollections = cursorToList(data);
-        nodeListAdapter.swapCursor(data);
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        cdnCollections = cursorToList(cursor);
+
+//        nodeListAdapter.swapCursor(data);
+        if (cursor != null && cursor.moveToFirst()) {
+            nodeListLayout.removeAllViews();
+            do {
+                View view = LayoutInflater.from(getContext()).inflate(R.layout.sakura_item_node_list, null);
+                TextView nodeNmae = (TextView) view.findViewById(R.id.node_name);
+                TextView titleNumber = (TextView) view.findViewById(R.id.title_number);
+                TextView message = (TextView) view.findViewById(R.id.select_prompt);
+                SakuraProgressBar speedProgress = (SakuraProgressBar) view.findViewById(R.id.speed_progress);
+                titleNumber.setText(String.valueOf(cursor.getPosition() + 1));
+                String node = cursor.getString(cursor.getColumnIndex(CdnTable.CDN_NICK));
+                int progress = cursor.getInt(cursor.getColumnIndex(CdnTable.SPEED));
+                String ispId = cursor.getString(cursor.getColumnIndex(CdnTable.ISP_ID));
+                IspTable ispTable = new Select().from(IspTable.class).where(IspTable.ISP_ID + " = ?", ispId).executeSingle();
+                speedProgress.setProgress((int) (progress / 20.84));
+                if ((progress / 20.84) < 60 || ispTable.isp_name.equals("其它"))
+                    message.setText(R.string.tring);
+                else
+                    message.setText(R.string.can_select);
+                nodeNmae.setText(node);
+                view.setTag((cursor.getInt(cursor.getColumnIndex(CdnTable.CDN_ID))));
+                view.setOnClickListener(this);
+                view.setOnHoverListener(this);
+                nodeListLayout.addView(view);
+                ImageView divider = new ImageView(getContext());
+                divider.setBackgroundResource(R.drawable.sakura_divider);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                nodeListLayout.addView(divider, layoutParams);
+
+            } while (cursor.moveToNext());
+
+        }
+
+
         updateCurrentNode();
-        nodeListView.setSelection(-1);
+//        nodeListView.setSelection(-1);
     }
 
     @Override
@@ -332,6 +372,9 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.list_item_layout:
+                showSelectNodePop((Integer) view.getTag());
+                break;
             case R.id.unbind_node:
                 unbindNode(snToken);
                 break;
@@ -601,10 +644,10 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                if (nodeListView.getSelectedView() != null) {
-                    nodeListView.getSelectedView().setSelected(false);
-                }
-
+            case MotionEvent.ACTION_HOVER_MOVE:
+//                if (nodeListView.getSelectedView() != null) {
+//                    nodeListView.getSelectedView().setSelected(false);
+//                }
                 v.requestFocus();
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
