@@ -151,7 +151,7 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
     public void onResume() {
         super.onResume();
         createProblemsRadio(FeedbackProblem.getInstance().getCache());
-        fetchFeedback("1", "5");
+        fetchFeedback(snToken, "5");
     }
 
     @Override

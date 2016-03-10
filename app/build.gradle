@@ -40,7 +40,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'cn.ismartv.injectdb:injectdb:1.1'
-    compile 'cn.ismartv.viewpagerindicator:viewpagerindicator:1.4'
+    compile 'cn.ismartv.viewpagerindicator:viewpagerindicator:1.5'
     compile 'com.google.code.gson:gson:2.5'
     compile 'com.squareup.retrofit2:retrofit:2.0.0-beta3'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta3'
