@@ -161,7 +161,8 @@
             android:clickable="true"
             android:focusable="true"
             android:nextFocusDown="@id/arrow_up"
-            android:src="@drawable/sakura_selector_arrow_up"/>
+            android:src="@drawable/sakura_selector_arrow_up"
+            android:visibility="invisible"/>
 
         <ImageView
             android:id="@+id/arrow_down"
@@ -172,7 +173,8 @@
             android:clickable="true"
             android:focusable="true"
             android:nextFocusDown="@id/arrow_down"
-            android:src="@drawable/sakura_selector_arrow_down"/>
+            android:src="@drawable/sakura_selector_arrow_down"
+            android:visibility="invisible"/>
 
     </LinearLayout>
 

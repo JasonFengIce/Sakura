@@ -151,7 +151,7 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
     public void onResume() {
         super.onResume();
         createProblemsRadio(FeedbackProblem.getInstance().getCache());
-        fetchFeedback(snToken, "5");
+        fetchFeedback("1", "5");
     }
 
     @Override
@@ -170,6 +170,7 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
     }
 
     private void createProblemsRadio(List<ProblemEntity> problemEntities) {
+
         RadioButton mRadioButton = null;
         for (int i = 0; i < problemEntities.size(); i++) {
             RadioButton radioButton = new RadioButton(getActivity());
@@ -180,7 +181,6 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
             radioButton.setText(problemEntities.get(i).getPoint_name());
             radioButton.setId(problemEntities.get(i).getPoint_id());
             radioButton.setFocusable(true);
-            radioButton.setFocusableInTouchMode(true);
             radioButton.setOnHoverListener(this);
 
             if (i == 0)
@@ -302,10 +302,10 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                v.requestFocusFromTouch();
+                v.requestFocus();
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
-                tmpImageView.requestFocusFromTouch();
+                tmpImageView.requestFocus();
                 break;
         }
         return true;

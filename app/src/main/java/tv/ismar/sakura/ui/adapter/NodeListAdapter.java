@@ -76,10 +76,12 @@ public class NodeListAdapter extends CursorAdapter implements View.OnHoverListen
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
             case MotionEvent.ACTION_HOVER_MOVE:
-                listView.requestFocusFromTouch();
-                listView.getSelectedView().setSelected(false);
-                v.setSelected(true);
-                selectedView = v;
+                if (listView.getSelectedView() != null) {
+                    listView.requestFocusFromTouch();
+                    listView.getSelectedView().setSelected(false);
+                    v.setSelected(true);
+                    selectedView = v;
+                }
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 v.setSelected(false);

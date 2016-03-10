@@ -7,10 +7,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnHoverListener;
+import android.view.View.OnKeyListener;
 import android.widget.ImageView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,7 +33,7 @@ import tv.ismar.sakura.ui.activity.HomeActivity;
 import tv.ismar.sakura.ui.widget.AppUpdateMessagePopWindow;
 import tv.ismar.sakura.ui.widget.MessagePopWindow;
 
-public class MainActivity extends Activity implements View.OnClickListener, OnHoverListener {
+public class MainActivity extends Activity implements View.OnClickListener, OnHoverListener, OnKeyListener {
     private static final String TAG = "LauncherActivity";
     private MessagePopWindow networkErrorPopupWindow;
     private AppUpdateMessagePopWindow appUpdateMessagePopWindow;
@@ -84,6 +86,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnHo
         indicatorFeedback.setOnHoverListener(this);
         indicatorHelp.setOnHoverListener(this);
 
+        indicatorNode.setOnKeyListener(this);
+
         indicatorNode.requestFocusFromTouch();
 
 
@@ -93,10 +97,10 @@ public class MainActivity extends Activity implements View.OnClickListener, OnHo
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                v.requestFocusFromTouch();
+                v.requestFocus();
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
-                tmpImageView.requestFocusFromTouch();
+                tmpImageView.requestFocus();
                 break;
         }
         return true;
@@ -122,6 +126,12 @@ public class MainActivity extends Activity implements View.OnClickListener, OnHo
         startActivity(intent);
     }
 
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        Log.i(TAG, "key :" + keyCode);
+        return false;
+    }
 
     /**
      * fetch tv problems from http server
@@ -229,4 +239,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnHo
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(intent);
     }
+
+
 }

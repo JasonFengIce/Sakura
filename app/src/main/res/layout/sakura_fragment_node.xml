@@ -14,7 +14,6 @@
         android:layout_height="@dimen/tmp"
         android:layout_gravity="center"
         android:focusable="true"
-        android:focusableInTouchMode="true"
         android:src="#00000000"/>
 
     <TextView
@@ -47,7 +46,6 @@
             android:layout_marginLeft="@dimen/layout_margin"
             android:background="@drawable/sakura_selector_button"
             android:focusable="true"
-            android:focusableInTouchMode="true"
             android:gravity="center"
             android:nextFocusLeft="@id/unbind_node"
             android:singleLine="true"
@@ -123,7 +121,6 @@
             android:background="@drawable/sakura_selector_button"
             android:clickable="true"
             android:focusable="true"
-            android:focusableInTouchMode="true"
             android:text="@string/source_speed_test"
             android:textColor="#ffffff"
             android:textSize="@dimen/sakura_h1_text_size"

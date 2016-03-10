@@ -254,6 +254,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         cdnCollections = cursorToList(data);
         nodeListAdapter.swapCursor(data);
         updateCurrentNode();
+        nodeListView.setSelection(-1);
     }
 
     @Override
@@ -600,10 +601,14 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                v.requestFocusFromTouch();
+                if (nodeListView.getSelectedView() != null) {
+                    nodeListView.getSelectedView().setSelected(false);
+                }
+
+                v.requestFocus();
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
-                tmpImageView.requestFocusFromTouch();
+                tmpImageView.requestFocus();
                 break;
         }
         return true;

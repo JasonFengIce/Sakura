@@ -38,7 +38,6 @@
                 android:layout_height="@dimen/sakura_launch_icon_height"
                 android:clickable="true"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:nextFocusLeft="@id/indicator_node_image"
                 android:src="@drawable/sakura_selector_indicator_node"
                 />
@@ -71,7 +70,6 @@
                 android:layout_height="@dimen/sakura_launch_icon_height"
                 android:clickable="true"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:src="@drawable/sakura_selector_indicator_feedback"
                 />
 
@@ -104,7 +102,6 @@
                 android:layout_height="@dimen/sakura_launch_icon_height"
                 android:clickable="true"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:src="@drawable/sakura_selector_indicator_help"
                 />
 
