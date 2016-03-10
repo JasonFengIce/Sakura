@@ -291,6 +291,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
         }
 
+        cursor.close();
 
         updateCurrentNode();
 //        nodeListView.setSelection(-1);
@@ -641,12 +642,16 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 //                if (nodeListView.getSelectedView() != null) {
 //                    nodeListView.getSelectedView().setSelected(false);
 //                }
-                v.requestFocusFromTouch();
-                v.requestFocus();
+                if (!v.isFocused()) {
+                    v.requestFocusFromTouch();
+                    v.requestFocus();
+                }
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
-                tmpImageView.requestFocusFromTouch();
-                tmpImageView.requestFocus();
+                if (!tmpImageView.isFocused()) {
+                    tmpImageView.requestFocusFromTouch();
+                    tmpImageView.requestFocus();
+                }
                 break;
         }
         return true;
