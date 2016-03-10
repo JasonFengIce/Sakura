@@ -60,8 +60,8 @@ import static tv.ismar.sakura.core.SakuraClientAPI.UploadResult;
  * Created by huaijie on 2015/4/8.
  */
 public class NodeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        HttpDownloadTask.OnCompleteListener, View.OnClickListener, AdapterView.OnItemClickListener,
-        View.OnHoverListener, AdapterView.OnItemSelectedListener {
+        HttpDownloadTask.OnCompleteListener, View.OnClickListener,
+        View.OnHoverListener {
     private static final String TAG = "NodeFragment";
     private static final String NOT_THIRD_CDN = "0";
     private static final int NORMAL_ISP_FLAG = 01245;
@@ -71,7 +71,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     private String TIE_TONG = "";
 
     private ScrollView nodeListView;
-    private tv.ismar.sakura.ui.adapter.NodeListAdapter nodeListAdapter;
     private TextView currentNodeTextView;
     private Button unbindButton;
     private Spinner provinceSpinner;
@@ -299,7 +298,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onLoaderReset(Loader loader) {
-        nodeListAdapter.swapCursor(null);
+//        nodeListAdapter.swapCursor(null);
     }
 
     private void setSpinnerItemSelectedListener() {
@@ -384,10 +383,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        showSelectNodePop((Integer) view.getTag());
-    }
 
     //    /**
 //     * fetchBindedCdn
@@ -657,15 +652,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         return true;
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        nodeListAdapter.resetSelectedView();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 
     enum Status {
         CANCEL,
