@@ -60,7 +60,7 @@ import static tv.ismar.sakura.core.SakuraClientAPI.UploadResult;
  * Created by huaijie on 2015/4/8.
  */
 public class NodeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        HttpDownloadTask.OnCompleteListener, View.OnClickListener,
+        HttpDownloadTask.OnCompleteListener, View.OnClickListener, View.OnFocusChangeListener,
         View.OnHoverListener {
     private static final String TAG = "NodeFragment";
     private static final String NOT_THIRD_CDN = "0";
@@ -101,6 +101,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private String snToken;
     private LinearLayout nodeListLayout;
+    private View fragmentView;
 
     /**
      * updateCheck
@@ -159,7 +160,9 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.sakura_fragment_node, null);
+        fragmentView = inflater.inflate(R.layout.sakura_fragment_node, null);
+        fragmentView.setOnFocusChangeListener(this);
+        View view = fragmentView;
         tmpImageView = (ImageView) view.findViewById(R.id.tmp);
         currentNodeTextView = (TextView) view.findViewById(R.id.current_node_text);
         unbindButton = (Button) view.findViewById(R.id.unbind_node);
@@ -667,6 +670,21 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            switch (v.getId()) {
+                case R.id.node_fragment_layout:
+                    speedTestButton.requestFocusFromTouch();
+                    speedTestButton.requestFocus();
+                    break;
+            }
+
+        } else {
+
+        }
     }
 
 
