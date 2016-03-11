@@ -67,13 +67,15 @@
             android:text="@string/contact_phone_number"
             android:textSize="@dimen/sakura_h5_text_size"/>
 
-        <tv.ismar.sakura.ui.widget.SakuraEditText
+        <EditText
             android:id="@+id/phone_number_edit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/sakura_selector_edit"
             android:gravity="center"
             android:inputType="phone"
+            android:nextFocusLeft="@id/phone_number_edit"
+            android:nextFocusRight="@id/phone_number_edit"
             android:textSize="@dimen/sakura_h5_text_size"/>
     </LinearLayout>
 
@@ -97,7 +99,7 @@
             android:text="@string/add_description"
             android:textSize="@dimen/sakura_h5_text_size"/>
 
-        <tv.ismar.sakura.ui.widget.SakuraEditText
+        <EditText
             android:id="@+id/description_edit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -106,6 +108,8 @@
             android:hint="@string/max_msg_length"
             android:inputType="textMultiLine"
             android:maxLength="70"
+            android:nextFocusLeft="@id/description_edit"
+            android:nextFocusRight="@id/description_edit"
             android:textSize="@dimen/sakura_h5_text_size"/>
     </LinearLayout>
 

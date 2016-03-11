@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -39,7 +40,6 @@ import tv.ismar.sakura.data.http.FeedBackEntity;
 import tv.ismar.sakura.data.http.ProblemEntity;
 import tv.ismar.sakura.ui.adapter.FeedbackListAdapter;
 import tv.ismar.sakura.ui.widget.FeedBackListView;
-import tv.ismar.sakura.ui.widget.SakuraEditText;
 import tv.ismar.sakura.ui.widget.dialog.MessageDialogFragment;
 import tv.ismar.sakura.utils.DeviceUtils;
 
@@ -57,8 +57,8 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
     private FeedBackListView feedBackListView;
     private Button submitButton;
 
-    private SakuraEditText phoneNumberText;
-    private SakuraEditText descriptioinText;
+    private EditText phoneNumberText;
+    private EditText descriptioinText;
 
     private ImageView arrowUp;
     private ImageView arrowDown;
@@ -134,8 +134,11 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
         submitButton = (Button) view.findViewById(R.id.submit_btn);
         submitButton.setOnClickListener(this);
         submitButton.setOnHoverListener(this);
-        phoneNumberText = (SakuraEditText) view.findViewById(R.id.phone_number_edit);
-        descriptioinText = (SakuraEditText) view.findViewById(R.id.description_edit);
+        phoneNumberText = (EditText) view.findViewById(R.id.phone_number_edit);
+        descriptioinText = (EditText) view.findViewById(R.id.description_edit);
+
+        phoneNumberText.setOnHoverListener(this);
+        descriptioinText.setOnHoverListener(this);
 
         arrowUp = (ImageView) view.findViewById(R.id.arrow_up);
         arrowDown = (ImageView) view.findViewById(R.id.arrow_down);
