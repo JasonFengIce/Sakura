@@ -461,13 +461,27 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
             unbindButton.setText(R.string.switch_to_auto);
             unbindButton.setEnabled(true);
             unbindButton.setFocusable(true);
+            changeTopViewNextUpFocus(false);
         } else {
             currentNodeTextView.setText(getText(R.string.current_node) + getString(R.string.auto_fetch));
             unbindButton.setText(R.string.already_to_auto);
             unbindButton.setEnabled(false);
             unbindButton.setFocusable(false);
+            changeTopViewNextUpFocus(true);
         }
 
+    }
+
+    private void changeTopViewNextUpFocus(boolean isSelf) {
+        if (isSelf) {
+            provinceSpinner.setNextFocusUpId(provinceSpinner.getId());
+            ispSpinner.setNextFocusUpId(ispSpinner.getId());
+            speedTestButton.setNextFocusUpId(speedTestButton.getId());
+        } else {
+            provinceSpinner.setNextFocusUpId(unbindButton.getId());
+            ispSpinner.setNextFocusUpId(unbindButton.getId());
+            speedTestButton.setNextFocusUpId(unbindButton.getId());
+        }
     }
 
     /**
