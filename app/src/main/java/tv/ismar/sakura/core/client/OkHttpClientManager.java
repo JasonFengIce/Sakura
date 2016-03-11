@@ -7,6 +7,7 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
+import tv.ismar.sakura.MainApplication;
 
 /**
  * Created by huaijie on 1/7/16.
@@ -42,7 +43,7 @@ public class OkHttpClientManager {
 
         resetAdapter_APP_UPDATE = new Retrofit.Builder()
                 .client(client)
-                .baseUrl(APP_UPDATE_HOST)
+                .baseUrl(MainApplication.getAppUpdateDomain())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
