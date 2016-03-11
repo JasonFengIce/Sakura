@@ -1,5 +1,7 @@
 package tv.ismar.sakura.core.client;
 
+import android.net.Uri;
+
 import java.util.concurrent.TimeUnit;
 
 import cn.ismartv.log.interceptor.HttpLoggingInterceptor;
@@ -43,7 +45,7 @@ public class OkHttpClientManager {
 
         resetAdapter_APP_UPDATE = new Retrofit.Builder()
                 .client(client)
-                .baseUrl(MainApplication.getAppUpdateDomain())
+                .baseUrl(appendProtocol(MainApplication.getAppUpdateDomain()))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -70,11 +72,23 @@ public class OkHttpClientManager {
                 .build();
     }
 
-
     public static OkHttpClientManager getInstance() {
         if (instance == null) {
             instance = new OkHttpClientManager();
         }
         return instance;
+    }
+
+    private String appendProtocol(String host) {
+        Uri uri = Uri.parse(host);
+        String url = uri.toString();
+        if (!uri.toString().startsWith("http://") && !uri.toString().startsWith("https://")) {
+            url = "http://" + host;
+        }
+
+        if (!url.endsWith("/")) {
+            url = url + "/";
+        }
+        return url;
     }
 }
