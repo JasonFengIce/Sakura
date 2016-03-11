@@ -302,6 +302,7 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
+                v.requestFocusFromTouch();
                 v.requestFocus();
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
