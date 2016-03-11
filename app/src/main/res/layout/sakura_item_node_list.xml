@@ -79,4 +79,10 @@
         android:focusable="false"
         android:progress="100"
         />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/sakura_divider"/>
 </RelativeLayout>

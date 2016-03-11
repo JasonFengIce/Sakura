@@ -1,9 +1,15 @@
 package tv.ismar.sakura.ui.widget;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
+
 import tv.ismar.sakura.R;
 
 /**
@@ -22,26 +28,12 @@ public class SakuraProgressBar extends View {
 
     Paint textPaint = new Paint();
     Paint dividePaint = new Paint();
+    private RectF progressBarBackgroundRectF;
+    private RectF progressBarRectF;
 
-
-    public SakuraProgressBar(Context context) {
-        super(context);
-    }
 
     public SakuraProgressBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public SakuraProgressBar(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-
-    @Override
-    protected synchronized void onDraw(Canvas canvas) {
-
-
-
         backgroundPaint.setColor(Color.WHITE);
 
 
@@ -56,9 +48,19 @@ public class SakuraProgressBar extends View {
         dividePaint.setStrokeWidth(3);
         dividePaint.setAntiAlias(true);
 
-        RectF progressBarBackgroundRectF = new RectF(0, 0, getWidth(), getHeight());
-        RectF progressBarRectF = new RectF(0, 0, getWidth() / 100 * progress, getHeight());
 
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        progressBarBackgroundRectF = new RectF(0, 0, getWidth(), getHeight());
+    }
+
+    @Override
+    protected synchronized void onDraw(Canvas canvas) {
+        progressBarBackgroundRectF = new RectF(0, 0, getWidth(), getHeight());
+        progressBarRectF = new RectF(0, 0, getWidth() / 100 * progress, getHeight());
         canvas.drawRect(progressBarBackgroundRectF, backgroundPaint);
         canvas.drawRect(progressBarRectF, progressPaint);
     }

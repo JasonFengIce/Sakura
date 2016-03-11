@@ -285,10 +285,10 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
                 view.setOnClickListener(this);
                 view.setOnHoverListener(this);
                 nodeListLayout.addView(view);
-                ImageView divider = new ImageView(getContext());
-                divider.setBackgroundResource(R.drawable.sakura_divider);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                nodeListLayout.addView(divider, layoutParams);
+//                ImageView divider = new ImageView(getContext());
+//                divider.setBackgroundResource(R.drawable.sakura_divider);
+//                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                nodeListLayout.addView(divider, layoutParams);
 
             } while (cursor.moveToNext());
 
