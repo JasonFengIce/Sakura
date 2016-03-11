@@ -291,8 +291,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
         }
 
-        cursor.close();
-
         updateCurrentNode();
 //        nodeListView.setSelection(-1);
     }
