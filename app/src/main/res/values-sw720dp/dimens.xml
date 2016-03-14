@@ -127,6 +127,7 @@
 
 <dimen name="textSize_28sp">18.67sp</dimen>
 <dimen name="textSize_30sp">20.00sp</dimen>
+<dimen name="textSize_36sp">24.00sp</dimen>
 
 <dimen name="feedback_item_height">96.67dp</dimen>
 <dimen name="pop_cursor_left">166.67dp</dimen>

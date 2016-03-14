@@ -24,7 +24,7 @@
             android:gravity="center"
             android:text="@string/app_update_title"
             android:textColor="#787878"
-            android:textSize="@dimen/textSize_30sp"/>
+            android:textSize="@dimen/textSize_36sp"/>
 
         <LinearLayout
             android:id="@+id/app_update_content_list"
