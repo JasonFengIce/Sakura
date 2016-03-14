@@ -55,6 +55,7 @@
             android:layout_width="@dimen/pop_btn_width"
             android:layout_height="@dimen/pop_btn_height"
             android:background="@drawable/selector_daisy_exit_button"
+            android:nextFocusUp="@id/confirm_btn"
             android:text="@string/confirm"
             android:textColor="@android:color/white"
             android:textSize="@dimen/h3_text_size"/>
@@ -65,6 +66,7 @@
             android:layout_height="@dimen/pop_btn_height"
             android:layout_marginLeft="@dimen/pop_btn_margin_lr"
             android:background="@drawable/selector_daisy_exit_button"
+            android:nextFocusUp="@id/cancel_btn"
             android:text="@string/cancel"
             android:textColor="@android:color/white"
             android:textSize="@dimen/h3_text_size"/>
