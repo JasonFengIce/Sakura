@@ -6,6 +6,13 @@
                 android:background="@drawable/popwindow_bg"
     >
 
+    <ImageView
+        android:id="@+id/tmp_image"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:focusable="true"
+        android:src="@android:color/transparent"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
