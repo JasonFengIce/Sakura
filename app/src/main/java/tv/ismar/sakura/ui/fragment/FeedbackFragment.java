@@ -309,7 +309,14 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
                 v.requestFocus();
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
-                tmpImageView.requestFocus();
+                switch (v.getId()) {
+                    case R.id.phone_number_edit:
+                    case R.id.description_edit:
+                        break;
+                    default:
+                        tmpImageView.requestFocus();
+                        break;
+                }
                 break;
         }
         return true;
