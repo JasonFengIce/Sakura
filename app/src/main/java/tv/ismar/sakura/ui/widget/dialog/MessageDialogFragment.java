@@ -3,29 +3,50 @@ package tv.ismar.sakura.ui.widget.dialog;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import tv.ismar.sakura.R;
+
 
 /**
  * Created by huaijie on 10/15/15.
  */
-public class MessageDialogFragment extends PopupWindow implements View.OnClickListener {
+public class MessageDialogFragment extends PopupWindow implements View.OnClickListener, View.OnHoverListener {
     private Button confirmBtn;
     private Button cancelBtn;
     private TextView firstMessage;
     private TextView secondMessage;
     private ConfirmListener confirmListener;
     private CancelListener cancleListener;
+    private ImageView tmpImage;
 
     private String mFirstLineMessage;
     private String mSecondLineMessage;
 
     private Context mContext;
+
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+            case MotionEvent.ACTION_HOVER_MOVE:
+                v.requestFocusFromTouch();
+                v.requestFocus();
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                tmpImage.requestFocus();
+                break;
+        }
+        return true;
+    }
 
     public interface CancelListener {
         void cancelClick(View view);
@@ -56,8 +77,14 @@ public class MessageDialogFragment extends PopupWindow implements View.OnClickLi
         cancelBtn = (Button) contentView.findViewById(R.id.cancel_btn);
         confirmBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
+        confirmBtn.setOnHoverListener(this);
+        cancelBtn.setOnHoverListener(this);
+        confirmBtn.requestFocusFromTouch();
+        confirmBtn.requestFocus();
+
         firstMessage = (TextView) contentView.findViewById(R.id.first_text_info);
         secondMessage = (TextView) contentView.findViewById(R.id.pop_second_text);
+        tmpImage = (ImageView) contentView.findViewById(R.id.tmp_image);
         firstMessage.setText(mFirstLineMessage);
 
         RelativeLayout frameLayout = new RelativeLayout(mContext);
@@ -85,9 +112,9 @@ public class MessageDialogFragment extends PopupWindow implements View.OnClickLi
 
     }
 
-    public void setButtonText(String btn1,String btn2){
-    	confirmBtn.setText(btn1);
-    	cancelBtn.setText(btn2);
+    public void setButtonText(String btn1, String btn2) {
+        confirmBtn.setText(btn1);
+        cancelBtn.setText(btn2);
     }
 
     @Override
