@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:id="@+id/node_fragment_layout"
-              android:background="@drawable/sakura_bg_fragment"
-              android:focusable="true"
-              android:orientation="vertical"
-              android:padding="@dimen/layout_border_padding"
+<LinearLayout
+    android:id="@+id/node_fragment_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/sakura_bg_fragment"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:padding="@dimen/layout_border_padding"
     >
 
     <ImageView
@@ -81,12 +82,14 @@
                 android:textSize="@dimen/sakura_h5_text_size"
                 />
 
-            <Spinner
+            <TextView
                 android:id="@+id/province_spinner"
-                style="@style/spinner_style"
                 android:layout_width="@dimen/node_fragment_spinner_width"
                 android:layout_height="@dimen/node_fragment_spinner_height"
-                android:focusable="true"/>
+                android:background="@drawable/selector_item_list"
+                android:focusable="true"
+                android:gravity="center"
+                android:textSize="@dimen/sakura_h5_text_size"/>
         </LinearLayout>
 
         <LinearLayout
@@ -106,12 +109,14 @@
                 android:textSize="@dimen/sakura_h5_text_size"
                 />
 
-            <Spinner
+            <TextView
                 android:id="@+id/isp_spinner"
-                style="@style/spinner_style"
                 android:layout_width="@dimen/node_fragment_spinner_width"
                 android:layout_height="@dimen/node_fragment_spinner_height"
+                android:background="@drawable/selector_item_list"
                 android:focusable="true"
+                android:gravity="center"
+                android:textSize="@dimen/sakura_h5_text_size"
                 />
 
         </LinearLayout>

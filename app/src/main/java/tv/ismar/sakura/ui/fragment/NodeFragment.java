@@ -21,12 +21,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,9 +42,12 @@ import retrofit2.Response;
 import tv.ismar.sakura.R;
 import tv.ismar.sakura.core.HttpDownloadTask;
 import tv.ismar.sakura.core.client.OkHttpClientManager;
+import tv.ismar.sakura.core.preferences.AccountSharedPrefs;
 import tv.ismar.sakura.data.http.BindedCdnEntity;
-import tv.ismar.sakura.data.table.CdnTable;
 import tv.ismar.sakura.data.table.IspTable;
+import tv.ismar.sakura.data.table.ProvinceTable;
+import tv.ismar.sakura.ui.widget.IspSpinnerPopWindow;
+import tv.ismar.sakura.ui.widget.ProvinceSpinnerPopWindow;
 import tv.ismar.sakura.ui.widget.SakuraProgressBar;
 import tv.ismar.sakura.utils.DeviceUtils;
 
@@ -55,6 +56,13 @@ import static tv.ismar.sakura.core.SakuraClientAPI.DeviceLog;
 import static tv.ismar.sakura.core.SakuraClientAPI.GetBindCdn;
 import static tv.ismar.sakura.core.SakuraClientAPI.UnbindNode;
 import static tv.ismar.sakura.core.SakuraClientAPI.UploadResult;
+import static tv.ismar.sakura.data.table.CdnTable.CDN_FLAG;
+import static tv.ismar.sakura.data.table.CdnTable.CDN_ID;
+import static tv.ismar.sakura.data.table.CdnTable.CDN_NICK;
+import static tv.ismar.sakura.data.table.CdnTable.CHECKED;
+import static tv.ismar.sakura.data.table.CdnTable.DISTRICT_ID;
+import static tv.ismar.sakura.data.table.CdnTable.ISP_ID;
+import static tv.ismar.sakura.data.table.CdnTable.SPEED;
 
 /**
  * Created by huaijie on 2015/4/8.
@@ -66,15 +74,15 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     private static final String NOT_THIRD_CDN = "0";
     private static final int NORMAL_ISP_FLAG = 01245;
     private static final int OTHER_ISP_FLAG = 3;
-    private static String NORMAL_SELECTION = tv.ismar.sakura.data.table.CdnTable.DISTRICT_ID + "=? and " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + "=?" + " or " + tv.ismar.sakura.data.table.CdnTable.CDN_FLAG + "  <> ?" + " ORDER BY " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + " DESC," + tv.ismar.sakura.data.table.CdnTable.SPEED + " DESC";
-    private static String OTHER_SELECTION = tv.ismar.sakura.data.table.CdnTable.DISTRICT_ID + "=? and " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + " in (?, ?)" + " or " + tv.ismar.sakura.data.table.CdnTable.CDN_FLAG + "  <> ?" + " ORDER BY " + tv.ismar.sakura.data.table.CdnTable.ISP_ID + " DESC," + tv.ismar.sakura.data.table.CdnTable.SPEED + " DESC";
+    private static String NORMAL_SELECTION = DISTRICT_ID + "=? and " + ISP_ID + "=?" + " or " + CDN_FLAG + "  <> ?" + " ORDER BY " + ISP_ID + " DESC," + SPEED + " DESC";
+    private static String OTHER_SELECTION = DISTRICT_ID + "=? and " + ISP_ID + " in (?, ?)" + " or " + CDN_FLAG + "  <> ?" + " ORDER BY " + ISP_ID + " DESC," + SPEED + " DESC";
     private String TIE_TONG = "";
 
     private ScrollView nodeListView;
     private TextView currentNodeTextView;
     private Button unbindButton;
-    private Spinner provinceSpinner;
-    private Spinner ispSpinner;
+    private TextView provinceSpinner;
+    private TextView ispSpinner;
     private Button speedTestButton;
 
     private tv.ismar.sakura.ui.widget.dialog.MessageDialogFragment selectNodePup;
@@ -112,13 +120,13 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         ActiveAndroid.beginTransaction();
 
         try {
-            tv.ismar.sakura.data.table.CdnTable checkedItem = new Select().from(tv.ismar.sakura.data.table.CdnTable.class).where(tv.ismar.sakura.data.table.CdnTable.CHECKED + " = ?", true).executeSingle();
+            tv.ismar.sakura.data.table.CdnTable checkedItem = new Select().from(tv.ismar.sakura.data.table.CdnTable.class).where(CHECKED + " = ?", true).executeSingle();
             if (null != checkedItem) {
                 checkedItem.checked = false;
                 checkedItem.save();
             }
 
-            tv.ismar.sakura.data.table.CdnTable cdnCacheTable = new Select().from(tv.ismar.sakura.data.table.CdnTable.class).where(tv.ismar.sakura.data.table.CdnTable.CDN_ID + " = ?", cdnId).executeSingle();
+            tv.ismar.sakura.data.table.CdnTable cdnCacheTable = new Select().from(tv.ismar.sakura.data.table.CdnTable.class).where(CDN_ID + " = ?", cdnId).executeSingle();
             if (null != cdnCacheTable) {
                 cdnCacheTable.checked = true;
                 cdnCacheTable.save();
@@ -169,31 +177,18 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         unbindButton.setOnHoverListener(this);
         nodeListView = (ScrollView) view.findViewById(R.id.node_list);
         nodeListLayout = (LinearLayout) view.findViewById(R.id.node_list_layout);
-//        nodeListAdapter = new tv.ismar.sakura.ui.adapter.NodeListAdapter(mContext, null, true, nodeListView);
-//        nodeListView.setAdapter(nodeListAdapter);
-//        nodeListView.setSelection(-1);
-//        nodeListView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    nodeListView.setSelection(0);
-//                } else {
-//                    nodeListView.setSelection(-1);
-//                }
-//            }
-//        });
 
-        provinceSpinner = (Spinner) view.findViewById(R.id.province_spinner);
+        provinceSpinner = (TextView) view.findViewById(R.id.province_spinner);
+        provinceSpinner.setOnClickListener(this);
         provinceSpinner.setOnHoverListener(this);
-        ispSpinner = (Spinner) view.findViewById(R.id.isp_spinner);
+        ispSpinner = (TextView) view.findViewById(R.id.isp_spinner);
         ispSpinner.setOnHoverListener(this);
+        ispSpinner.setOnClickListener(this);
 
         speedTestButton = (Button) view.findViewById(R.id.speed_test_btn);
         speedTestButton.setOnHoverListener(this);
 
         speedTestButton.setOnClickListener(this);
-//        nodeListView.setOnItemClickListener(this);
-//        nodeListView.setOnItemSelectedListener(this);
         unbindButton.setOnClickListener(this);
 
         nodeListView.setNextFocusDownId(nodeListView.getId());
@@ -206,28 +201,23 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onViewCreated(view, savedInstanceState);
 
 
-        List<tv.ismar.sakura.data.table.ProvinceTable> provinceTables = new Select().from(tv.ismar.sakura.data.table.ProvinceTable.class).execute();
-        tv.ismar.sakura.ui.adapter.ProvinceSpinnerAdapter provinceSpinnerAdapter = new tv.ismar.sakura.ui.adapter.ProvinceSpinnerAdapter(mContext, provinceTables);
-        provinceSpinner.setAdapter(provinceSpinnerAdapter);
-        String accountProvince = tv.ismar.sakura.core.preferences.AccountSharedPrefs.getInstance(mContext).getSharedPrefs(tv.ismar.sakura.core.preferences.AccountSharedPrefs.PROVINCE);
-
-        tv.ismar.sakura.data.table.ProvinceTable provinceTable = new Select().from(tv.ismar.sakura.data.table.ProvinceTable.class).
-                where(tv.ismar.sakura.data.table.ProvinceTable.PROVINCE_NAME + " = ?", accountProvince).executeSingle();
+        String accountProvince = AccountSharedPrefs.getInstance(mContext).getSharedPrefs(AccountSharedPrefs.PROVINCE);
+        ProvinceTable provinceTable = new Select().from(ProvinceTable.class).
+                where(ProvinceTable.PROVINCE_NAME + " = ?", accountProvince).executeSingle();
         if (provinceTable != null) {
-            provinceSpinner.setSelection((provinceTable.getId().intValue() - 1));
+            provinceSpinner.setText(accountProvince);
+            mDistrictId = provinceTable.district_id;
+            notifiySourceChanged();
         }
 
-
-        List<tv.ismar.sakura.data.table.IspTable> ispTables = new Select().from(tv.ismar.sakura.data.table.IspTable.class).execute();
-        tv.ismar.sakura.ui.adapter.IspSpinnerAdapter ispSpinnerAdapter = new tv.ismar.sakura.ui.adapter.IspSpinnerAdapter(mContext, ispTables);
-        ispSpinner.setAdapter(ispSpinnerAdapter);
 
         String accountIsp = tv.ismar.sakura.core.preferences.AccountSharedPrefs.getInstance(mContext).getSharedPrefs(tv.ismar.sakura.core.preferences.AccountSharedPrefs.ISP);
-        tv.ismar.sakura.data.table.IspTable ispTable = new Select().from(tv.ismar.sakura.data.table.IspTable.class).where(tv.ismar.sakura.data.table.IspTable.ISP_NAME + " = ?", accountIsp).executeSingle();
+        IspTable ispTable = new Select().from(IspTable.class).where(IspTable.ISP_NAME + " = ?", accountIsp).executeSingle();
         if (ispTable != null) {
-            ispSpinner.setSelection(ispTable.getId().intValue() - 1);
+            ispSpinner.setText(accountIsp);
+            mIspId = ispTable.isp_id;
+            notifiySourceChanged();
         }
-        setSpinnerItemSelectedListener();
         getLoaderManager().initLoader(NORMAL_ISP_FLAG, null, this);
 
 
@@ -271,9 +261,9 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
                 TextView message = (TextView) view.findViewById(R.id.select_prompt);
                 SakuraProgressBar speedProgress = (SakuraProgressBar) view.findViewById(R.id.speed_progress);
                 titleNumber.setText(String.valueOf(cursor.getPosition() + 1));
-                String node = cursor.getString(cursor.getColumnIndex(CdnTable.CDN_NICK));
-                int progress = cursor.getInt(cursor.getColumnIndex(CdnTable.SPEED));
-                String ispId = cursor.getString(cursor.getColumnIndex(CdnTable.ISP_ID));
+                String node = cursor.getString(cursor.getColumnIndex(CDN_NICK));
+                int progress = cursor.getInt(cursor.getColumnIndex(SPEED));
+                String ispId = cursor.getString(cursor.getColumnIndex(ISP_ID));
                 IspTable ispTable = new Select().from(IspTable.class).where(IspTable.ISP_ID + " = ?", ispId).executeSingle();
                 speedProgress.setProgress((int) (progress / 20.84));
                 if ((progress / 20.84) < 60 || ispTable.isp_name.equals("其它"))
@@ -281,7 +271,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
                 else
                     message.setText(R.string.can_select);
                 nodeNmae.setText(node);
-                view.setTag((cursor.getInt(cursor.getColumnIndex(CdnTable.CDN_ID))));
+                view.setTag((cursor.getInt(cursor.getColumnIndex(CDN_ID))));
                 view.setOnClickListener(this);
                 view.setOnHoverListener(this);
                 nodeListLayout.addView(view);
@@ -301,42 +291,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoaderReset(Loader loader) {
 //        nodeListAdapter.swapCursor(null);
-    }
-
-    private void setSpinnerItemSelectedListener() {
-        provinceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                tv.ismar.sakura.data.table.ProvinceTable provinceTable = new Select().from(tv.ismar.sakura.data.table.ProvinceTable.class).where("_id = ?", position + 1).executeSingle();
-                if (provinceTable != null) {
-                    mDistrictId = provinceTable.district_id;
-                    notifiySourceChanged();
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        ispSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                tv.ismar.sakura.data.table.IspTable ispTable = new Select().from(tv.ismar.sakura.data.table.IspTable.class).where("_id = ?", position + 1).executeSingle();
-                if (ispTable != null) {
-                    mIspId = ispTable.isp_id;
-                    notifiySourceChanged();
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
     }
 
     private void notifiySourceChanged() {
@@ -381,6 +335,33 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
                 break;
             case R.id.speed_test_btn:
                 showCdnTestDialog();
+                break;
+            case R.id.isp_spinner:
+                final List<IspTable> ispTables = new Select().from(IspTable.class).execute();
+                IspSpinnerPopWindow ispSpinnerPopWindow = new IspSpinnerPopWindow(getContext(), ispTables, new IspSpinnerPopWindow.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View itemView) {
+                        IspTable table = (IspTable) itemView.getTag();
+                        mIspId = table.isp_id;
+                        ispSpinner.setText(table.isp_name);
+                        notifiySourceChanged();
+                    }
+                });
+                ispSpinnerPopWindow.showAsDropDown(ispSpinner);
+                break;
+
+            case R.id.province_spinner:
+                List<ProvinceTable> provinceTables = new Select().from(ProvinceTable.class).execute();
+                final ProvinceSpinnerPopWindow spinnerPopWindow = new ProvinceSpinnerPopWindow(getContext(), provinceTables, new ProvinceSpinnerPopWindow.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View itemView) {
+                        ProvinceTable table = (ProvinceTable) itemView.getTag();
+                        mDistrictId = table.district_id;
+                        provinceSpinner.setText(table.province_name);
+                        notifiySourceChanged();
+                    }
+                });
+                spinnerPopWindow.showAsDropDown(provinceSpinner);
                 break;
         }
     }
@@ -590,8 +571,8 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         speedLog.setCdn_name(nodeName);
         speedLog.setSpeed(speed);
 
-        speedLog.setLocation(tv.ismar.sakura.core.preferences.AccountSharedPrefs.getInstance(mContext).getSharedPrefs(tv.ismar.sakura.core.preferences.AccountSharedPrefs.CITY));
-        speedLog.setLocation(tv.ismar.sakura.core.preferences.AccountSharedPrefs.getInstance(mContext).getSharedPrefs(tv.ismar.sakura.core.preferences.AccountSharedPrefs.ISP));
+        speedLog.setLocation(AccountSharedPrefs.getInstance(mContext).getSharedPrefs(AccountSharedPrefs.CITY));
+        speedLog.setLocation(AccountSharedPrefs.getInstance(mContext).getSharedPrefs(AccountSharedPrefs.ISP));
 
 
         Gson gson = new Gson();

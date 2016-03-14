@@ -7,7 +7,7 @@
 <dimen name="sakura_launch_icon_margin_right">16.67dp</dimen>
 <dimen name="sakura_ismartv_icon_width">73.33dp</dimen>
 <dimen name="sakura_ismartv_icon_height">73.33dp</dimen>
-<dimen name="sakura_node_list_item_height">30.00dp</dimen>
+<dimen name="sakura_node_list_item_height">31.67dp</dimen>
 <dimen name="sakura_h1_text_size">16.67sp</dimen>
 <dimen name="sakura_h5_text_size">10.00sp</dimen>
 <dimen name="sakura_h7_text_size">8.00sp</dimen>
@@ -104,7 +104,7 @@
 <dimen name="pop_btn_margin_bottom">18.00dp</dimen>
 <dimen name="pop_btn_margin_lr">41.00dp</dimen>
 <dimen name="pop_text_layout_height">36.67dp</dimen>
-    <dimen name="app_update_pop_text_layout_height">183.33dp</dimen>
+<dimen name="app_update_pop_text_layout_height">183.33dp</dimen>
 
 
 <dimen name="h3_text_size">10.00sp</dimen>
@@ -116,7 +116,7 @@
 <dimen name="node_fragment_auto_fetch_height">13.33dp</dimen>
 
 <dimen name="node_fragment_spinner_width">53.33dp</dimen>
-    <dimen name="node_fragment_spinner_height">20.00dp</dimen>
+<dimen name="node_fragment_spinner_height">20.00dp</dimen>
 
 <dimen name="indicator_icon_height">33.33dp</dimen>
 <dimen name="indicator_icon_width">33.33dp</dimen>
@@ -129,26 +129,28 @@
 <dimen name="textSize_30sp">10.00sp</dimen>
 
 <dimen name="feedback_item_height">48.33dp</dimen>
-    <dimen name="pop_cursor_left">83.33dp</dimen>
-    <dimen name="pop_cursor_middle">121.67dp</dimen>
-    <dimen name="pop_cursor_right">158.33dp</dimen>
+<dimen name="pop_cursor_left">83.33dp</dimen>
+<dimen name="pop_cursor_middle">121.67dp</dimen>
+<dimen name="pop_cursor_right">158.33dp</dimen>
 
-    <dimen name="message_pop_width">253.33dp</dimen>
-    <dimen name="message_pop_height">126.67dp</dimen>
-    <dimen name="pop_cursor_width">13.33dp</dimen>
-    <dimen name="pop_cursor_btn_height">16.67dp</dimen>
-    <dimen name="pop_cursor_btn_width">55.00dp</dimen>
-    <dimen name="pop_cursor_height">6.67dp</dimen>
-    <dimen name="app_update_message_pop_height">226.67dp</dimen>
-    <dimen name="app_pop_text_layout_height">70.00dp</dimen>
-    <dimen name="app_pop_text_width">210.00dp</dimen>
-    <dimen name="app_pop_btn_height">43.33dp</dimen>
-    <dimen name="app_pop_btn_margin_lr">20.00dp</dimen>
-    <dimen name="app_update_title_marginTop">13.33dp</dimen>
-    <dimen name="app_update_title_marginBottom">3.33dp</dimen>
-    <dimen name="app_update_item_margin">5.33dp</dimen>
-    <dimen name="item_spinner_text_height">20.00dp</dimen>
-    <dimen name="tmp">3.33dp</dimen>
+<dimen name="message_pop_width">253.33dp</dimen>
+<dimen name="message_pop_height">126.67dp</dimen>
+<dimen name="pop_cursor_width">13.33dp</dimen>
+<dimen name="pop_cursor_btn_height">16.67dp</dimen>
+<dimen name="pop_cursor_btn_width">55.00dp</dimen>
+<dimen name="pop_cursor_height">6.67dp</dimen>
+<dimen name="app_update_message_pop_height">226.67dp</dimen>
+<dimen name="app_pop_text_layout_height">70.00dp</dimen>
+<dimen name="app_pop_text_width">210.00dp</dimen>
+<dimen name="app_pop_btn_height">43.33dp</dimen>
+<dimen name="app_pop_btn_margin_lr">20.00dp</dimen>
+<dimen name="app_update_title_marginTop">13.33dp</dimen>
+<dimen name="app_update_title_marginBottom">3.33dp</dimen>
+<dimen name="app_update_item_margin">5.33dp</dimen>
+<dimen name="item_spinner_text_height">20.00dp</dimen>
+<dimen name="tmp">3.33dp</dimen>
+<dimen name="pop_spinner_layout_width">50.00dp</dimen>
+<dimen name="pop_spinner_layout_height">166.67dp</dimen>
 
 
 </resources>

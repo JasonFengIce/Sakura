@@ -7,7 +7,7 @@
 <dimen name="sakura_launch_icon_margin_right">33.33dp</dimen>
 <dimen name="sakura_ismartv_icon_width">146.67dp</dimen>
 <dimen name="sakura_ismartv_icon_height">146.67dp</dimen>
-<dimen name="sakura_node_list_item_height">60.00dp</dimen>
+<dimen name="sakura_node_list_item_height">63.33dp</dimen>
 <dimen name="sakura_h1_text_size">33.33sp</dimen>
 <dimen name="sakura_h5_text_size">20.00sp</dimen>
 <dimen name="sakura_h7_text_size">16.00sp</dimen>
@@ -116,7 +116,7 @@
 <dimen name="node_fragment_auto_fetch_height">26.67dp</dimen>
 
 <dimen name="node_fragment_spinner_width">106.67dp</dimen>
-    <dimen name="node_fragment_spinner_height">40.00dp</dimen>
+<dimen name="node_fragment_spinner_height">40.00dp</dimen>
 
 <dimen name="indicator_icon_height">66.67dp</dimen>
 <dimen name="indicator_icon_width">66.67dp</dimen>
@@ -147,8 +147,10 @@
 <dimen name="app_update_title_marginTop">26.67dp</dimen>
 <dimen name="app_update_title_marginBottom">6.67dp</dimen>
 <dimen name="app_update_item_margin">10.67dp</dimen>
-    <dimen name="item_spinner_text_height">40.00dp</dimen>
-    <dimen name="tmp">6.67dp</dimen>
+<dimen name="item_spinner_text_height">40.00dp</dimen>
+<dimen name="tmp">6.67dp</dimen>
+<dimen name="pop_spinner_layout_width">100.00dp</dimen>
+<dimen name="pop_spinner_layout_height">333.33dp</dimen>
 
 
 </resources>

@@ -149,6 +149,8 @@
     <dimen name="app_update_item_margin">16dp</dimen>
     <dimen name="item_spinner_text_height">60dp</dimen>
     <dimen name="tmp">10dp</dimen>
+    <dimen name="pop_spinner_layout_width">150dp</dimen>
+    <dimen name="pop_spinner_layout_height">500dp</dimen>
 
 
 </resources>
