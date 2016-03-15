@@ -119,6 +119,19 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sakura_fragment_feedback, null);
+        view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (problemType.getChildAt(0) != null) {
+                        problemType.getChildAt(0).requestFocusFromTouch();
+                        problemType.getChildAt(0).requestFocus();
+                    }
+                } else {
+
+                }
+            }
+        });
         return view;
     }
 
@@ -132,6 +145,8 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
         feedBackListView = (FeedBackListView) view.findViewById(R.id.feedback_list);
         tmpImageView = (ImageView) view.findViewById(R.id.tmp);
         submitButton = (Button) view.findViewById(R.id.submit_btn);
+        submitButton.setNextFocusRightId(submitButton.getId());
+        submitButton.setNextFocusLeftId(submitButton.getId());
         submitButton.setOnClickListener(this);
         submitButton.setOnHoverListener(this);
         phoneNumberText = (EditText) view.findViewById(R.id.phone_number_edit);
@@ -186,8 +201,12 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
             radioButton.setFocusable(true);
             radioButton.setOnHoverListener(this);
 
-            if (i == 0)
+            if (i == 0) {
                 mRadioButton = radioButton;
+                radioButton.setNextFocusUpId(radioButton.getId());
+                radioButton.setNextFocusLeftId(radioButton.getId());
+            }
+
             problemType.addView(radioButton);
         }
 

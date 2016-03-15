@@ -274,6 +274,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
                 view.setTag((cursor.getInt(cursor.getColumnIndex(CDN_ID))));
                 view.setOnClickListener(this);
                 view.setOnHoverListener(this);
+                view.setNextFocusRightId(view.getId());
                 nodeListLayout.addView(view);
 //                ImageView divider = new ImageView(getContext());
 //                divider.setBackgroundResource(R.drawable.sakura_divider);
