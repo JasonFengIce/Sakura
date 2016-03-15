@@ -143,6 +143,8 @@
         android:divider="#00000000"
         android:dividerHeight="10dp"
         android:focusable="false"
+        android:nextFocusLeft="@id/feedback_list"
+        android:nextFocusRight="@id/feedback_list"
         android:scrollbars="none"
         />
 
