@@ -200,10 +200,9 @@ public class FeedbackFragment extends BaseFragment implements RadioGroup.OnCheck
             radioButton.setId(problemEntities.get(i).getPoint_id());
             radioButton.setFocusable(true);
             radioButton.setOnHoverListener(this);
-
+            radioButton.setNextFocusUpId(radioButton.getId());
             if (i == 0) {
                 mRadioButton = radioButton;
-                radioButton.setNextFocusUpId(radioButton.getId());
                 radioButton.setNextFocusLeftId(radioButton.getId());
             }
 
