@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_update_pop_text_layout_height"
         android:background="#d6dbeb"
+        android:focusable="true"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -54,6 +55,7 @@
                 android:layout_width="@dimen/pop_cursor_btn_width"
                 android:layout_height="@dimen/pop_cursor_btn_height"
                 android:background="@drawable/pop_btn_bg"
+                android:nextFocusUp="@id/confirm_btn"
                 android:text="@string/confirm_text"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/textSize_30sp"
@@ -65,6 +67,7 @@
                 android:layout_height="@dimen/pop_cursor_btn_height"
                 android:layout_marginLeft="@dimen/app_pop_btn_margin_lr"
                 android:background="@drawable/pop_btn_bg"
+                android:nextFocusUp="@id/cancel_btn"
                 android:text="@string/cancel_text"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/textSize_30sp"/>

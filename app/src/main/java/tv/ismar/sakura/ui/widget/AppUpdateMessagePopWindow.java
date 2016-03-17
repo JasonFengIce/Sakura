@@ -3,7 +3,9 @@ package tv.ismar.sakura.ui.widget;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -21,14 +23,14 @@ import tv.ismar.sakura.R;
 /**
  * Created by huaijie on 10/15/15.
  */
-public class AppUpdateMessagePopWindow extends PopupWindow implements View.OnClickListener, View.OnFocusChangeListener {
+public class AppUpdateMessagePopWindow extends PopupWindow implements View.OnClickListener, View.OnFocusChangeListener, OnHoverListener {
     private Button confirmBtn;
     private Button cancelBtn;
     private ConfirmListener confirmListener;
     private CancelListener cancleListener;
 
     private Context mContext;
-
+    private View messageLayout;
     private ImageView cursorImageView;
     private int popCursorLeft;
     private int popCursorRight;
@@ -80,6 +82,9 @@ public class AppUpdateMessagePopWindow extends PopupWindow implements View.OnCli
 
         confirmBtn = (Button) contentView.findViewById(R.id.confirm_btn);
         cancelBtn = (Button) contentView.findViewById(R.id.cancel_btn);
+        confirmBtn.setOnHoverListener(this);
+        cancelBtn.setOnHoverListener(this);
+        messageLayout = contentView.findViewById(R.id.message);
         cursorImageView = (ImageView) contentView.findViewById(R.id.pop_cursor);
         confirmBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
@@ -108,6 +113,27 @@ public class AppUpdateMessagePopWindow extends PopupWindow implements View.OnCli
         setFocusable(true);
 
     }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+            case MotionEvent.ACTION_HOVER_MOVE:
+                if (!v.isFocused()) {
+                    v.requestFocusFromTouch();
+                    v.requestFocus();
+                }
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                messageLayout.requestFocus();
+                break;
+
+        }
+
+
+        return true;
+    }
+
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {

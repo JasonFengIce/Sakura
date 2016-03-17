@@ -3,6 +3,7 @@ package tv.ismar.sakura.ui.widget;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -17,11 +18,12 @@ import tv.ismar.sakura.R;
 /**
  * Created by huaijie on 10/15/15.
  */
-public class MessagePopWindow extends PopupWindow implements View.OnClickListener, View.OnFocusChangeListener {
+public class MessagePopWindow extends PopupWindow implements View.OnClickListener, View.OnFocusChangeListener, View.OnHoverListener {
     private Button confirmBtn;
     private Button cancelBtn;
     private TextView firstMessage;
     private TextView secondMessage;
+    private View messageLayout;
     private ConfirmListener confirmListener;
     private CancelListener cancleListener;
 
@@ -61,10 +63,13 @@ public class MessagePopWindow extends PopupWindow implements View.OnClickListene
         confirmBtn = (Button) contentView.findViewById(R.id.confirm_btn);
         cancelBtn = (Button) contentView.findViewById(R.id.cancel_btn);
         cursorImageView = (ImageView) contentView.findViewById(R.id.pop_cursor);
+        messageLayout = contentView.findViewById(R.id.message);
         confirmBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
         confirmBtn.setOnFocusChangeListener(this);
         cancelBtn.setOnFocusChangeListener(this);
+        cancelBtn.setOnHoverListener(this);
+        confirmBtn.setOnHoverListener(this);
         firstMessage = (TextView) contentView.findViewById(R.id.first_text_info);
         secondMessage = (TextView) contentView.findViewById(R.id.pop_second_text);
         firstMessage.setText(mFirstLineMessage);
@@ -97,6 +102,9 @@ public class MessagePopWindow extends PopupWindow implements View.OnClickListene
 
         setContentView(frameLayout);
         setFocusable(true);
+
+        confirmBtn.requestFocusFromTouch();
+        confirmBtn.requestFocus();
 
     }
 
@@ -192,6 +200,26 @@ public class MessagePopWindow extends PopupWindow implements View.OnClickListene
         int left = xPosition;
         int top = view.getTop();
         view.layout(left, top, left + width, top + height);
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+            case MotionEvent.ACTION_HOVER_MOVE:
+                if (!v.isFocused()) {
+                    v.requestFocusFromTouch();
+                    v.requestFocus();
+                }
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                messageLayout.requestFocus();
+                break;
+
+        }
+
+
+        return true;
     }
 
 
