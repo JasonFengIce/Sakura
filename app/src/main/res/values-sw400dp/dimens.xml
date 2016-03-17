@@ -152,6 +152,8 @@
 <dimen name="tmp">3.70dp</dimen>
 <dimen name="pop_spinner_layout_width">55.56dp</dimen>
 <dimen name="pop_spinner_layout_height">185.19dp</dimen>
+<dimen name="nodelist_layout_width">429.63dp</dimen>
+<dimen name="nodelist_layout_height">188.89dp</dimen>
 
 
 </resources>
