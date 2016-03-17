@@ -154,6 +154,9 @@
 <dimen name="pop_spinner_layout_height">333.33dp</dimen>
 <dimen name="nodelist_layout_width">773.33dp</dimen>
 <dimen name="nodelist_layout_height">340.00dp</dimen>
+<dimen name="source_name_marginRight">46.67dp</dimen>
+<dimen name="source_name_marginLeft">110.00dp</dimen>
+<dimen name="source_tip_mariginRight">116.67dp</dimen>
 
 
 </resources>
