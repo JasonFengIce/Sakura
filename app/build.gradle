@@ -7,8 +7,8 @@ android {
         applicationId "tv.ismar.sakura"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 216
-        versionName "216"
+        versionCode 217
+        versionName "217"
     }
 
     signingConfigs {
