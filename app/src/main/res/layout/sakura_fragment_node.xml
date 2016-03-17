@@ -140,7 +140,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_margin"
-        android:background="@drawable/sakura_bg_result"
+        android:background="#ffffff"
         android:orientation="vertical">
 
         <LinearLayout
