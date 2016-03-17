@@ -156,7 +156,7 @@
 <dimen name="nodelist_layout_height">170.00dp</dimen>
 <dimen name="source_name_marginRight">23.33dp</dimen>
 <dimen name="source_name_marginLeft">55.00dp</dimen>
-<dimen name="source_tip_mariginRight">58.33dp</dimen>
+<dimen name="source_tip_mariginRight">166.67dp</dimen>
 
 
 </resources>
