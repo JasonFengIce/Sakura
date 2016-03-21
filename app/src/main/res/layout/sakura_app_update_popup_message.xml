@@ -58,7 +58,7 @@
                 android:nextFocusUp="@id/confirm_btn"
                 android:text="@string/confirm_text"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/textSize_30sp"
+                android:textSize="@dimen/textSize_36sp"
                 />
 
             <Button
@@ -70,7 +70,7 @@
                 android:nextFocusUp="@id/cancel_btn"
                 android:text="@string/cancel_text"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/textSize_30sp"/>
+                android:textSize="@dimen/textSize_36sp"/>
 
         </LinearLayout>
 
